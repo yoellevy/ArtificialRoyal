@@ -11,8 +11,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     float speed = 5;
 
-    [SerializeField]
-    Transform bullet;
+    [SerializeField] private Transform _bullet;
     [SerializeField]
     float bulletBaseSpeed = 7;
     [SerializeField]
@@ -62,7 +61,7 @@ public class PlayerScript : MonoBehaviour
         if (shotSpeed.x != 0 || shotSpeed.y != 0)
         {
             timePass = 0;
-            Transform currBullet = Instantiate(bullet, transform.position, Quaternion.identity);
+            Transform currBullet = Instantiate(_bullet, transform.position, Quaternion.identity);
             currBullet.GetComponent<Rigidbody2D>().velocity = calculateBulletSpeed(shotSpeed.x, shotSpeed.y);
             Destroy(currBullet.gameObject, bulletLifeTime);
         }
