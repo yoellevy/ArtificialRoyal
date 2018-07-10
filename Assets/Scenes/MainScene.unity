@@ -13,7 +13,7 @@ OcclusionCullingSettings:
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 8
+  serializedVersion: 9
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
@@ -39,6 +39,7 @@ RenderSettings:
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
   m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
@@ -54,11 +55,10 @@ LightmapSettings:
     m_EnableBakedLightmaps: 0
     m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
-    serializedVersion: 9
+    serializedVersion: 10
     m_Resolution: 2
     m_BakeResolution: 40
-    m_TextureWidth: 1024
-    m_TextureHeight: 1024
+    m_AtlasSize: 1024
     m_AO: 0
     m_AOMaxDistance: 1
     m_CompAOExponent: 1
@@ -239,6 +239,52 @@ Prefab:
       value: 
       objectReference: {fileID: 4830624789253464, guid: 820bd2c969b0e084d9c0a6855c01ae77,
         type: 2}
+    - target: {fileID: 61276157514297694, guid: af807e0fc86d1ca4c9895200facdab2a,
+        type: 2}
+      propertyPath: m_Offset.x
+      value: 0.0030725598
+      objectReference: {fileID: 0}
+    - target: {fileID: 61276157514297694, guid: af807e0fc86d1ca4c9895200facdab2a,
+        type: 2}
+      propertyPath: m_Size.x
+      value: 0.22938812
+      objectReference: {fileID: 0}
+    - target: {fileID: 61276157514297694, guid: af807e0fc86d1ca4c9895200facdab2a,
+        type: 2}
+      propertyPath: m_Offset.y
+      value: -0.13826483
+      objectReference: {fileID: 0}
+    - target: {fileID: 61276157514297694, guid: af807e0fc86d1ca4c9895200facdab2a,
+        type: 2}
+      propertyPath: m_Size.y
+      value: 0.16659957
+      objectReference: {fileID: 0}
+    - target: {fileID: 114356589267361616, guid: af807e0fc86d1ca4c9895200facdab2a,
+        type: 2}
+      propertyPath: controller
+      value: 
+      objectReference: {fileID: 11400000, guid: a9ccdb440c7cb2c45a42317702a72250,
+        type: 2}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: af807e0fc86d1ca4c9895200facdab2a, type: 2}
   m_IsPrefabParent: 0
+--- !u!1 &1020696810 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1337592422969652, guid: af807e0fc86d1ca4c9895200facdab2a,
+    type: 2}
+  m_PrefabInternal: {fileID: 689089578}
+--- !u!58 &1020696817
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1020696810}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: -0.000000029802322, y: 0.059914827}
+  serializedVersion: 2
+  m_Radius: 0.17086753

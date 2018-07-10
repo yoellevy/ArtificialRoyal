@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
+    [SerializeField]
+    PlayerControllerScriptable controller;
 
     [SerializeField]
     float speed = 5;
@@ -37,15 +39,12 @@ public class PlayerScript : MonoBehaviour
 
     void movePlayer()
     {
-        float x = Input.GetAxis("Horizontal");
-        float y = Input.GetAxis("Vertical");
+        m_rigibody.velocity = controller.getMove().normalized * speed;
 
-        y = (Input.GetKey("w") ? 1 : Input.GetKey("s") ? -1 : 0) * speed;
-        x = (Input.GetKey("d") ? 1 : Input.GetKey("a") ? -1 : 0) * speed;
-
-        bool isLeft = x < 0, isRight = x > 0, isUp = y > 0, isDown = y < 0;
-
-        m_rigibody.velocity = new Vector2(x, y);
+        bool isLeft = m_rigibody.velocity.x < 0,
+            isRight = m_rigibody.velocity.x > 0,
+            isUp = m_rigibody.velocity.y > 0,
+            isDown = m_rigibody.velocity.y < 0;
 
         m_animator.SetBool("isUp", isUp);
         m_animator.SetBool("isDown", isDown);
@@ -58,13 +57,13 @@ public class PlayerScript : MonoBehaviour
         timePass += Time.deltaTime;
         if (shotInterval - timePass > 0)
             return;
-        float x = Input.GetAxis("HorizontalShot"),
-              y = Input.GetAxis("VerticalShot");
-        if (x != 0 || y != 0)
+        Vector2 shotSpeed = controller.getShot();
+
+        if (shotSpeed.x != 0 || shotSpeed.y != 0)
         {
             timePass = 0;
             Transform currBullet = Instantiate(bullet, transform.position, Quaternion.identity);
-            currBullet.GetComponent<Rigidbody2D>().velocity = calculateBulletSpeed(x, y);
+            currBullet.GetComponent<Rigidbody2D>().velocity = calculateBulletSpeed(shotSpeed.x, shotSpeed.y);
             Destroy(currBullet.gameObject, bulletLifeTime);
         }
     }
