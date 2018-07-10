@@ -4,7 +4,7 @@ namespace AI
 {
     public static class EvaluationFunctionsImplementaion
     {
-        public static float evalAgent(Agent agent)
+        public static float EvalAgent(Agent agent)
         {
             var function = agent.EvaluationFunctions;
             switch (function)
