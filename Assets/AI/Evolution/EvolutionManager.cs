@@ -216,24 +216,22 @@ public class EvolutionManager : MonoBehaviour
         foreach (Genotype genotype in currentPopulation)
             agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, FNNTopology));
         
-        // TODO chnage TrackManager to GameManager. init game with agents.Count agents. 
-        TrackManager.Instance.SetCarAmount(agents.Count);
-        // TODO chnage TrackManager to GameManager. iterator for assign agent to player (here its a Car).
-        IEnumerator<CarController> carsEnum = TrackManager.Instance.GetCarEnumerator();
+        
+        GameManager.Instance.SetPlayerAmount(agents.Count);
+        
+        IEnumerator<PlayerScript> playersEnum = GameManager.Instance.GetPlayerEnumerator();
         for (int i = 0; i < agents.Count; i++)
         {
-            if (!carsEnum.MoveNext())
+            if (!playersEnum.MoveNext())
             {
-                Debug.LogError("Cars enum ended before agents.");
+                Debug.LogError("Players enum ended before agents.");
                 break;
             }
-            // TODO the assignment.
-            carsEnum.Current.Agent = agents[i];
+            playersEnum.Current.PlayerAgent = agents[i];
             AgentsAliveCount++;
-            agents[i].AgentDied += OnAgentDied;
+            agents[i].AgentDied += OnAgentDied; //todo
         }
-        // TODO chnage TrackManager to GameManager. visual reset (e.g position)
-        TrackManager.Instance.Restart();
+        GameManager.Instance.Restart();
     }
 
     // Callback for when an agent died.
