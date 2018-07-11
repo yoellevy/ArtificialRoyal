@@ -6,6 +6,13 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
+    private static int idGenerator = 0;
+    private static int NextID
+    {
+        get { return idGenerator++; }
+    }
+
+    public int id;
     [SerializeField]
     public PlayerControllerScriptable controller;
 
@@ -43,16 +50,30 @@ public class PlayerScript : MonoBehaviour
 
     
     // Use this for initialization
-    void Start()
+    private void Awake()
     {
+
+        id = NextID;
+    }
+
+    void Start()
+    {    
+
         Weights = new[]{1f/3f,1f/3f,1f/3f};
+
         m_animator = GetComponent<Animator>();
         m_rigibody = GetComponent<Rigidbody2D>();
     }
 
+<<<<<<< HEAD
     void FixedUpdate()
     {
         controller.CalculateNextAction();
+=======
+    // Update is called once per frame
+    void Update()
+    {        
+>>>>>>> ca2cac6d0dbf25f0e342dd37005128cd55a60006
         movePlayer();
         shootBullet();
     }
@@ -95,5 +116,10 @@ public class PlayerScript : MonoBehaviour
         if (speed.SqrMagnitude() < bulletBaseSpeed)
             speed = speed.normalized * bulletBaseSpeed;
         return speed;
+    }
+
+    public void EvalSelf()
+    {
+        Agent.Genotype.Evaluation = EvaluationFunctionsImplementaion.EvalPlayer(this);
     }
 }

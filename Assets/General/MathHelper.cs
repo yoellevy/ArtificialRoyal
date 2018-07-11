@@ -3,6 +3,7 @@
 
 #region Includes
 using System;
+using UnityEngine;
 #endregion
 
 /// <summary>
@@ -46,6 +47,17 @@ public static class MathHelper
     {
         return xValue / (1 + Math.Abs(xValue));
     }
+
+    public static float GetAngle(Vector3 from, Vector3 to)
+    {
+        //Mathf.Acos()
+        //// angle in [0,180]
+        Vector3 normal = Vector3.forward;
+        float angle = Vector3.Angle(from, to);
+        
+        return to.y>=0 ? angle : 360-angle;
+    }
+
     #endregion
     #endregion
 }
