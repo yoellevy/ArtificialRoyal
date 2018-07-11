@@ -15,9 +15,12 @@ public class GameManager : MonoBehaviour {
     public int playerAmount = 20;
     public int humanPlayerAmount = 0;
     public GameObject player;
+    public PlayerControllerScriptable aiController;
+    public PlayerControllerScriptable humenController;
 
     public int gameTime = 2 * 60;
     public Text timeText;
+    private float timeRemain;
 
     public GameObject wall;
     public float horizontalSize = 160;
@@ -31,6 +34,30 @@ public class GameManager : MonoBehaviour {
     private GameObject border;
     private List<GameObject> players = new List<GameObject>();
     #endregion
+
+    public struct EvaluationData
+    {
+        int rankInGame;
+        float timeRemain;
+        float timeSurvived;
+
+        public EvaluationData(int rankInGame, float timeRemain, float timeSurvived)
+        {
+            this.rankInGame = rankInGame;
+            this.timeRemain = timeRemain;
+            this.timeSurvived = timeSurvived;
+        }
+    }
+
+    public EvaluationData GetPlayerEvaluationData(GameObject player)
+    {
+        return new EvaluationData(players.Capacity, timeRemain, gameTime - timeRemain);
+    }
+
+    public void RemovePlayer(GameObject player)
+    {
+        players.Remove(player);
+    }
 
     private void createBorder()
     {
@@ -64,6 +91,8 @@ public class GameManager : MonoBehaviour {
             GameObject playerClone = GameObject.Instantiate(player);
             playerClone.transform.position = position;
 
+            playerClone.GetComponent<PlayerScript>().controller = aiController;
+
             //TODO: add ai controller script
             players.Add(playerClone);
         }
@@ -74,7 +103,8 @@ public class GameManager : MonoBehaviour {
             GameObject playerClone = GameObject.Instantiate(player);
             playerClone.transform.position = position;
 
-            //TODO: add human #i controller script
+            playerClone.GetComponent<PlayerScript>().controller = humenController;
+
             //todo: make camera for each player.
             players.Add(playerClone);
         }
@@ -86,8 +116,13 @@ public class GameManager : MonoBehaviour {
         makePlayers();
     }
 
+    private void Update()
+    {
+        timeRemain = (gameTime - Time.timeSinceLevelLoad);
+    }
+
     private void OnGUI()
     {
-        timeText.text = ((int)(gameTime - Time.timeSinceLevelLoad)).ToString();
+        timeText.text = ((int)(timeRemain)).ToString();
     }
 }

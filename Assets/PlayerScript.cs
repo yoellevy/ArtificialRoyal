@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
     [SerializeField]
-    PlayerControllerScriptable controller;
+    public PlayerControllerScriptable controller;
 
     [SerializeField]
     float speed = 5;
@@ -32,6 +32,7 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        controller.CalculateNextAction();
         movePlayer();
         shootBullet();
     }

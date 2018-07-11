@@ -4,6 +4,20 @@ using UnityEngine;
 
 public abstract class PlayerControllerScriptable : ScriptableObject
 {
-    public abstract Vector2 getMove();
-    public abstract Vector2 getShot();
+    protected Vector2 move;
+    protected Vector2 shot;
+
+
+    public abstract void CalculateNextAction();
+
+
+    public Vector2 getMove()
+    {
+        return move;
+    }
+    public Vector2 getShot()
+    {
+        return shot;
+    }
+
 }

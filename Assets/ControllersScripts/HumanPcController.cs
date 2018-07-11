@@ -5,15 +5,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "HumanController", menuName = "Controller/HumanPC", order = 1)]
 public class HumanPcController : PlayerControllerScriptable
 {
-    public override Vector2 getMove()
+    public override void CalculateNextAction()
     {
-        float x = Input.GetAxis("Horizontal"), y = Input.GetAxis("Vertical");
-
-        return new Vector2(x, y);
-    }
-
-    public override Vector2 getShot()
-    {
-        return new Vector2(Input.GetAxis("HorizontalShot"), Input.GetAxis("VerticalShot"));
+        base.move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        base.shot = new Vector2(Input.GetAxis("HorizontalShot"), Input.GetAxis("VerticalShot"));
     }
 }
