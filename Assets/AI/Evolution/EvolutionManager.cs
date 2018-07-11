@@ -128,7 +128,7 @@ public class EvolutionManager : MonoBehaviour
             //WriteStatisticsFileStart();
             //geneticAlgorithm.FitnessCalculationFinished += WriteStatisticsToFile;
         }
-        geneticAlgorithm.FitnessCalculationFinished += CheckForTrackFinished;
+//        geneticAlgorithm.FitnessCalculationFinished += CheckForTrackFinished;
 
         //Restart logic
         if (RestartAfter > 0)
@@ -164,27 +164,27 @@ public class EvolutionManager : MonoBehaviour
     }
 
     // Checks the current population and saves genotypes to a file if their evaluation is greater than or equal to 1
-    private void CheckForTrackFinished(IEnumerable<Genotype> currentPopulation)
-    {
-        if (genotypesSaved >= SaveFirstNGenotype) return;
-
-        string saveFolder = statisticsFileName + "/";
-
-        foreach (Genotype genotype in currentPopulation)
-        {
-            if (genotype.Evaluation >= 1)
-            {
-                if (!Directory.Exists(saveFolder))
-                    Directory.CreateDirectory(saveFolder);
-
-                genotype.SaveToFile(saveFolder + "Genotype - Finished as " + (++genotypesSaved) + ".txt");
-
-                if (genotypesSaved >= SaveFirstNGenotype) return;
-            }
-            else
-                return; //List should be sorted, so we can exit here
-        }
-    }
+//    private void CheckForTrackFinished(IEnumerable<Genotype> currentPopulation)
+//    {
+//        if (genotypesSaved >= SaveFirstNGenotype) return;
+//
+//        string saveFolder = statisticsFileName + "/";
+//
+//        foreach (Genotype genotype in currentPopulation)
+//        {
+//            if (genotype.Evaluation >= 1)
+//            {
+//                if (!Directory.Exists(saveFolder))
+//                    Directory.CreateDirectory(saveFolder);
+//
+//                genotype.SaveToFile(saveFolder + "Genotype - Finished as " + (++genotypesSaved) + ".txt");
+//
+//                if (genotypesSaved >= SaveFirstNGenotype) return;
+//            }
+//            else
+//                return; //List should be sorted, so we can exit here
+//        }
+//    }
 
     // Checks whether the termination criterion of generation count was met.
     private bool CheckGenerationTermination(IEnumerable<Genotype> currentPopulation)
@@ -215,8 +215,10 @@ public class EvolutionManager : MonoBehaviour
 
         foreach (Genotype genotype in currentPopulation)
             agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, FNNTopology));
-
+        
+        // TODO chnage TrackManager to GameManager. init game with agents.Count agents. 
         TrackManager.Instance.SetCarAmount(agents.Count);
+        // TODO chnage TrackManager to GameManager. iterator for assign agent to player (here its a Car).
         IEnumerator<CarController> carsEnum = TrackManager.Instance.GetCarEnumerator();
         for (int i = 0; i < agents.Count; i++)
         {
@@ -225,12 +227,12 @@ public class EvolutionManager : MonoBehaviour
                 Debug.LogError("Cars enum ended before agents.");
                 break;
             }
-
+            // TODO the assignment.
             carsEnum.Current.Agent = agents[i];
             AgentsAliveCount++;
             agents[i].AgentDied += OnAgentDied;
         }
-
+        // TODO chnage TrackManager to GameManager. visual reset (e.g position)
         TrackManager.Instance.Restart();
     }
 
