@@ -26,7 +26,7 @@ public class PlayerScript : MonoBehaviour
     /// <summary>
     /// The underlying AI agent of this car.
     /// </summary>
-    public Agent Agent
+    public Agent PlayerAgent
     {
         get;
         set;
@@ -50,8 +50,7 @@ public class PlayerScript : MonoBehaviour
         m_rigibody = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         controller.CalculateNextAction();
         movePlayer();

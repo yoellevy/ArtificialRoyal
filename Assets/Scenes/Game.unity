@@ -224,7 +224,7 @@ MonoBehaviour:
   playerAmount: 50
   humanPlayerAmount: 0
   player: {fileID: 1337592422969652, guid: af807e0fc86d1ca4c9895200facdab2a, type: 2}
-  aiController: {fileID: 11400000, guid: a9ccdb440c7cb2c45a42317702a72250, type: 2}
+  aiController: {fileID: 11400000, guid: a8335a0f8b63fa74db7329e5d05928f5, type: 2}
   humenController: {fileID: 11400000, guid: a9ccdb440c7cb2c45a42317702a72250, type: 2}
   gameTime: 120
   timeText: {fileID: 1691797136}

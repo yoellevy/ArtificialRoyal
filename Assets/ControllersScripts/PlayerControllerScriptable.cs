@@ -7,6 +7,12 @@ public abstract class PlayerControllerScriptable : ScriptableObject
     protected Vector2 move;
     protected Vector2 shot;
 
+    protected Agent PlayerAgent;
+
+    public void init(Agent agent)
+    {
+        this.PlayerAgent = agent;
+    }
 
     public abstract void CalculateNextAction();
 
