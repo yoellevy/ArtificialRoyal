@@ -31,6 +31,7 @@ public class Observation : MonoBehaviour
 
     Dictionary<int, double[]> PlayerToPlayerObservation;
     Dictionary<int, double[]> PlayerToBulletObservation;
+    //todo - for player to wall distance maybe we can use "ColliderDistance2D"
 
     DistanceAndAngle[,] PlayerToPlayerDistance;
     DistanceAndAngle[,] PlayerToBulletDistance;
@@ -137,11 +138,12 @@ public class Observation : MonoBehaviour
             int p1id = players[i].GetComponent<PlayerScript>().id;
             foreach (var item in bullets)
             {
+                //todo - each player needs to ignore his bullets. Or at least we must to set bullet direction somwehere
                 double currDistance = Vector2.Distance(item.transform.position, players[i].transform.position);
                 if (currDistance < maxObservationDistance)
                 {
                     AngleQuant currAngle = calculateAngle(players[i].transform.position, item.transform.position);
-                    PlayerToBulletObservation[p1id][(int)currAngle - 1] = currDistance;
+                    PlayerToBulletObservation[p1id][(int)currAngle - 1] = currDistance; //todo - (from Omer to Yoel) - where is the minimum of bunch of bullets? I'm not sure that I'm understand this code.
                 }
             }
         }

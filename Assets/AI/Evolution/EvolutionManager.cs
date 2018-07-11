@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 #endregion
 
 /// <summary>
@@ -78,6 +79,9 @@ public class EvolutionManager : MonoBehaviour
 
     [SerializeField]
     float timeScale = 1;
+
+    [SerializeField]
+    Text generationNumber;
     #endregion
 
     #region Constructors
@@ -272,6 +276,11 @@ public class EvolutionManager : MonoBehaviour
         EndOfGame();
     }
 
+    private void OnGUI()
+    {
+        generationNumber.text = (GenerationCount).ToString();
+    }
+
     #region GA Operators
     // Selection operator for the genetic algorithm, using a method called remainder stochastic sampling.
     private List<Genotype> RemainderStochasticSampling(List<Genotype> currentPopulation)
@@ -358,3 +367,4 @@ public class EvolutionManager : MonoBehaviour
     #endregion
 
     }
+
