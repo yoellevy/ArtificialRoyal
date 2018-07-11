@@ -122,7 +122,6 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114356589267361616
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -134,13 +133,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fee5dc63a08554f49a085ac425c03fd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-<<<<<<< HEAD
-  controller: {fileID: 0}
-=======
   pok: {fileID: 0}
   id: 0
   controller: {fileID: 11400000, guid: a9ccdb440c7cb2c45a42317702a72250, type: 2}
->>>>>>> ca2cac6d0dbf25f0e342dd37005128cd55a60006
   speed: 5
   _bullet: {fileID: 4830624789253464, guid: 820bd2c969b0e084d9c0a6855c01ae77, type: 2}
   bulletBaseSpeed: 7
@@ -159,7 +154,6 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
-  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:

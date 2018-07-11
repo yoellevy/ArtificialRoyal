@@ -65,15 +65,9 @@ public class PlayerScript : MonoBehaviour
         m_rigibody = GetComponent<Rigidbody2D>();
     }
 
-<<<<<<< HEAD
     void FixedUpdate()
     {
         controller.CalculateNextAction();
-=======
-    // Update is called once per frame
-    void Update()
-    {        
->>>>>>> ca2cac6d0dbf25f0e342dd37005128cd55a60006
         movePlayer();
         shootBullet();
     }
@@ -120,6 +114,6 @@ public class PlayerScript : MonoBehaviour
 
     public void EvalSelf()
     {
-        Agent.Genotype.Evaluation = EvaluationFunctionsImplementaion.EvalPlayer(this);
+        PlayerAgent.Genotype.Evaluation = EvaluationFunctionsImplementaion.EvalPlayer(this);
     }
 }
