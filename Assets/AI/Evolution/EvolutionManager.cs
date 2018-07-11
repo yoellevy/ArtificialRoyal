@@ -125,8 +125,8 @@ public class EvolutionManager : MonoBehaviour
         {
             //TODO: adding log?
 //            statisticsFileName = "Evaluation - " + GameStateManager.Instance.TrackName + " " + DateTime.Now.ToString("yyyy_MM_dd_HH-mm-ss");
-            WriteStatisticsFileStart();
-            geneticAlgorithm.FitnessCalculationFinished += WriteStatisticsToFile;
+            //WriteStatisticsFileStart();
+            //geneticAlgorithm.FitnessCalculationFinished += WriteStatisticsToFile;
         }
         geneticAlgorithm.FitnessCalculationFinished += CheckForTrackFinished;
 
