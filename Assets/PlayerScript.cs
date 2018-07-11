@@ -111,4 +111,9 @@ public class PlayerScript : MonoBehaviour
             speed = speed.normalized * bulletBaseSpeed;
         return speed;
     }
+
+    public void EvalSelf()
+    {
+        Agent.Genotype.Evaluation = EvaluationFunctionsImplementaion.EvalPlayer(this);
+    }
 }
