@@ -4,6 +4,8 @@
 #region Includes
 using System;
 using System.Collections.Generic;
+using AI;
+
 #endregion
 
 /// <summary>
@@ -31,6 +33,8 @@ public class Agent : IComparable<Agent>
     }
 
     private bool isAlive = false;
+    public float[] Weights;
+
     /// <summary>
     /// Whether this agent is currently alive (actively participating in the simulation).
     /// </summary>
@@ -48,6 +52,8 @@ public class Agent : IComparable<Agent>
             }
         }
     }
+    
+
     /// <summary>
     /// Event for when the agent died (stopped participating in the simulation).
     /// </summary>
