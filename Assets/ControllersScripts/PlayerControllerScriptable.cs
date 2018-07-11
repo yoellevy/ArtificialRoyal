@@ -9,9 +9,12 @@ public abstract class PlayerControllerScriptable : ScriptableObject
 
     protected Agent PlayerAgent;
 
-    public void init(Agent agent)
+    protected int id;
+
+    public void init(Agent agent, int id)
     {
         this.PlayerAgent = agent;
+        this.id = id;
     }
 
     public abstract void CalculateNextAction();

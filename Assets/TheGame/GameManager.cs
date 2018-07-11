@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour {
     public PlayerControllerScriptable humenController;
 
     public int gameTime = 2 * 60;
+    private float startTime;
     public Text timeText;
     private float timeRemain;
 
@@ -37,9 +38,9 @@ public class GameManager : MonoBehaviour {
 
     public struct EvaluationData
     {
-        int rankInGame;
-        float timeRemain;
-        float timeSurvived;
+        public int rankInGame;
+        public float timeRemain;
+        public float timeSurvived;
 
         public EvaluationData(int rankInGame, float timeRemain, float timeSurvived)
         {
@@ -49,7 +50,7 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    public EvaluationData GetPlayerEvaluationData(GameObject player)
+    public EvaluationData GetPlayerEvaluationData()
     {
         return new EvaluationData(players.Capacity, timeRemain, gameTime - timeRemain);
     }
@@ -94,9 +95,10 @@ public class GameManager : MonoBehaviour {
             {
                 GameObject playerClone = GameObject.Instantiate(player);
                 playerClone.transform.position = new Vector3(Random.Range(-hh, hh), Random.Range(-hv, hv));
-                PlayerControllerScriptable controller = aiController;
+                PlayerControllerScriptable controller = Instantiate(aiController);
                 PlayerScript playerScript = playerClone.GetComponent<PlayerScript>();
-                playerScript.controller = aiController;
+                playerScript.controller = controller;
+                playerClone.SetActive(true);
                 players.Add(playerScript);
             }
         }
@@ -127,7 +129,10 @@ public class GameManager : MonoBehaviour {
         {
             player.gameObject.SetActive(true);
             player.transform.position = new Vector3(Random.Range(-hh, hh), Random.Range(-hv, hv));
+            player.PlayerAgent.Reset();
         }
+
+        startTime = Time.timeSinceLevelLoad;
     }
 
     private void makePlayers()
@@ -164,14 +169,31 @@ public class GameManager : MonoBehaviour {
 
     private void Awake()
     {
+        if (Instance != null)
+        {
+            Debug.LogError("More than one GameManager in the Scene.");
+            return;
+        }
+        Instance = this;
+
         createBorder();
         SetPlayerAmount(playerAmount);
         //makePlayers();
     }
 
+    private void Start()
+    {
+        startTime = Time.timeSinceLevelLoad;
+    }
+
     private void Update()
     {
-        timeRemain = (gameTime - Time.timeSinceLevelLoad);
+        timeRemain = (gameTime - (Time.timeSinceLevelLoad - startTime));
+        if (timeRemain <= 0)
+        {
+            //todo
+            EvolutionManager.Instance.EndTheGame();
+        }
     }
 
     private void OnGUI()

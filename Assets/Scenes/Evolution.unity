@@ -142,10 +142,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SaveStatistics: 0
   SaveFirstNGenotype: 0
-  PopulationSize: 30
+  PopulationSize: 60
   RestartAfter: 100
   ElitistSelection: 0
-  FNNTopology: 
+  FNNTopology: 100000000c0000000800000004000000
+  timeScale: 1
 --- !u!4 &374527187
 Transform:
   m_ObjectHideFlags: 0
@@ -168,8 +169,6 @@ GameObject:
   m_Component:
   - component: {fileID: 845977898}
   - component: {fileID: 845977897}
-  - component: {fileID: 845977896}
-  - component: {fileID: 845977895}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -177,20 +176,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &845977895
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 845977894}
-  m_Enabled: 1
---- !u!124 &845977896
-Behaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 845977894}
-  m_Enabled: 1
 --- !u!20 &845977897
 Camera:
   m_ObjectHideFlags: 0
@@ -211,7 +196,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 46
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2

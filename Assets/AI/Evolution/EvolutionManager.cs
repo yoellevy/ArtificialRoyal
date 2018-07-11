@@ -7,6 +7,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 using System.IO;
+using UnityEngine.SceneManagement;
 #endregion
 
 /// <summary>
@@ -63,7 +64,7 @@ public class EvolutionManager : MonoBehaviour
     /// <summary>
     /// Event for when all agents have died.
     /// </summary>
-    public event System.Action AllAgentsDied;
+    public event System.Action EndOfGame;
 
     private GeneticAlgorithm geneticAlgorithm;
 
@@ -74,6 +75,9 @@ public class EvolutionManager : MonoBehaviour
     {
         get { return geneticAlgorithm.GenerationCount; }
     }
+
+    [SerializeField]
+    float timeScale = 1;
     #endregion
 
     #region Constructors
@@ -85,10 +89,27 @@ public class EvolutionManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        ////Load gui scene
+        //SceneManager.LoadScene("GUI", LoadSceneMode.Additive);
+
+        //Load track
+        SceneManager.LoadScene("Game", LoadSceneMode.Additive);
+    }
+
+    private void Start()
+    {
+        StartEvolution();
     }
     #endregion
 
     #region Methods
+
+    private void Update()
+    {
+        Time.timeScale = timeScale;
+    }
+
     /// <summary>
     /// Starts the evolutionary process.
     /// </summary>
@@ -118,7 +139,7 @@ public class EvolutionManager : MonoBehaviour
             geneticAlgorithm.Mutation = MutateAllButBestTwo;
         }
         
-        AllAgentsDied += geneticAlgorithm.EvaluationFinished;
+        EndOfGame += geneticAlgorithm.EvaluationFinished;
 
         //Statistics
         if (SaveStatistics)
@@ -195,7 +216,7 @@ public class EvolutionManager : MonoBehaviour
     // To be called when the genetic algorithm was terminated
     private void OnGATermination(GeneticAlgorithm ga)
     {
-        AllAgentsDied -= ga.EvaluationFinished;
+        EndOfGame -= ga.EvaluationFinished;
 
         RestartAlgorithm(5.0f);
     }
@@ -228,8 +249,10 @@ public class EvolutionManager : MonoBehaviour
                 break;
             }
             playersEnum.Current.PlayerAgent = agents[i];
+            playersEnum.Current.id = i;
+            playersEnum.Current.controller.init(agents[i], i);
             AgentsAliveCount++;
-            agents[i].AgentDied += OnAgentDied; //todo
+            agents[i].AgentDied += OnAgentDied; //todo - this is OK, I think (Omer)
         }
         GameManager.Instance.Restart();
     }
@@ -239,8 +262,14 @@ public class EvolutionManager : MonoBehaviour
     {
         AgentsAliveCount--;
 
-        if (AgentsAliveCount == 0 && AllAgentsDied != null)
-            AllAgentsDied();
+        if (AgentsAliveCount == 1 && EndOfGame != null)
+            EndOfGame();
+
+    }
+
+    public void EndTheGame()
+    {
+        EndOfGame();
     }
 
     #region GA Operators

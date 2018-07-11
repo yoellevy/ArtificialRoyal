@@ -6,7 +6,7 @@ namespace AI
     {
         public static float EvalPlayer(PlayerScript playerScript)
         {
-            var function = playerScript.EvaluationFunctions;
+            var function = playerScript.EvaluationFunction;
             switch (function)
             {
                 case EvaluationFunctions.None:

@@ -31,7 +31,7 @@ public class PlayerScript : MonoBehaviour
     Animator m_animator;
     Rigidbody2D m_rigibody;
     /// <summary>
-    /// The underlying AI agent of this car.
+    /// The underlying AI agent of this player.
     /// </summary>
     public Agent PlayerAgent
     {
@@ -42,7 +42,7 @@ public class PlayerScript : MonoBehaviour
     
     
     // Evaluation functions.
-    public EvaluationFunctions EvaluationFunctions { get; set; }
+    public EvaluationFunctions EvaluationFunction { get; set; }
     public float[] Weights { get; set; }
     public int Rank { get; set; }
     public int KillCount { get; set; }
@@ -52,7 +52,7 @@ public class PlayerScript : MonoBehaviour
     // Use this for initialization
     private void Awake()
     {
-
+        EvaluationFunction = EvaluationFunctions.LinearComposition; //todo (Ori/Reshef, please say something - from Omer)
         id = NextID;
     }
 
@@ -63,6 +63,7 @@ public class PlayerScript : MonoBehaviour
 
         m_animator = GetComponent<Animator>();
         m_rigibody = GetComponent<Rigidbody2D>();
+
     }
 
     void FixedUpdate()
@@ -70,6 +71,12 @@ public class PlayerScript : MonoBehaviour
         controller.CalculateNextAction();
         movePlayer();
         shootBullet();
+    }
+
+    private void Update()
+    {
+        UpdatePlayerData();
+        EvalSelf();
     }
 
     void movePlayer()
@@ -99,6 +106,7 @@ public class PlayerScript : MonoBehaviour
             timePass = 0;
             Transform currBullet = Instantiate(_bullet, transform.position, Quaternion.identity);
             currBullet.GetComponent<Rigidbody2D>().velocity = calculateBulletSpeed(shotSpeed.x, shotSpeed.y);
+            currBullet.GetComponent<BulletData>().playerScript = this;
             Destroy(currBullet.gameObject, bulletLifeTime);
         }
     }
@@ -115,5 +123,41 @@ public class PlayerScript : MonoBehaviour
     public void EvalSelf()
     {
         PlayerAgent.Genotype.Evaluation = EvaluationFunctionsImplementaion.EvalPlayer(this);
+    }
+
+    private void UpdatePlayerData()
+    {
+        GameManager.EvaluationData ed = GameManager.Instance.GetPlayerEvaluationData();
+        Rank = ed.rankInGame;
+        SurvivelTime = ed.timeSurvived;
+    }
+
+    private void Die(PlayerScript otherPlayer)
+    {
+        //update data for the shooter:
+        otherPlayer.KillCount++;
+
+        //update data for this player:
+        UpdatePlayerData();
+
+        PlayerAgent.Kill();
+
+        //remove this player
+        this.gameObject.SetActive(false);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Bullet")
+        {
+            PlayerScript otherPlayer = collision.GetComponent<BulletData>().playerScript;
+            if (otherPlayer != this)
+            {
+                Die(otherPlayer);
+
+                //remove bullet
+                Destroy(collision.gameObject);
+            }
+        }
     }
 }
