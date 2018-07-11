@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using AI;
 using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
@@ -22,9 +23,29 @@ public class PlayerScript : MonoBehaviour
     float timePass = 0;
     Animator m_animator;
     Rigidbody2D m_rigibody;
+    /// <summary>
+    /// The underlying AI agent of this car.
+    /// </summary>
+    public Agent Agent
+    {
+        get;
+        set;
+    }
+    
+    
+    
+    // Evaluation functions.
+    public EvaluationFunctions EvaluationFunctions { get; set; }
+    public float[] Weights { get; set; }
+    public int Rank { get; set; }
+    public int KillCount { get; set; }
+    public float SurvivelTime { get; set; }
+
+    
     // Use this for initialization
     void Start()
     {
+        Weights = new[]{1f/3f,1f/3f,1f/3f};
         m_animator = GetComponent<Animator>();
         m_rigibody = GetComponent<Rigidbody2D>();
     }

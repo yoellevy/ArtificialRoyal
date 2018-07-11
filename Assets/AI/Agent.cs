@@ -53,11 +53,6 @@ public class Agent : IComparable<Agent>
         }
     }
     
-    // TODO added by ori... should be notify which EvaluationFunctions to use. 
-    public EvaluationFunctions EvaluationFunctions { get; set; }
-    public int Rank { get; set; }
-    public int KillCount { get; set; }
-    public float SurvivelTime { get; set; }
 
     /// <summary>
     /// Event for when the agent died (stopped participating in the simulation).
@@ -76,8 +71,6 @@ public class Agent : IComparable<Agent>
     {
         IsAlive = false;
         this.Genotype = genotype;
-        // TODO maybe learn the weights?
-        Weights = new[]{1f/3f,1f/3f,1f/3f};
         FNN = new NeuralNetwork(topology);
         foreach (NeuralLayer layer in FNN.Layers)
             layer.NeuronActivationFunction = defaultActivation;
