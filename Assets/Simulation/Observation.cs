@@ -11,6 +11,7 @@ public class Observation : MonoBehaviour
     public static Observation Instant = null;
     GameObject[] players = null;
     GameObject[] bullets = null;
+    
     int outputSize;
 
     class DistanceAndAngle

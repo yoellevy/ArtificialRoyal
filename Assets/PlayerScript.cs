@@ -52,15 +52,15 @@ public class PlayerScript : MonoBehaviour
     // Use this for initialization
     private void Awake()
     {
-<<<<<<< HEAD
+
         id = NextID;
     }
 
     void Start()
     {    
-=======
+
         Weights = new[]{1f/3f,1f/3f,1f/3f};
->>>>>>> 4b6fbd5d939e307772fa9539a5a2bffbc6bc71a3
+
         m_animator = GetComponent<Animator>();
         m_rigibody = GetComponent<Rigidbody2D>();
     }
