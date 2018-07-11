@@ -5,6 +5,13 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
+    private static int idGenerator = 0;
+    private static int NextID
+    {
+        get { return idGenerator++; }
+    }
+
+    public int id;
     [SerializeField]
     PlayerControllerScriptable controller;
 
@@ -23,15 +30,20 @@ public class PlayerScript : MonoBehaviour
     Animator m_animator;
     Rigidbody2D m_rigibody;
     // Use this for initialization
-    void Start()
+    private void Awake()
     {
+        id = NextID;
+    }
+
+    void Start()
+    {    
         m_animator = GetComponent<Animator>();
         m_rigibody = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
     void Update()
-    {
+    {        
         movePlayer();
         shootBullet();
     }
