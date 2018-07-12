@@ -7,10 +7,9 @@ public class AIController : PlayerControllerScriptable
 {
     public override void CalculateNextAction()
     {
-
-        double[] sensorOutput = Observation.Instant.getObservationOfPlayerID(id);
+        double[] sensorOutput = Observation.Instant.GetObservationOfPlayerId(Id);
         double[] controlInputs = PlayerAgent.FNN.ProcessInputs(sensorOutput);
-        move = new Vector2((float)controlInputs[0], (float)controlInputs[1]);
-        shot = new Vector2((float)controlInputs[2], (float)controlInputs[3]);
+        Move = new Vector2((float)controlInputs[0], (float)controlInputs[1]);
+        Shot = new Vector2((float)controlInputs[2], (float)controlInputs[3]);
     }
 }

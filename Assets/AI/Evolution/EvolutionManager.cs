@@ -81,7 +81,7 @@ public class EvolutionManager : MonoBehaviour
     float timeScale = 1;
 
     [SerializeField]
-    Text generationNumber;
+    private Text _generationNumber;
     #endregion
 
     #region Constructors
@@ -89,6 +89,7 @@ public class EvolutionManager : MonoBehaviour
     {
         if (Instance != null)
         {
+            // TODO check why...
             Debug.LogError("More than one EvolutionManager in the Scene.");
             return;
         }
@@ -98,11 +99,13 @@ public class EvolutionManager : MonoBehaviour
         //SceneManager.LoadScene("GUI", LoadSceneMode.Additive);
 
         //Load track
+        // TODO again... we need it?????
         SceneManager.LoadScene("Game", LoadSceneMode.Additive);
     }
 
     private void Start()
     {
+        _generationNumber.text = "";
         StartEvolution();
     }
     #endregion
@@ -254,7 +257,7 @@ public class EvolutionManager : MonoBehaviour
             }
             playersEnum.Current.PlayerAgent = agents[i];
             playersEnum.Current.id = i;
-            playersEnum.Current.controller.init(agents[i], i);
+            playersEnum.Current.controller.Init(agents[i], i);
             AgentsAliveCount++;
             agents[i].AgentDied += OnAgentDied; //todo - this is OK, I think (Omer)
         }
@@ -276,10 +279,10 @@ public class EvolutionManager : MonoBehaviour
         EndOfGame();
     }
 
-    private void OnGUI()
-    {
-        generationNumber.text = (GenerationCount).ToString();
-    }
+//    private void OnGUI()
+//    {
+//        _generationNumber.text = (GenerationCount).ToString();
+//    }
 
     #region GA Operators
     // Selection operator for the genetic algorithm, using a method called remainder stochastic sampling.

@@ -61,31 +61,34 @@ public class Observation : MonoBehaviour
             outputSize += outputSectionSize;
         if (observeWalls)
             outputSize += outputSectionSize;
+        InitMaps();
     }
 
     bool flag = true;
     // Update is called once per frame
     void Update()
     {
-        //TODO:
         if (flag)
         {
-            players = GameObject.FindGameObjectsWithTag("PlayerTag");
-            PlayerToPlayerObservation = new Dictionary<int, double[]>();
-            PlayerToBulletObservation = new Dictionary<int, double[]>();
-            for (int i = 0; i < players.Length; i++)
-            {
-                int currId = players[i].GetComponent<PlayerScript>().id;
-                PlayerToPlayerObservation[currId] = new double[outputSectionSize];
-                PlayerToBulletObservation[currId] = new double[outputSectionSize];
-            }
-
-            PlayerToPlayerDistance = new DistanceAndAngle[players.Length, players.Length];
-            flag = false;
+            InitMaps();
         }
         bullets = GameObject.FindGameObjectsWithTag("Bullet");
         calculateDistanceFromPlayers();
         calculateDistanceFromBullet();
+    }
+
+    private void InitMaps()
+    {
+        players = GameObject.FindGameObjectsWithTag("PlayerTag");
+        PlayerToPlayerObservation = new Dictionary<int, double[]>();
+        PlayerToBulletObservation = new Dictionary<int, double[]>();
+        for (int i = 0; i < players.Length; i++)
+        {
+            int currId = players[i].GetComponent<PlayerScript>().id;
+            PlayerToPlayerObservation[currId] = new double[outputSectionSize];
+            PlayerToBulletObservation[currId] = new double[outputSectionSize];
+        }
+        PlayerToPlayerDistance = new DistanceAndAngle[players.Length, players.Length];
     }
 
     private void OnGUI()
@@ -98,8 +101,6 @@ public class Observation : MonoBehaviour
         {
             GUI.Label(new Rect(300, 10 + i * 20, 100, 20), PlayerToBulletObservation[0][i].ToString(), new GUIStyle { fontSize = 20 });
         }
-        ////GUI.Label(new Rect(10, 10, 100, 20), PlayerToPlayerObservation[0].ToString(), new GUIStyle { fontSize = 20 });
-        //GUI.Label(new Rect(150, 50, 100, 20), MathHelper.GetAngle(Vector3.right, players[1].transform.position - players[0].transform.position).ToString(), new GUIStyle { fontSize = 20 });
     }
 
     private void calculateDistanceFromPlayers()
@@ -118,7 +119,7 @@ public class Observation : MonoBehaviour
                 double currDistance = Vector2.Distance(players[i].transform.position, players[j].transform.position);
                 if (currDistance < maxObservationDistance)
                 {
-                    AngleQuant currAngle = calculateAngle(players[i].transform.position, players[j].transform.position);
+                    AngleQuant currAngle = CalculateAngle(players[i].transform.position, players[j].transform.position);
                     AngleQuant opAngle = oppositeAngle(currAngle);
                     PlayerToPlayerObservation[p1id][(int)currAngle - 1] = currDistance;
                     PlayerToPlayerObservation[p2id][(int)opAngle - 1] = currDistance;
@@ -142,7 +143,7 @@ public class Observation : MonoBehaviour
                 double currDistance = Vector2.Distance(item.transform.position, players[i].transform.position);
                 if (currDistance < maxObservationDistance)
                 {
-                    AngleQuant currAngle = calculateAngle(players[i].transform.position, item.transform.position);
+                    AngleQuant currAngle = CalculateAngle(players[i].transform.position, item.transform.position);
                     PlayerToBulletObservation[p1id][(int)currAngle - 1] = currDistance; //todo - (from Omer to Yoel) - where is the minimum of bunch of bullets? I'm not sure that I'm understand this code.
                 }
             }
@@ -155,36 +156,27 @@ public class Observation : MonoBehaviour
         {
             case AngleQuant.Right:
                 return AngleQuant.Left;
-                break;
             case AngleQuant.UpRight:
                 return AngleQuant.DownLeft;
-                break;
             case AngleQuant.Up:
                 return AngleQuant.Down;
-                break;
             case AngleQuant.UpLeft:
                 return AngleQuant.DownRight;
-                break;
             case AngleQuant.Left:
                 return AngleQuant.Right;
-                break;
             case AngleQuant.DownLeft:
                 return AngleQuant.UpRight;
-                break;
             case AngleQuant.Down:
                 return AngleQuant.Up;
-                break;
             case AngleQuant.DownRight:
                 return AngleQuant.UpLeft;
-                break;
             case AngleQuant.None:
             default:
                 return AngleQuant.None;
-                break;
         }
     }
 
-    private AngleQuant calculateAngle(Vector3 position1, Vector3 position2)
+    private AngleQuant CalculateAngle(Vector3 position1, Vector3 position2)
     {
         double angle = MathHelper.GetAngle(Vector3.right, position2 - position1);
 
@@ -209,8 +201,9 @@ public class Observation : MonoBehaviour
     /// </summary>
     /// <param name="id">id of player to return the observation of</param>
     /// <returns>obseration </returns>
-    public double[] getObservationOfPlayerID(int id)
+    public double[] GetObservationOfPlayerId(int id)
     {
+        
         //for now only player observation 
         //TODO: extend to all observation
         double[] outputObservation = new double[outputSize];

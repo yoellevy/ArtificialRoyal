@@ -66,7 +66,7 @@ public class PlayerScript : MonoBehaviour
 
     }
 
-    void FixedUpdate()
+    private void FixedUpdate()
     {
         controller.CalculateNextAction();
         movePlayer();
@@ -81,7 +81,7 @@ public class PlayerScript : MonoBehaviour
 
     void movePlayer()
     {
-        m_rigibody.velocity = controller.getMove().normalized * speed;
+        m_rigibody.velocity = controller.GetMove().normalized * speed;
 
         bool isLeft = m_rigibody.velocity.x < 0,
             isRight = m_rigibody.velocity.x > 0,
@@ -99,7 +99,7 @@ public class PlayerScript : MonoBehaviour
         timePass += Time.deltaTime;
         if (shotInterval - timePass > 0)
             return;
-        Vector2 shotSpeed = controller.getShot();
+        Vector2 shotSpeed = controller.GetShot();
 
         if (shotSpeed.x != 0 || shotSpeed.y != 0)
         {
@@ -148,8 +148,9 @@ public class PlayerScript : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Bullet")
+        if (collision.gameObject.CompareTag("Bullet"))
         {
+            // TODO this is causes bugs.
             PlayerScript otherPlayer = collision.GetComponent<BulletData>().playerScript;
             if (otherPlayer != this)
             {

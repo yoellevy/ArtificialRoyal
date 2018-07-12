@@ -7,7 +7,7 @@ public class HumanPcController : PlayerControllerScriptable
 {
     public override void CalculateNextAction()
     {
-        base.move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        base.shot = new Vector2(Input.GetAxis("HorizontalShot"), Input.GetAxis("VerticalShot"));
+        base.Move = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+        base.Shot = new Vector2(Input.GetAxis("HorizontalShot"), Input.GetAxis("VerticalShot"));
     }
 }

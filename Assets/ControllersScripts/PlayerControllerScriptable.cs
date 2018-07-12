@@ -4,29 +4,29 @@ using UnityEngine;
 
 public abstract class PlayerControllerScriptable : ScriptableObject
 {
-    protected Vector2 move;
-    protected Vector2 shot;
+    protected Vector2 Move;
+    protected Vector2 Shot;
 
     protected Agent PlayerAgent;
 
-    protected int id;
+    protected int Id;
 
-    public void init(Agent agent, int id)
+    public void Init(Agent agent, int id)
     {
         this.PlayerAgent = agent;
-        this.id = id;
+        this.Id = id;
     }
 
     public abstract void CalculateNextAction();
 
 
-    public Vector2 getMove()
+    public Vector2 GetMove()
     {
-        return move;
+        return Move;
     }
-    public Vector2 getShot()
+    public Vector2 GetShot()
     {
-        return shot;
+        return Shot;
     }
 
 }

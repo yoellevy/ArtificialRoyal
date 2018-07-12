@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour {
-
+public class GameManager : MonoBehaviour
+{
     #region Members
-    public static GameManager Instance
-    {
-        get;
-        private set;
-    }
+
+    public static GameManager Instance { get; private set; }
 
     public int playerAmount = 20;
     public int humanPlayerAmount = 0;
@@ -27,13 +24,14 @@ public class GameManager : MonoBehaviour {
     public float horizontalSize = 160;
     public float verticalSize = 90;
 
-    private GameObject northWall;
-    private GameObject eastWall;
-    private GameObject southWall;
-    private GameObject westWall;
+    private GameObject _northWall;
+    private GameObject _eastWall;
+    private GameObject _southWall;
+    private GameObject _westWall;
 
     private GameObject border;
     private List<PlayerScript> players = new List<PlayerScript>();
+
     #endregion
 
     public struct EvaluationData
@@ -60,23 +58,27 @@ public class GameManager : MonoBehaviour {
         players.Remove(player);
     }
 
-    private void createBorder()
+    private void CreateBorder()
     {
         border = new GameObject("border");
         float hv = verticalSize / 2;
         float hh = horizontalSize / 2;
 
-        northWall = GameObject.Instantiate(wall, new Vector3(0, hv, 0), wall.transform.rotation, border.transform);
-        northWall.transform.localScale = new Vector3(northWall.transform.localScale.x * horizontalSize, northWall.transform.localScale.y, northWall.transform.localScale.z);
+        _northWall = GameObject.Instantiate(wall, new Vector3(0, hv, 0), wall.transform.rotation, border.transform);
+        _northWall.transform.localScale = new Vector3(_northWall.transform.localScale.x * horizontalSize,
+            _northWall.transform.localScale.y, _northWall.transform.localScale.z);
 
-        eastWall = GameObject.Instantiate(wall, new Vector3(-hh, 0, 0), wall.transform.rotation, border.transform);
-        eastWall.transform.localScale = new Vector3(eastWall.transform.localScale.x, eastWall.transform.localScale.y * verticalSize, eastWall.transform.localScale.z);
+        _eastWall = GameObject.Instantiate(wall, new Vector3(-hh, 0, 0), wall.transform.rotation, border.transform);
+        _eastWall.transform.localScale = new Vector3(_eastWall.transform.localScale.x,
+            _eastWall.transform.localScale.y * verticalSize, _eastWall.transform.localScale.z);
 
-        southWall = GameObject.Instantiate(wall, new Vector3(0, -hv, 0), wall.transform.rotation, border.transform);
-        southWall.transform.localScale = new Vector3(southWall.transform.localScale.x * horizontalSize, southWall.transform.localScale.y, southWall.transform.localScale.z);
+        _southWall = GameObject.Instantiate(wall, new Vector3(0, -hv, 0), wall.transform.rotation, border.transform);
+        _southWall.transform.localScale = new Vector3(_southWall.transform.localScale.x * horizontalSize,
+            _southWall.transform.localScale.y, _southWall.transform.localScale.z);
 
-        westWall = GameObject.Instantiate(wall, new Vector3(hh, 0, 0), wall.transform.rotation, border.transform);
-        westWall.transform.localScale = new Vector3(westWall.transform.localScale.x, westWall.transform.localScale.y * verticalSize, westWall.transform.localScale.z);
+        _westWall = GameObject.Instantiate(wall, new Vector3(hh, 0, 0), wall.transform.rotation, border.transform);
+        _westWall.transform.localScale = new Vector3(_westWall.transform.localScale.x,
+            _westWall.transform.localScale.y * verticalSize, _westWall.transform.localScale.z);
     }
 
     public void SetPlayerAmount(int amount)
@@ -93,7 +95,7 @@ public class GameManager : MonoBehaviour {
             //Add new players
             for (int toBeAdded = amount - players.Count; toBeAdded > 0; toBeAdded--)
             {
-                GameObject playerClone = GameObject.Instantiate(player);
+                GameObject playerClone = Instantiate(player);
                 playerClone.transform.position = new Vector3(Random.Range(-hh, hh), Random.Range(-hv, hv));
                 PlayerControllerScriptable controller = Instantiate(aiController);
                 PlayerScript playerScript = playerClone.GetComponent<PlayerScript>();
@@ -113,6 +115,7 @@ public class GameManager : MonoBehaviour {
                 Destroy(last.gameObject);
             }
         }
+
     }
 
     public IEnumerator<PlayerScript> GetPlayerEnumerator()
@@ -171,18 +174,20 @@ public class GameManager : MonoBehaviour {
     {
         if (Instance != null)
         {
+            // TODO check why :( DO NOT remove from scene.
             Debug.LogError("More than one GameManager in the Scene.");
             return;
         }
         Instance = this;
 
-        createBorder();
-        SetPlayerAmount(playerAmount);
+        CreateBorder();
+//        SetPlayerAmount(playerAmount); // TODO this is shoudn't be called from here...
         //makePlayers();
     }
 
     private void Start()
     {
+        EvolutionManager.Instance.StartEvolution();
         startTime = Time.timeSinceLevelLoad;
     }
 
@@ -191,13 +196,13 @@ public class GameManager : MonoBehaviour {
         timeRemain = (gameTime - (Time.timeSinceLevelLoad - startTime));
         if (timeRemain <= 0)
         {
-            //todo
-            EvolutionManager.Instance.EndTheGame();
+            //todo evo manager kills it's self and restart, please refer to refrence for farther info.
+            // EvolutionManager.Instance.EndTheGame();
         }
     }
 
     private void OnGUI()
     {
-        timeText.text = ((int)(timeRemain)).ToString();
+        timeText.text = ((int) (timeRemain)).ToString();
     }
 }
