@@ -67,11 +67,11 @@ public class Agent : IComparable<Agent>
     /// </summary>
     /// <param name="genotype">The genotpye to initialise this agent from.</param>
     /// <param name="topology">The topology of the feedforward neural network to be constructed from given genotype.</param>
-    public Agent(Genotype genotype, NeuralLayer.ActivationFunction defaultActivation, params uint[] topology)
+    public Agent(Genotype genotype, NeuralLayer.ActivationFunction defaultActivation, bool useRNN = false, params uint[] topology)
     {
         IsAlive = false;
         this.Genotype = genotype;
-        FNN = new NeuralNetwork(topology);
+        FNN = new NeuralNetwork(useRNN, topology);
         foreach (NeuralLayer layer in FNN.Layers)
             layer.NeuronActivationFunction = defaultActivation;
 

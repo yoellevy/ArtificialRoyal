@@ -11,6 +11,9 @@ using System;
 public class NeuralLayer
 {
     #region Members
+    private bool rnnLayer;
+    private double[] recurrents;
+
     private static Random randomizer = new Random();
 
     /// <summary>
@@ -64,12 +67,26 @@ public class NeuralLayer
     /// <param name="nodeCount">The amount of nodes in this layer.</param>
     /// <param name="outputCount">The amount of nodes in the next layer.</param>
     /// <remarks>All weights of the connections from this layer to the next are initialised with the default double value.</remarks>
-    public NeuralLayer(uint nodeCount, uint outputCount)
+    public NeuralLayer(uint nodeCount, uint outputCount, bool rnnLayer = false)
     {
         this.NeuronCount = nodeCount;
         this.OutputCount = outputCount;
+        this.rnnLayer = rnnLayer;
 
-        Weights = new double[nodeCount + 1, outputCount]; // + 1 for bias node
+        if (rnnLayer)
+        {
+            //todo
+            Weights = new double[nodeCount + 1 + outputCount, outputCount]; // + 1 for bias node
+            recurrents = new double[outputCount];
+            for (int i = 0; i < recurrents.Length; i++)
+            {
+                recurrents[i] = randomizer.NextDouble(); //todo
+            }
+        }
+        else
+        {
+            Weights = new double[nodeCount + 1, outputCount]; // + 1 for bias node
+        }
     }
     #endregion
 
@@ -109,25 +126,53 @@ public class NeuralLayer
         if (inputs.Length != NeuronCount)
             throw new ArgumentException("Given xValues do not match layer input count.");
 
-        //Calculate sum for each neuron from weighted inputs and bias
-        double[] sums = new double[OutputCount];
-        //Add bias (always on) neuron to inputs
-        double[] biasedInputs = new double[NeuronCount + 1];
-        inputs.CopyTo(biasedInputs, 0);
-        biasedInputs[inputs.Length] = 1.0;
+        if (rnnLayer)
+        {//todo - for RNN we need to handle 'sums' here.
 
-        for (int j = 0; j < this.Weights.GetLength(1); j++)
-            for (int i = 0; i < this.Weights.GetLength(0); i++)
-                sums[j] += biasedInputs[i] * Weights[i, j];
+            //Calculate sum for each neuron from weighted inputs and bias
+            double[] sums = new double[OutputCount];
+            //Add bias (always on) neuron to inputs
+            double[] biasedInputs = new double[NeuronCount + 1 + OutputCount];
+            inputs.CopyTo(biasedInputs, 0);
+            recurrents.CopyTo(biasedInputs, inputs.Length);
+            biasedInputs[inputs.Length + recurrents.Length] = 1.0;
 
-        //Apply activation function to sum, if set
-        if (NeuronActivationFunction != null)
-        {
-            for (int i = 0; i < sums.Length; i++)
-                sums[i] = NeuronActivationFunction(sums[i]);
+            for (int j = 0; j < this.Weights.GetLength(1); j++)
+                for (int i = 0; i < this.Weights.GetLength(0); i++)
+                    sums[j] += biasedInputs[i] * Weights[i, j];
+
+            //Apply activation function to sum, if set
+            if (NeuronActivationFunction != null)
+            {
+                for (int i = 0; i < sums.Length; i++)
+                    sums[i] = NeuronActivationFunction(sums[i]);
+            }
+
+            recurrents = sums;
+            return sums;
         }
+        else
+        {
+            //Calculate sum for each neuron from weighted inputs and bias
+            double[] sums = new double[OutputCount];
+            //Add bias (always on) neuron to inputs
+            double[] biasedInputs = new double[NeuronCount + 1];
+            inputs.CopyTo(biasedInputs, 0);
+            biasedInputs[inputs.Length] = 1.0;
 
-        return sums;
+            for (int j = 0; j < this.Weights.GetLength(1); j++)
+                for (int i = 0; i < this.Weights.GetLength(0); i++)
+                    sums[j] += biasedInputs[i] * Weights[i, j];
+
+            //Apply activation function to sum, if set
+            if (NeuronActivationFunction != null)
+            {
+                for (int i = 0; i < sums.Length; i++)
+                    sums[i] = NeuronActivationFunction(sums[i]);
+            }
+
+            return sums;
+        }
     }
 
     /// <summary>
@@ -144,9 +189,13 @@ public class NeuralLayer
                 copiedWeights[x, y] = this.Weights[x, y];
 
         //Create copy
-        NeuralLayer newLayer = new NeuralLayer(this.NeuronCount, this.OutputCount);
+        NeuralLayer newLayer = new NeuralLayer(this.NeuronCount, this.OutputCount, rnnLayer);
         newLayer.Weights = copiedWeights;
         newLayer.NeuronActivationFunction = this.NeuronActivationFunction;
+        if (rnnLayer)
+        {
+            newLayer.recurrents = recurrents;
+        }
 
         return newLayer;
     }

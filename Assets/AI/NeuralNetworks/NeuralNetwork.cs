@@ -40,6 +40,8 @@ public class NeuralNetwork
         get;
         private set;
     }
+
+    private bool useRNN;
     #endregion
 
     #region Constructors
@@ -47,8 +49,10 @@ public class NeuralNetwork
     /// Initialises a new fully connected feedforward neural network with given topology.
     /// </summary>
     /// <param name="topology">An array of unsigned integers representing the node count of each layer from input to output layer.</param>
-    public NeuralNetwork(params uint[] topology)
+    public NeuralNetwork(bool useRNN = false, params uint[] topology)
     {
+        this.useRNN = useRNN;
+
         this.Topology = topology;
 
         //Calculate overall weight count
@@ -58,8 +62,12 @@ public class NeuralNetwork
 
         //Initialise layers
         Layers = new NeuralLayer[topology.Length - 1];
-        for (int i = 0; i<Layers.Length; i++)
-            Layers[i] = new NeuralLayer(topology[i], topology[i + 1]);
+        for (int i = 0; i < Layers.Length; i++)
+        {
+            //todo - define how much rnn layers and which
+            bool rnn = useRNN && (i == topology.Length - 1 || i == topology.Length - 2);// (useRNN && i != 0 && i != Layers.Length - 1 && i == 2);// (useRNN && i != 0 && i != Layers.Length - 1);
+            Layers[i] = new NeuralLayer(topology[i], topology[i + 1], rnn);
+        }
     }
     #endregion
 
@@ -104,7 +112,7 @@ public class NeuralNetwork
     /// </summary>
     public NeuralNetwork GetTopologyCopy()
     {
-        NeuralNetwork copy = new NeuralNetwork(this.Topology);
+        NeuralNetwork copy = new NeuralNetwork(useRNN, this.Topology);
         for (int i = 0; i < Layers.Length; i++)
             copy.Layers[i].NeuronActivationFunction = this.Layers[i].NeuronActivationFunction;
 
@@ -117,7 +125,7 @@ public class NeuralNetwork
     /// <returns>A deep copy of this NeuralNetwork</returns>
     public NeuralNetwork DeepCopy()
     {
-        NeuralNetwork newNet = new NeuralNetwork(this.Topology);
+        NeuralNetwork newNet = new NeuralNetwork(useRNN, this.Topology);
         for (int i = 0; i < this.Layers.Length; i++)
             newNet.Layers[i] = this.Layers[i].DeepCopy();
 

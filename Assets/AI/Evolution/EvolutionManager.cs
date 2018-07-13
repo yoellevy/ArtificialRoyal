@@ -47,6 +47,8 @@ public class EvolutionManager : MonoBehaviour
     [SerializeField]
     private bool ElitistSelection = false;
 
+    [SerializeField]
+    private bool useRNN = false;
     // Topology of the agent's FNN, to be set in Unity Editor
     [SerializeField]
     private uint[] FNNTopology;
@@ -122,7 +124,7 @@ public class EvolutionManager : MonoBehaviour
     public void StartEvolution()
     {
         //Create neural network to determine parameter count
-        NeuralNetwork nn = new NeuralNetwork(FNNTopology);
+        NeuralNetwork nn = new NeuralNetwork(useRNN, FNNTopology);
 
         //Setup genetic algorithm
         geneticAlgorithm = new GeneticAlgorithm((uint) nn.WeightCount, (uint) PopulationSize);
@@ -242,7 +244,7 @@ public class EvolutionManager : MonoBehaviour
 
         foreach (Genotype genotype in currentPopulation)
         {
-            agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, FNNTopology));
+            agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, useRNN, FNNTopology));
         }
             
         

@@ -77,8 +77,8 @@ public class PlayerScript : MonoBehaviour
 
     private void Update()
     {
-        //UpdatePlayerData();
-        //EvalSelf();
+        UpdatePlayerData();
+        EvalSelf();
     }
 
     void movePlayer()

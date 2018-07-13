@@ -143,9 +143,10 @@ MonoBehaviour:
   SaveStatistics: 0
   SaveFirstNGenotype: 5
   PopulationSize: 60
-  RestartAfter: 100
+  RestartAfter: 0
   ElitistSelection: 0
-  FNNTopology: 100000000c0000000800000004000000
+  useRNN: 1
+  FNNTopology: 100000000e0000000c0000000a000000080000000600000004000000
   timeScale: 1
   _generationNumber: {fileID: 1245460663}
 --- !u!4 &374527187
