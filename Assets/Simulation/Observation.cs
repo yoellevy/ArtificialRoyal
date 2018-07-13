@@ -73,7 +73,7 @@ public class Observation : MonoBehaviour
             flag = false;
             //InitMaps(); //must to be after start
         }
-        bullets = GameObject.FindGameObjectsWithTag("Bullet");
+        bullets = GameObject.FindGameObjectsWithTag("Bullet"); //GameManager.Instance.bullets;
         calculateDistanceFromPlayers();
         calculateDistanceFromBullet();
     }
@@ -142,11 +142,14 @@ public class Observation : MonoBehaviour
             foreach (var item in bullets)
             {
                 //todo - each player needs to ignore his bullets. Or at least we must to set bullet direction somwehere
-                double currDistance = Vector2.Distance(item.transform.position, players[i].transform.position);
-                if (currDistance < maxObservationDistance)
+                if (item.GetComponent<BulletData>().playerScript.id != players[i].id) //todo - should I comper the id or the script without the id?
                 {
-                    AngleQuant currAngle = CalculateAngle(players[i].transform.position, item.transform.position);
-                    PlayerToBulletObservation[p1id][(int)currAngle - 1] = currDistance; //todo - (from Omer to Yoel) - where is the minimum of bunch of bullets? I'm not sure that I'm understand this code.
+                    double currDistance = Vector2.Distance(item.transform.position, players[i].transform.position);
+                    if (currDistance < maxObservationDistance)
+                    {
+                        AngleQuant currAngle = CalculateAngle(players[i].transform.position, item.transform.position);
+                        PlayerToBulletObservation[p1id][(int)currAngle - 1] = currDistance; //todo - (from Omer to Yoel) - where is the minimum of bunch of bullets? I'm not sure that I'm understand this code.
+                    }
                 }
             }
         }

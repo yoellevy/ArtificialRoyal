@@ -232,6 +232,8 @@ MonoBehaviour:
   wall: {fileID: 1885597121528306, guid: 1c50ce117990b144586ebf3f5b673064, type: 2}
   horizontalSize: 160
   verticalSize: 90
+  bullets: []
+  players: []
 --- !u!4 &120069113
 Transform:
   m_ObjectHideFlags: 0
@@ -256,7 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49a21cedc7e5e844ba104d89723f48ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxObservationDistance: 7
+  maxObservationDistance: 14
   observeBullets: 1
   observePlayers: 1
   observeWalls: 0

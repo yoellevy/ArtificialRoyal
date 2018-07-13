@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour
     private GameObject _westWall;
 
     private GameObject border;
-    public List<GameObject> bullets = new List<GameObject>();
+    public List<BulletData> bullets = new List<BulletData>();
     public List<PlayerScript> players = new List<PlayerScript>();
     private int aliveCount;
 
