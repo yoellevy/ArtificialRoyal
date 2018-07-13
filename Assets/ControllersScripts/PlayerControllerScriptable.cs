@@ -11,6 +11,8 @@ public abstract class PlayerControllerScriptable : ScriptableObject
 
     protected int Id;
 
+    private float numThreshold = 1/3f;
+
     public void Init(Agent agent, int id)
     {
         this.PlayerAgent = agent;
@@ -19,14 +21,22 @@ public abstract class PlayerControllerScriptable : ScriptableObject
 
     public abstract void CalculateNextAction();
 
+    int FloatToInt(float num)
+    {
+        if (num > numThreshold)
+            return 1;
+        if (num < numThreshold)
+            return -1;
+        return 0;
+    }
 
     public Vector2 GetMove()
     {
-        return Move;
+        return new Vector2(FloatToInt(Move.x), FloatToInt(Move.y));
     }
     public Vector2 GetShot()
     {
-        return Shot;
+        return new Vector2(FloatToInt(Shot.x), FloatToInt(Shot.y));
     }
 
 }
