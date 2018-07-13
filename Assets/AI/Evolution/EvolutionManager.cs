@@ -243,7 +243,6 @@ public class EvolutionManager : MonoBehaviour
         foreach (Genotype genotype in currentPopulation)
         {
             agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, FNNTopology));
-            genotype.Evaluation = -100; //todo - delete this line.
         }
             
         
