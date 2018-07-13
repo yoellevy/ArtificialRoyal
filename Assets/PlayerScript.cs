@@ -108,6 +108,11 @@ public class PlayerScript : MonoBehaviour
             timePass = 0;
             Transform currBullet = Instantiate(_bullet, transform.position, Quaternion.identity);
             currBullet.GetComponent<Rigidbody2D>().velocity = calculateBulletSpeed(shotSpeed.x, shotSpeed.y);
+            BulletData bdata = currBullet.GetComponent<BulletData>();
+            if (bdata == null)
+            {
+                bdata = currBullet.gameObject.AddComponent<BulletData>();
+            }
             currBullet.GetComponent<BulletData>().playerScript = this;
             Destroy(currBullet.gameObject, bulletLifeTime);
         }
