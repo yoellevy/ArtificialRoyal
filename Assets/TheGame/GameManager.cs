@@ -30,6 +30,7 @@ public class GameManager : MonoBehaviour
     private GameObject _westWall;
 
     private GameObject border;
+    public List<GameObject> bullets = new List<GameObject>();
     public List<PlayerScript> players = new List<PlayerScript>();
     private int aliveCount;
 
@@ -98,7 +99,7 @@ public class GameManager : MonoBehaviour
             //Add new players
             for (int toBeAdded = amount - players.Count; toBeAdded > 0; toBeAdded--)
             {
-                GameObject playerClone = Instantiate(player);
+                GameObject playerClone = Instantiate(player, transform);
                 playerClone.transform.position = new Vector3(Random.Range(-hh, hh), Random.Range(-hv, hv));
                 PlayerControllerScriptable controller = Instantiate(aiController);
                 PlayerScript playerScript = playerClone.GetComponent<PlayerScript>();

@@ -146,7 +146,7 @@ MonoBehaviour:
   RestartAfter: 100
   ElitistSelection: 0
   FNNTopology: 100000000c0000000800000004000000
-  timeScale: 12
+  timeScale: 1
   _generationNumber: {fileID: 1245460663}
 --- !u!4 &374527187
 Transform:

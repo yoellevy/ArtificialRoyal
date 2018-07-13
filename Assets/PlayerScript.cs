@@ -106,7 +106,8 @@ public class PlayerScript : MonoBehaviour
         if (shotSpeed.x != 0 || shotSpeed.y != 0)
         {
             timePass = 0;
-            Transform currBullet = Instantiate(_bullet, transform.position, Quaternion.identity);
+            Transform currBullet = Instantiate(_bullet, transform.position, Quaternion.identity, GameManager.Instance.transform);
+            GameManager.Instance.bullets.Add(currBullet.gameObject);
             currBullet.GetComponent<Rigidbody2D>().velocity = calculateBulletSpeed(shotSpeed.x, shotSpeed.y);
             BulletData bdata = currBullet.GetComponent<BulletData>();
             if (bdata == null)

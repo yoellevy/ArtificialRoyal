@@ -25,7 +25,7 @@ public abstract class PlayerControllerScriptable : ScriptableObject
     {
         if (num > numThreshold)
             return 1;
-        if (num < numThreshold)
+        if (num < -numThreshold)
             return -1;
         return 0;
     }

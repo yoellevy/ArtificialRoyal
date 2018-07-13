@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 58517758175496184}
   - component: {fileID: 95039605712152624}
   - component: {fileID: 50340576064378066}
-  - component: {fileID: 114242058764000742}
+  - component: {fileID: 114292569218820582}
   m_Layer: 0
   m_Name: pokeball
   m_TagString: Bullet
@@ -97,7 +97,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &114242058764000742
+--- !u!114 &114292569218820582
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
