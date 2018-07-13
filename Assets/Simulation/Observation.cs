@@ -31,10 +31,12 @@ public class Observation : MonoBehaviour
 
     Dictionary<int, double[]> PlayerToPlayerObservation;
     Dictionary<int, double[]> PlayerToBulletObservation;
+    Dictionary<int, double[]> PlayerToWallObservation;
     //todo - for player to wall distance maybe we can use "ColliderDistance2D"
 
     DistanceAndAngle[,] PlayerToPlayerDistance;
     DistanceAndAngle[,] PlayerToBulletDistance;
+    DistanceAndAngle[,] PlayerToWallDistance;
 
     #region Observation Flags
     public bool observeBullets = true, observePlayers = true, observeWalls = false;
@@ -60,7 +62,7 @@ public class Observation : MonoBehaviour
         if (observePlayers)
             outputSize += outputSectionSize;
         if (observeWalls)
-            outputSize += outputSectionSize;
+            outputSize += 4;
         //InitMaps();
     }
 
@@ -73,9 +75,16 @@ public class Observation : MonoBehaviour
             flag = false;
             //InitMaps(); //must to be after start
         }
-        bullets = GameObject.FindGameObjectsWithTag("Bullet"); //GameManager.Instance.bullets;
-        calculateDistanceFromPlayers();
-        calculateDistanceFromBullet();
+        
+        if (observePlayers)
+            calculateDistanceFromPlayers();
+        if (observeBullets)
+        {
+            bullets = GameObject.FindGameObjectsWithTag("Bullet"); //GameManager.Instance.bullets;
+            calculateDistanceFromBullet();
+        }
+        if (observeWalls)
+            calculateDistanceFromWall();
     }
 
     public void InitMaps()
@@ -84,11 +93,13 @@ public class Observation : MonoBehaviour
         players = GameManager.Instance.players;
         PlayerToPlayerObservation = new Dictionary<int, double[]>();
         PlayerToBulletObservation = new Dictionary<int, double[]>();
+        PlayerToWallObservation = new Dictionary<int, double[]>();
         for (int i = 0; i < players.Count; i++)
         {
             int currId = players[i].id;
             PlayerToPlayerObservation[currId] = new double[outputSectionSize];
             PlayerToBulletObservation[currId] = new double[outputSectionSize];
+            PlayerToWallObservation[currId] = new double[4];
         }
         PlayerToPlayerDistance = new DistanceAndAngle[players.Count, players.Count];
     }
@@ -152,6 +163,25 @@ public class Observation : MonoBehaviour
                     }
                 }
             }
+        }
+    }
+
+    private void calculateDistanceFromWall()
+    {
+        //"ColliderDistance2D"
+        for (int i = 0; i < players.Count; i++)
+        {
+            int p1id = players[i].id;
+            float dist;
+            dist = players[i].GetComponent<Collider2D>().Distance(GameManager.Instance._northWall.GetComponent<Collider2D>()).distance;
+            PlayerToWallObservation[p1id][0] = dist;
+            dist = players[i].GetComponent<Collider2D>().Distance(GameManager.Instance._eastWall.GetComponent<Collider2D>()).distance;
+            PlayerToWallObservation[p1id][1] = dist;
+            dist = players[i].GetComponent<Collider2D>().Distance(GameManager.Instance._southWall.GetComponent<Collider2D>()).distance;
+            PlayerToWallObservation[p1id][2] = dist;
+            dist = players[i].GetComponent<Collider2D>().Distance(GameManager.Instance._westWall.GetComponent<Collider2D>()).distance;
+            PlayerToWallObservation[p1id][3] = dist;
+
         }
     }
 

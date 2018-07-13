@@ -165,7 +165,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 23
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -227,11 +227,11 @@ MonoBehaviour:
   player: {fileID: 1337592422969652, guid: af807e0fc86d1ca4c9895200facdab2a, type: 2}
   aiController: {fileID: 11400000, guid: a8335a0f8b63fa74db7329e5d05928f5, type: 2}
   humenController: {fileID: 11400000, guid: a9ccdb440c7cb2c45a42317702a72250, type: 2}
-  gameTime: 60
+  gameTime: 10
   timeText: {fileID: 1691797136}
   wall: {fileID: 1885597121528306, guid: 1c50ce117990b144586ebf3f5b673064, type: 2}
-  horizontalSize: 80
-  verticalSize: 45
+  horizontalSize: 15
+  verticalSize: 15
   bullets: []
   players: []
 --- !u!4 &120069113
@@ -261,7 +261,7 @@ MonoBehaviour:
   maxObservationDistance: 14
   observeBullets: 1
   observePlayers: 1
-  observeWalls: 0
+  observeWalls: 1
 --- !u!1 &258877680
 GameObject:
   m_ObjectHideFlags: 0

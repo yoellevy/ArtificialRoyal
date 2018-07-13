@@ -146,7 +146,8 @@ public class EvolutionManager : MonoBehaviour
             geneticAlgorithm.Recombination = RandomRecombination;
             geneticAlgorithm.Mutation = MutateAllButBestTwo;
         }
-        
+
+        EndOfGame += GameManager.Instance.EvalAlives;
         EndOfGame += geneticAlgorithm.EvaluationFinished;
 
         //Statistics
@@ -224,6 +225,7 @@ public class EvolutionManager : MonoBehaviour
     // To be called when the genetic algorithm was terminated
     private void OnGATermination(GeneticAlgorithm ga)
     {
+        EndOfGame -= GameManager.Instance.EvalAlives;
         EndOfGame -= ga.EvaluationFinished;
 
         RestartAlgorithm(5.0f);

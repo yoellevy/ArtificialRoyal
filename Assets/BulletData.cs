@@ -3,7 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class BulletData : MonoBehaviour
-{ //todo - not need to be "MonoBehaviour".
+{ 
 
     public PlayerScript playerScript;
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            Destroy(gameObject);
+        }
+    }
 }

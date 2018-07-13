@@ -24,10 +24,10 @@ public class GameManager : MonoBehaviour
     public float horizontalSize = 160;
     public float verticalSize = 90;
 
-    private GameObject _northWall;
-    private GameObject _eastWall;
-    private GameObject _southWall;
-    private GameObject _westWall;
+    public  GameObject _northWall { get; private set; }
+    public GameObject _eastWall { get; private set; }
+    public GameObject _southWall { get; private set; }
+    public GameObject _westWall { get; private set; }
 
     private GameObject border;
     public List<BulletData> bullets = new List<BulletData>();
@@ -132,6 +132,11 @@ public class GameManager : MonoBehaviour
     {
         float hv = verticalSize / 2 - 1;
         float hh = horizontalSize / 2 - 1;
+        GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");
+        for (int i = bullets.Length - 1; i >= 0; i--)
+        {
+            Destroy(bullets[i].gameObject);
+        }
         foreach (PlayerScript player in players)
         {
             player.Restart();
@@ -204,6 +209,17 @@ public class GameManager : MonoBehaviour
         if (timeRemain <= 0)
         {
             EvolutionManager.Instance.EndTheGame();
+        }
+    }
+
+    public void EvalAlives()
+    {
+        foreach (PlayerScript player in players)
+        {
+            if (player.isAlive)
+            {
+                player.EvalSelf();
+            }
         }
     }
 

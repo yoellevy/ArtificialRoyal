@@ -47,7 +47,10 @@ public class PlayerScript : MonoBehaviour
     public int Rank { get; set; }
     public int KillCount { get; set; }
     public float SurvivelTime { get; set; }
-    private bool isAlive;
+    public bool isAlive;
+
+    [SerializeField]
+    private bool isHumanHelper = false;
 
     
     // Use this for initialization
@@ -73,12 +76,6 @@ public class PlayerScript : MonoBehaviour
         controller.CalculateNextAction();
         movePlayer();
         shootBullet();
-    }
-
-    private void Update()
-    {
-        UpdatePlayerData();
-        EvalSelf();
     }
 
     void movePlayer()
@@ -131,6 +128,7 @@ public class PlayerScript : MonoBehaviour
 
     public void EvalSelf()
     {
+        UpdatePlayerData();
         PlayerAgent.Genotype.Evaluation = EvaluationFunctionsImplementaion.EvalPlayer(this);
     }
 
@@ -146,15 +144,16 @@ public class PlayerScript : MonoBehaviour
         //update data for the shooter:
         otherPlayer.KillCount++;
 
-        //update data for this player:
-        isAlive = false;
-        UpdatePlayerData();
-        EvalSelf();
-        PlayerAgent.Kill();
-        
+        if (!isHumanHelper)
+        {
+            //remove this player
+            this.gameObject.SetActive(false);
 
-        //remove this player
-        this.gameObject.SetActive(false);
+            //update data for this player:
+            isAlive = false;
+            EvalSelf();
+            PlayerAgent.Kill();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -165,10 +164,10 @@ public class PlayerScript : MonoBehaviour
             PlayerScript otherPlayer = collision.GetComponent<BulletData>().playerScript;
             if (otherPlayer != this)
             {
-                Die(otherPlayer);
-
                 //remove bullet
                 Destroy(collision.gameObject);
+
+                Die(otherPlayer);               
             }
         }
     }
