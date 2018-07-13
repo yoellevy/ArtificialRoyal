@@ -98,8 +98,7 @@ public class EvolutionManager : MonoBehaviour
         ////Load gui scene
         //SceneManager.LoadScene("GUI", LoadSceneMode.Additive);
 
-        //Load track
-        // TODO again... we need it?????
+        //Load Game
         SceneManager.LoadScene("Game", LoadSceneMode.Additive);
     }
 
@@ -242,7 +241,11 @@ public class EvolutionManager : MonoBehaviour
         AgentsAliveCount = 0;
 
         foreach (Genotype genotype in currentPopulation)
+        {
             agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, FNNTopology));
+            genotype.Evaluation = -100; //todo - delete this line.
+        }
+            
         
         
         GameManager.Instance.SetPlayerAmount(agents.Count);
@@ -279,10 +282,10 @@ public class EvolutionManager : MonoBehaviour
         EndOfGame();
     }
 
-//    private void OnGUI()
-//    {
-//        _generationNumber.text = (GenerationCount).ToString();
-//    }
+    private void OnGUI()
+    {
+        _generationNumber.text = (GenerationCount).ToString(); //todo : move it to different area, we don't need to update this every frame.
+    }
 
     #region GA Operators
     // Selection operator for the genetic algorithm, using a method called remainder stochastic sampling.

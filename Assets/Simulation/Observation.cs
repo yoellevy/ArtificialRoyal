@@ -9,7 +9,7 @@ public class Observation : MonoBehaviour
 {
     public double maxObservationDistance = 7;
     public static Observation Instant = null;
-    GameObject[] players = null;
+    List<PlayerScript> players = null;
     GameObject[] bullets = null;
 
     int outputSectionSize = 8;
@@ -61,7 +61,7 @@ public class Observation : MonoBehaviour
             outputSize += outputSectionSize;
         if (observeWalls)
             outputSize += outputSectionSize;
-        InitMaps();
+        //InitMaps();
     }
 
     bool flag = true;
@@ -70,38 +70,40 @@ public class Observation : MonoBehaviour
     {
         if (flag)
         {
-            InitMaps();
+            flag = false;
+            //InitMaps(); //must to be after start
         }
         bullets = GameObject.FindGameObjectsWithTag("Bullet");
         calculateDistanceFromPlayers();
         calculateDistanceFromBullet();
     }
 
-    private void InitMaps()
+    public void InitMaps()
     {
-        players = GameObject.FindGameObjectsWithTag("PlayerTag");
+        //players = GameObject.FindGameObjectsWithTag("Player");
+        players = GameManager.Instance.players;
         PlayerToPlayerObservation = new Dictionary<int, double[]>();
         PlayerToBulletObservation = new Dictionary<int, double[]>();
-        for (int i = 0; i < players.Length; i++)
+        for (int i = 0; i < players.Count; i++)
         {
-            int currId = players[i].GetComponent<PlayerScript>().id;
+            int currId = players[i].id;
             PlayerToPlayerObservation[currId] = new double[outputSectionSize];
             PlayerToBulletObservation[currId] = new double[outputSectionSize];
         }
-        PlayerToPlayerDistance = new DistanceAndAngle[players.Length, players.Length];
+        PlayerToPlayerDistance = new DistanceAndAngle[players.Count, players.Count];
     }
 
-    private void OnGUI()
-    {
-        for (int i = 0; i < 8; i++)
-        {
-            GUI.Label(new Rect(10, 10 + i * 20, 100, 20), PlayerToPlayerObservation[0][i].ToString(), new GUIStyle { fontSize = 20 });
-        }
-        for (int i = 0; i < 8; i++)
-        {
-            GUI.Label(new Rect(300, 10 + i * 20, 100, 20), PlayerToBulletObservation[0][i].ToString(), new GUIStyle { fontSize = 20 });
-        }
-    }
+    //private void OnGUI()
+    //{
+    //    for (int i = 0; i < 8; i++)
+    //    {
+    //        GUI.Label(new Rect(10, 10 + i * 20, 100, 20), PlayerToPlayerObservation[0][i].ToString(), new GUIStyle { fontSize = 20 });
+    //    }
+    //    for (int i = 0; i < 8; i++)
+    //    {
+    //        GUI.Label(new Rect(300, 10 + i * 20, 100, 20), PlayerToBulletObservation[0][i].ToString(), new GUIStyle { fontSize = 20 });
+    //    }
+    //}
 
     private void calculateDistanceFromPlayers()
     {
@@ -109,12 +111,12 @@ public class Observation : MonoBehaviour
             for (int i = 0; i < outputSectionSize; i++)
                 item.Value[i] = maxObservationDistance;
 
-        for (int i = 0; i < players.Length; i++)
+        for (int i = 0; i < players.Count; i++)
         {
-            int p1id = players[i].GetComponent<PlayerScript>().id;
-            for (int j = i + 1; j < players.Length; j++)
+            int p1id = players[i].id;
+            for (int j = i + 1; j < players.Count; j++)
             {
-                int p2id = players[j].GetComponent<PlayerScript>().id;
+                int p2id = players[j].id;
 
                 double currDistance = Vector2.Distance(players[i].transform.position, players[j].transform.position);
                 if (currDistance < maxObservationDistance)
@@ -134,9 +136,9 @@ public class Observation : MonoBehaviour
             for (int i = 0; i < outputSectionSize; i++)
                 item.Value[i] = maxObservationDistance;
 
-        for (int i = 0; i < players.Length; i++)
+        for (int i = 0; i < players.Count; i++)
         {
-            int p1id = players[i].GetComponent<PlayerScript>().id;
+            int p1id = players[i].id;
             foreach (var item in bullets)
             {
                 //todo - each player needs to ignore his bullets. Or at least we must to set bullet direction somwehere

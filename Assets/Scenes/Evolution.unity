@@ -147,7 +147,7 @@ MonoBehaviour:
   ElitistSelection: 0
   FNNTopology: 100000000c0000000800000004000000
   timeScale: 12
-  generationNumber: {fileID: 1245460663}
+  _generationNumber: {fileID: 1245460663}
 --- !u!4 &374527187
 Transform:
   m_ObjectHideFlags: 0

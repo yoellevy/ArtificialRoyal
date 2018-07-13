@@ -30,7 +30,8 @@ public class GameManager : MonoBehaviour
     private GameObject _westWall;
 
     private GameObject border;
-    private List<PlayerScript> players = new List<PlayerScript>();
+    public List<PlayerScript> players = new List<PlayerScript>();
+    private int aliveCount;
 
     #endregion
 
@@ -50,7 +51,7 @@ public class GameManager : MonoBehaviour
 
     public EvaluationData GetPlayerEvaluationData()
     {
-        return new EvaluationData(players.Capacity, timeRemain, gameTime - timeRemain);
+        return new EvaluationData(aliveCount, timeRemain, gameTime - timeRemain);
     }
 
     public void RemovePlayer(PlayerScript player)
@@ -83,6 +84,8 @@ public class GameManager : MonoBehaviour
 
     public void SetPlayerAmount(int amount)
     {
+        playerAmount = amount;
+        aliveCount = amount;
         //Check arguments
         if (amount < 0) throw new System.Exception("Amount may not be less than zero.");
 
@@ -115,7 +118,7 @@ public class GameManager : MonoBehaviour
                 Destroy(last.gameObject);
             }
         }
-
+        //Observation.Instant.InitMaps();
     }
 
     public IEnumerator<PlayerScript> GetPlayerEnumerator()
@@ -130,12 +133,13 @@ public class GameManager : MonoBehaviour
         float hh = horizontalSize / 2 - 1;
         foreach (PlayerScript player in players)
         {
-            player.gameObject.SetActive(true);
+            player.Restart();
             player.transform.position = new Vector3(Random.Range(-hh, hh), Random.Range(-hv, hv));
-            player.PlayerAgent.Reset();
         }
 
         startTime = Time.timeSinceLevelLoad;
+
+        Observation.Instant.InitMaps();
     }
 
     private void makePlayers()
@@ -181,23 +185,24 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         CreateBorder();
-//        SetPlayerAmount(playerAmount); // TODO this is shoudn't be called from here...
+        if (EvolutionManager.Instance == null) //todo
+        {
+            SetPlayerAmount(playerAmount);
+        }
         //makePlayers();
     }
 
     private void Start()
     {
-        EvolutionManager.Instance.StartEvolution();
         startTime = Time.timeSinceLevelLoad;
     }
 
-    private void Update()
+    private void LateUpdate()
     {
         timeRemain = (gameTime - (Time.timeSinceLevelLoad - startTime));
         if (timeRemain <= 0)
         {
-            //todo evo manager kills it's self and restart, please refer to refrence for farther info.
-            // EvolutionManager.Instance.EndTheGame();
+            EvolutionManager.Instance.EndTheGame();
         }
     }
 

@@ -27,7 +27,7 @@ GameObject:
   - component: {fileID: 58054252210484398}
   m_Layer: 0
   m_Name: Player
-  m_TagString: PlayerTag
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -122,6 +122,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114356589267361616
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -133,7 +134,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fee5dc63a08554f49a085ac425c03fd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pok: {fileID: 0}
   id: 0
   controller: {fileID: 11400000, guid: a9ccdb440c7cb2c45a42317702a72250, type: 2}
   speed: 5
@@ -154,6 +154,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RenderingLayerMask: 4294967295
   m_Materials:
   - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:

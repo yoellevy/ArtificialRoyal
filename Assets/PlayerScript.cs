@@ -47,6 +47,7 @@ public class PlayerScript : MonoBehaviour
     public int Rank { get; set; }
     public int KillCount { get; set; }
     public float SurvivelTime { get; set; }
+    private bool isAlive;
 
     
     // Use this for initialization
@@ -64,6 +65,7 @@ public class PlayerScript : MonoBehaviour
         m_animator = GetComponent<Animator>();
         m_rigibody = GetComponent<Rigidbody2D>();
 
+        isAlive = true;
     }
 
     private void FixedUpdate()
@@ -138,9 +140,11 @@ public class PlayerScript : MonoBehaviour
         otherPlayer.KillCount++;
 
         //update data for this player:
+        isAlive = false;
         UpdatePlayerData();
-
+        EvalSelf();
         PlayerAgent.Kill();
+        
 
         //remove this player
         this.gameObject.SetActive(false);
@@ -160,5 +164,12 @@ public class PlayerScript : MonoBehaviour
                 Destroy(collision.gameObject);
             }
         }
+    }
+
+    public void Restart()
+    {
+        isAlive = true;
+        PlayerAgent.Reset();
+        this.gameObject.SetActive(true);
     }
 }
