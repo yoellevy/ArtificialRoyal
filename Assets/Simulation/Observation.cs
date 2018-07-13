@@ -255,6 +255,11 @@ public class Observation : MonoBehaviour
             idx += outputSectionSize;
         }
 
+        if (observeWalls)
+        {
+            PlayerToWallObservation[id].CopyTo(outputObservation, idx);
+            idx += 4;
+        }
         return outputObservation;
     }
 }
