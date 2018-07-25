@@ -147,7 +147,7 @@ MonoBehaviour:
   ElitistSelection: 1
   useRNN: 0
   FNNTopology: 1500000012000000100000000e0000000c0000000a000000080000000600000004000000
-  timeScale: 1
+  timeScale: 10
   _generationNumber: {fileID: 1245460663}
 --- !u!4 &374527187
 Transform:

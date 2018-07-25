@@ -258,7 +258,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49a21cedc7e5e844ba104d89723f48ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxObservationDistance: 14
+  maxObservationDistance: 7
   observeBullets: 1
   observePlayers: 1
   observeWalls: 1

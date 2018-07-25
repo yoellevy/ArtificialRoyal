@@ -139,8 +139,8 @@ MonoBehaviour:
   speed: 5
   _bullet: {fileID: 4830624789253464, guid: 820bd2c969b0e084d9c0a6855c01ae77, type: 2}
   bulletBaseSpeed: 7
-  shotInterval: 0.5
-  bulletLifeTime: 2
+  shotInterval: 1
+  bulletLifeTime: 1
   isAlive: 0
   isHumanHelper: 0
 --- !u!212 &212687398809407514

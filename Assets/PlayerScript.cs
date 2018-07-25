@@ -56,7 +56,7 @@ public class PlayerScript : MonoBehaviour
     // Use this for initialization
     private void Awake()
     {
-        EvaluationFunction = EvaluationFunctions.Survive; //todo (Ori/Reshef, please say something - from Omer)
+        EvaluationFunction = EvaluationFunctions.LinearComposition; //todo (Ori/Reshef, please say something - from Omer)
         id = NextID;
     }
 
