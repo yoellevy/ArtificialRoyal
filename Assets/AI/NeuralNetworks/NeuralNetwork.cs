@@ -42,6 +42,7 @@ public class NeuralNetwork
     }
 
     private bool useRNN;
+
     #endregion
 
     #region Constructors
@@ -65,7 +66,7 @@ public class NeuralNetwork
         for (int i = 0; i < Layers.Length; i++)
         {
             //todo - define how much rnn layers and which
-            bool rnn = useRNN && (i == topology.Length - 1 || i == topology.Length - 2);// (useRNN && i != 0 && i != Layers.Length - 1 && i == 2);// (useRNN && i != 0 && i != Layers.Length - 1);
+            bool rnn = useRNN && (i == 0);// (i == topology.Length - 1 || i == topology.Length - 2);// (useRNN && i != 0 && i != Layers.Length - 1 && i == 2);// (useRNN && i != 0 && i != Layers.Length - 1);
             Layers[i] = new NeuralLayer(topology[i], topology[i + 1], rnn);
         }
     }

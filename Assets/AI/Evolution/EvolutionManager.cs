@@ -263,7 +263,7 @@ public class EvolutionManager : MonoBehaviour
             }
             playersEnum.Current.PlayerAgent = agents[i];
             playersEnum.Current.id = i;
-            playersEnum.Current.controller.Init(agents[i], i);
+            //playersEnum.Current.controller.Init(agents[i], i);
             AgentsAliveCount++;
             agents[i].AgentDied += OnAgentDied; //todo - this is OK, I think (Omer)
         }

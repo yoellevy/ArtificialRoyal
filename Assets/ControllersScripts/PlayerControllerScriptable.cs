@@ -7,16 +7,16 @@ public abstract class PlayerControllerScriptable : ScriptableObject
     protected Vector2 Move;
     protected Vector2 Shot;
 
-    protected Agent PlayerAgent;
+    protected PlayerScript playerScript;
 
-    protected int Id;
+    //protected int Id;
 
     private float numThreshold = 1/3f;
 
-    public void Init(Agent agent, int id)
+    public void Init(PlayerScript playerScript)
     {
-        this.PlayerAgent = agent;
-        this.Id = id;
+        this.playerScript = playerScript;
+        //this.Id = id;
     }
 
     public abstract void CalculateNextAction();

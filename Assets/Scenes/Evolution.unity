@@ -142,11 +142,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SaveStatistics: 0
   SaveFirstNGenotype: 3
-  PopulationSize: 20
+  PopulationSize: 50
   RestartAfter: 0
-  ElitistSelection: 0
-  useRNN: 1
-  FNNTopology: 1400000012000000100000000e0000000c0000000a000000080000000600000004000000
+  ElitistSelection: 1
+  useRNN: 0
+  FNNTopology: 1500000012000000100000000e0000000c0000000a000000080000000600000004000000
   timeScale: 1
   _generationNumber: {fileID: 1245460663}
 --- !u!4 &374527187

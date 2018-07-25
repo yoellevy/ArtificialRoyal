@@ -56,7 +56,7 @@ public class PlayerScript : MonoBehaviour
     // Use this for initialization
     private void Awake()
     {
-        EvaluationFunction = EvaluationFunctions.LinearComposition; //todo (Ori/Reshef, please say something - from Omer)
+        EvaluationFunction = EvaluationFunctions.Survive; //todo (Ori/Reshef, please say something - from Omer)
         id = NextID;
     }
 
@@ -69,6 +69,7 @@ public class PlayerScript : MonoBehaviour
         m_rigibody = GetComponent<Rigidbody2D>();
 
         isAlive = true;
+        controller.Init(this);
     }
 
     private void FixedUpdate()
@@ -139,10 +140,13 @@ public class PlayerScript : MonoBehaviour
         SurvivelTime = ed.timeSurvived;
     }
 
-    private void Die(PlayerScript otherPlayer)
+    private void Die(PlayerScript otherPlayer = null)
     {
-        //update data for the shooter:
-        otherPlayer.KillCount++;
+        if (otherPlayer != null)
+        {
+            //update data for the shooter:
+            otherPlayer.KillCount++;
+        }
 
         if (!isHumanHelper)
         {
@@ -170,6 +174,10 @@ public class PlayerScript : MonoBehaviour
                 Die(otherPlayer);               
             }
         }
+        else if (collision.gameObject.CompareTag("Wall"))
+        {
+            Die();
+        }
     }
 
     public void Restart()
@@ -177,5 +185,14 @@ public class PlayerScript : MonoBehaviour
         isAlive = true;
         PlayerAgent.Reset();
         this.gameObject.SetActive(true);
+    }
+
+    public double[] getPlayerObservation()
+    {
+        double[] observation = Observation.Instant.GetObservationOfPlayerId(id);
+        double[] myObservation = new double[observation.Length + 1];
+        observation.CopyTo(myObservation, 0);
+        myObservation[myObservation.Length - 1] = shotInterval - timePass;
+        return myObservation;
     }
 }
