@@ -197,6 +197,7 @@ public class GameManager : MonoBehaviour
     {
         CreateAgents(currentPopulation);
 
+        //todo - change the implemantation to bettar one :
         SetPlayerAmount(agents.Count);
 
         IEnumerator<PlayerScript> playersEnum = GameManager.Instance.GetPlayerEnumerator();
@@ -210,7 +211,7 @@ public class GameManager : MonoBehaviour
             playersEnum.Current.PlayerAgent = agents[i];
             playersEnum.Current.id = i;
             AgentsAliveCount++;
-            agents[i].AgentDied += OnAgentDied; //todo - this is OK, I think (Omer)
+            agents[i].AgentDied += OnAgentDied;
         }
         GameManager.Instance.Restart();
     }
