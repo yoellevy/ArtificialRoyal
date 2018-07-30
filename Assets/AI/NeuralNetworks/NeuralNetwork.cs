@@ -56,10 +56,7 @@ public class NeuralNetwork
 
         this.Topology = topology;
 
-        //Calculate overall weight count
-        WeightCount = 0;
-        for (int i = 0; i < topology.Length - 1; i++)
-            WeightCount += (int) ((topology[i] + 1) * topology[i + 1]); // + 1 for bias node
+        WeightCount = CalculateOverallWeightCount(topology);
 
         //Initialise layers
         Layers = new NeuralLayer[topology.Length - 1];
@@ -73,6 +70,18 @@ public class NeuralNetwork
     #endregion
 
     #region Methods
+    public static int CalculateOverallWeightCount(params uint[] topology)
+    {
+        //Calculate overall weight count
+        int weightCount = 0;
+        for (int i = 0; i < topology.Length - 1; i++)
+            weightCount += (int)((topology[i] + 1) * topology[i + 1]); // + 1 for bias node
+
+        return weightCount;
+    }
+
+
+
     /// <summary>
     /// Processes the given inputs using the current network's weights.
     /// </summary>

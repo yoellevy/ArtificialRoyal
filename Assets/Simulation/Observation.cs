@@ -120,7 +120,7 @@ public class Observation : MonoBehaviour
     {
         foreach (var item in PlayerToPlayerObservation)
             for (int i = 0; i < outputSectionSize; i++)
-                item.Value[i] = maxObservationDistance;
+                item.Value[i] = 0;
 
         for (int i = 0; i < players.Count; i++)
         {
@@ -134,8 +134,9 @@ public class Observation : MonoBehaviour
                 {
                     AngleQuant currAngle = CalculateAngle(players[i].transform.position, players[j].transform.position);
                     AngleQuant opAngle = oppositeAngle(currAngle);
-                    PlayerToPlayerObservation[p1id][(int)currAngle - 1] = currDistance;
-                    PlayerToPlayerObservation[p2id][(int)opAngle - 1] = currDistance;
+                    double p2pDist = (maxObservationDistance - currDistance) / maxObservationDistance;
+                    PlayerToPlayerObservation[p1id][(int)currAngle - 1] = p2pDist;
+                    PlayerToPlayerObservation[p2id][(int)opAngle - 1] = p2pDist;
                 }
             }
         }
@@ -145,7 +146,7 @@ public class Observation : MonoBehaviour
     {
         foreach (var item in PlayerToBulletObservation)
             for (int i = 0; i < outputSectionSize; i++)
-                item.Value[i] = maxObservationDistance;
+                item.Value[i] = 0;
 
         for (int i = 0; i < players.Count; i++)
         {
@@ -159,7 +160,9 @@ public class Observation : MonoBehaviour
                     if (currDistance < maxObservationDistance)
                     {
                         AngleQuant currAngle = CalculateAngle(players[i].transform.position, item.transform.position);
-                        PlayerToBulletObservation[p1id][(int)currAngle - 1] = currDistance; //todo - (from Omer to Yoel) - where is the minimum of bunch of bullets? I'm not sure that I'm understand this code.
+
+                        double p2bDist = (maxObservationDistance - currDistance) / maxObservationDistance;
+                        PlayerToBulletObservation[p1id][(int)currAngle - 1] = Math.Max(p2bDist, PlayerToBulletObservation[p1id][(int)currAngle - 1]); //todo - (from Omer to Yoel) - where is the minimum of bunch of bullets? I'm not sure that I'm understand this code.
                     }
                 }
             }
@@ -173,14 +176,19 @@ public class Observation : MonoBehaviour
         {
             int p1id = players[i].id;
             double dist;
+            double p2wDist;
             dist = Math.Min(players[i].GetComponent<Collider2D>().Distance(GameManager.Instance._northWall.GetComponent<Collider2D>()).distance, maxObservationDistance);
-            PlayerToWallObservation[p1id][0] = dist;
+            p2wDist = (maxObservationDistance - dist) / maxObservationDistance;
+            PlayerToWallObservation[p1id][0] = p2wDist;
             dist = Math.Min(players[i].GetComponent<Collider2D>().Distance(GameManager.Instance._eastWall.GetComponent<Collider2D>()).distance, maxObservationDistance);
-            PlayerToWallObservation[p1id][1] = dist;
+            p2wDist = (maxObservationDistance - dist) / maxObservationDistance;
+            PlayerToWallObservation[p1id][1] = p2wDist;
             dist = Math.Min(players[i].GetComponent<Collider2D>().Distance(GameManager.Instance._southWall.GetComponent<Collider2D>()).distance, maxObservationDistance);
-            PlayerToWallObservation[p1id][2] = dist;
+            p2wDist = (maxObservationDistance - dist) / maxObservationDistance;
+            PlayerToWallObservation[p1id][2] = p2wDist;
             dist = Math.Min(players[i].GetComponent<Collider2D>().Distance(GameManager.Instance._westWall.GetComponent<Collider2D>()).distance, maxObservationDistance);
-            PlayerToWallObservation[p1id][3] = dist;
+            p2wDist = (maxObservationDistance - dist) / maxObservationDistance;
+            PlayerToWallObservation[p1id][3] = p2wDist;
 
         }
     }

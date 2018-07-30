@@ -154,10 +154,6 @@ public class GeneticAlgorithm
     }
 
     /// <summary>
-    /// Event for when the algorithm is eventually terminated.
-    /// </summary>
-    public event System.Action<GeneticAlgorithm> AlgorithmTerminated;
-    /// <summary>
     /// Event for when the algorithm has finished fitness calculation. Given parameter is the
     /// current population sorted by fitness if sorting is enabled (see <see cref="SortPopulation"/>).
     /// </summary>
@@ -214,13 +210,6 @@ public class GeneticAlgorithm
         if (FitnessCalculationFinished != null)
             FitnessCalculationFinished(currentPopulation);
 
-        //Check termination criterion
-        if (TerminationCriterion != null && TerminationCriterion(currentPopulation))
-        {
-            Terminate();
-            return;
-        }
-
         //Apply Selection
         List<Genotype> intermediatePopulation = Selection(currentPopulation);
 
@@ -238,12 +227,6 @@ public class GeneticAlgorithm
         Evaluation(currentPopulation);
     }
 
-    private void Terminate()
-    {
-        Running = false;
-        if (AlgorithmTerminated != null)
-            AlgorithmTerminated(this);
-    }
 
     #region Static Methods
     #region Default Operators

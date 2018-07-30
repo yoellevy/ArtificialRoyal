@@ -9,20 +9,30 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance { get; private set; }
 
-    public int playerAmount = 20;
-    public int humanPlayerAmount = 0;
-    public GameObject player;
-    public PlayerControllerScriptable aiController;
-    public PlayerControllerScriptable humenController;
+    [SerializeField]
+    public int playerAmount = 50;
+    [SerializeField]
+    private int humanPlayerAmount = 0;
+    [SerializeField]
+    private GameObject player;
+    [SerializeField]
+    private PlayerControllerScriptable aiController;
+    [SerializeField]
+    private PlayerControllerScriptable humenController;
 
-    public int gameTime = 2 * 60;
+    [SerializeField]
+    private int gameTime = 2 * 60;
     private float startTime;
-    public Text timeText;
+    [SerializeField]
+    private Text timeText;
     private float timeRemain;
 
-    public GameObject wall;
-    public float horizontalSize = 160;
-    public float verticalSize = 90;
+    [SerializeField]
+    private GameObject wall;
+    [SerializeField]
+    private float horizontalSize = 160;
+    [SerializeField]
+    private float verticalSize = 90;
 
     public  GameObject _northWall { get; private set; }
     public GameObject _eastWall { get; private set; }
@@ -30,9 +40,31 @@ public class GameManager : MonoBehaviour
     public GameObject _westWall { get; private set; }
 
     private GameObject border;
+    [HideInInspector]
     public List<BulletData> bullets = new List<BulletData>();
+    [HideInInspector]
     public List<PlayerScript> players = new List<PlayerScript>();
     private int aliveCount;
+
+    #region AgentsMembers
+    [SerializeField]
+    private bool useRNN = false;
+    // Topology of the agent's FNN, to be set in Unity Editor
+    [SerializeField]
+    public uint[] FNNTopology;
+
+    // The current population of agents.
+    private List<Agent> agents = new List<Agent>();
+
+    /// <summary>
+    /// The amount of agents that are currently alive.
+    /// </summary>
+    public int AgentsAliveCount
+    {
+        get;
+        private set;
+    }
+    #endregion
 
     #endregion
 
@@ -148,37 +180,51 @@ public class GameManager : MonoBehaviour
         Observation.Instant.InitMaps();
     }
 
-    private void makePlayers()
+
+    public void CreateAgents(IEnumerable<Genotype> currentPopulation)
     {
-        //float hv = verticalSize / 2 - 1;
-        //float hh = horizontalSize / 2 - 1;
+        //Create new agents from currentPopulation
+        agents.Clear();
+        AgentsAliveCount = 0;
 
-        //int aiAmount = playerAmount - humanPlayerAmount;
-
-        //for (int i = 0; i < aiAmount; i++)
-        //{
-        //    Vector3 position = new Vector3(Random.Range(-hh, hh), Random.Range(-hv, hv));
-        //    GameObject playerClone = GameObject.Instantiate(player);
-        //    playerClone.transform.position = position;
-
-        //    playerClone.GetComponent<PlayerScript>().controller = aiController;
-
-        //    //TODO: add ai controller script
-        //    players.Add(playerClone);
-        //}
-
-        //for (int i = 0; i < humanPlayerAmount; i++)
-        //{
-        //    Vector3 position = new Vector3(Random.Range(-hh, hh), Random.Range(-hv, hv));
-        //    GameObject playerClone = GameObject.Instantiate(player);
-        //    playerClone.transform.position = position;
-
-        //    playerClone.GetComponent<PlayerScript>().controller = humenController;
-
-        //    //todo: make camera for each player.
-        //    players.Add(playerClone);
-        //}
+        foreach (Genotype genotype in currentPopulation)
+        {
+            agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, useRNN, FNNTopology));
+        }
     }
+
+    public void RestartTheGame(IEnumerable<Genotype> currentPopulation)
+    {
+        CreateAgents(currentPopulation);
+
+        SetPlayerAmount(agents.Count);
+
+        IEnumerator<PlayerScript> playersEnum = GameManager.Instance.GetPlayerEnumerator();
+        for (int i = 0; i < agents.Count; i++)
+        {
+            if (!playersEnum.MoveNext())
+            {
+                Debug.LogError("Players enum ended before agents.");
+                break;
+            }
+            playersEnum.Current.PlayerAgent = agents[i];
+            playersEnum.Current.id = i;
+            AgentsAliveCount++;
+            agents[i].AgentDied += OnAgentDied; //todo - this is OK, I think (Omer)
+        }
+        GameManager.Instance.Restart();
+    }
+
+    // Callback for when an agent died.
+    private void OnAgentDied(Agent agent)
+    {
+        AgentsAliveCount--;
+
+        if (AgentsAliveCount == 1 && EvolutionManager.Instance != null)
+            EvolutionManager.Instance.EndTheGame();
+
+    }
+
 
     private void Awake()
     {
@@ -191,15 +237,29 @@ public class GameManager : MonoBehaviour
         Instance = this;
 
         CreateBorder();
-        if (EvolutionManager.Instance == null) //todo
-        {
-            SetPlayerAmount(playerAmount);
-        }
-        //makePlayers();
+        
     }
 
     private void Start()
     {
+        if (EvolutionManager.Instance == null) //todo
+        {
+            //todo!!
+
+            List<Genotype> currentPopulation;
+            {
+                currentPopulation = new List<Genotype>(playerAmount); //todo
+                int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameManager.Instance.FNNTopology);
+                for (int i = 0; i < playerAmount; i++)
+                {
+                    Genotype genotype = new Genotype(new float[weightCount]);
+                    genotype.SetRandomParameters(GeneticAlgorithm.DefInitParamMin, GeneticAlgorithm.DefInitParamMax); //todo!! load real genotype and not generate randoms.
+                    currentPopulation.Add(genotype);
+                }
+            }
+            RestartTheGame(currentPopulation);
+        }
+
         startTime = Time.timeSinceLevelLoad;
     }
 

@@ -35,39 +35,6 @@ public class EvolutionManager : MonoBehaviour
     private uint SaveFirstNGenotype = 0;
     private uint genotypesSaved = 0;
 
-    // Population size, to be set in Unity Editor
-    [SerializeField]
-    private int PopulationSize = 30;
-
-    // After how many generations should the genetic algorithm be restart (0 for never), to be set in Unity Editor
-    [SerializeField]
-    private int RestartAfter = 100;
-
-    // Whether to use elitist selection or remainder stochastic sampling, to be set in Unity Editor
-    [SerializeField]
-    private bool ElitistSelection = false;
-
-    [SerializeField]
-    private bool useRNN = false;
-    // Topology of the agent's FNN, to be set in Unity Editor
-    [SerializeField]
-    private uint[] FNNTopology;
-
-    // The current population of agents.
-    private List<Agent> agents = new List<Agent>();
-    /// <summary>
-    /// The amount of agents that are currently alive.
-    /// </summary>
-    public int AgentsAliveCount
-    {
-        get;
-        private set;
-    }
-
-    /// <summary>
-    /// Event for when all agents have died.
-    /// </summary>
-    public event System.Action EndOfGame;
 
     private GeneticAlgorithm geneticAlgorithm;
 
@@ -118,34 +85,52 @@ public class EvolutionManager : MonoBehaviour
         Time.timeScale = timeScale;
     }
 
+    /**
+    // todo - to delete from here:
+    [SerializeField]
+    private bool useRNN = false;
+    // Topology of the agent's FNN, to be set in Unity Editor
+    [SerializeField]
+    private uint[] FNNTopology;
+
+    // The current population of agents.
+    private List<Agent> agents = new List<Agent>();
+
+    /// <summary>
+    /// The amount of agents that are currently alive.
+    /// </summary>
+    public int AgentsAliveCount
+    {
+        get;
+        private set;
+    }
+     //todo - to delete till here
+    */
+
+    /// <summary>
+    /// Event for when all agents have died or the game ended.
+    /// </summary>
+    public event System.Action EndOfGame;
+    
+   
+
     /// <summary>
     /// Starts the evolutionary process.
     /// </summary>
     public void StartEvolution()
     {
-        //Create neural network to determine parameter count
-        NeuralNetwork nn = new NeuralNetwork(useRNN, FNNTopology);
+        int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameManager.Instance.FNNTopology);
 
         //Setup genetic algorithm
-        geneticAlgorithm = new GeneticAlgorithm((uint) nn.WeightCount, (uint) PopulationSize);
+        geneticAlgorithm = new GeneticAlgorithm((uint) weightCount, (uint) GameManager.Instance.playerAmount);
         genotypesSaved = 0;
 
-        geneticAlgorithm.Evaluation = StartEvaluation;
+        geneticAlgorithm.Evaluation = GameManager.Instance.RestartTheGame;
 
-        if (ElitistSelection)
-        {
-            //Second configuration
-            geneticAlgorithm.Selection = GeneticAlgorithm.DefaultSelectionOperator;
-            geneticAlgorithm.Recombination = RandomRecombination;
-            geneticAlgorithm.Mutation = MutateAllButBestTwo;
-        }
-        else
-        {   
-            //First configuration
-            geneticAlgorithm.Selection = RemainderStochasticSampling;
-            geneticAlgorithm.Recombination = RandomRecombination;
-            geneticAlgorithm.Mutation = MutateAllButBestTwo;
-        }
+        geneticAlgorithm.Selection = GeneticAlgorithm.DefaultSelectionOperator;
+        geneticAlgorithm.Recombination = RandomRecombination;
+        geneticAlgorithm.Mutation = MutateAllButBestTwo;
+        
 
         EndOfGame += GameManager.Instance.EvalAlives;
         EndOfGame += geneticAlgorithm.EvaluationFinished;
@@ -160,12 +145,7 @@ public class EvolutionManager : MonoBehaviour
         }
 //        geneticAlgorithm.FitnessCalculationFinished += CheckForTrackFinished;
 
-        //Restart logic
-        if (RestartAfter > 0)
-        {
-            geneticAlgorithm.TerminationCriterion += CheckGenerationTermination;
-            geneticAlgorithm.AlgorithmTerminated += OnGATermination;
-        }
+
 
         geneticAlgorithm.Start();
     }
@@ -216,73 +196,12 @@ public class EvolutionManager : MonoBehaviour
 //        }
 //    }
 
-    // Checks whether the termination criterion of generation count was met.
-    private bool CheckGenerationTermination(IEnumerable<Genotype> currentPopulation)
-    {
-        return geneticAlgorithm.GenerationCount >= RestartAfter;
-    }
 
-    // To be called when the genetic algorithm was terminated
-    private void OnGATermination(GeneticAlgorithm ga)
-    {
-        EndOfGame -= GameManager.Instance.EvalAlives;
-        EndOfGame -= ga.EvaluationFinished;
-
-        RestartAlgorithm(5.0f);
-    }
-
-    // Restarts the algorithm after a specific wait time second wait
-    private void RestartAlgorithm(float wait)
-    {
-        Invoke("StartEvolution", wait);
-    }
-
-    // Starts the evaluation by first creating new agents from the current population and then restarting the track manager.
-    private void StartEvaluation(IEnumerable<Genotype> currentPopulation)
-    {
-        //Create new agents from currentPopulation
-        agents.Clear();
-        AgentsAliveCount = 0;
-
-        foreach (Genotype genotype in currentPopulation)
-        {
-            agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, useRNN, FNNTopology));
-        }
-            
-        
-        
-        GameManager.Instance.SetPlayerAmount(agents.Count);
-        
-        IEnumerator<PlayerScript> playersEnum = GameManager.Instance.GetPlayerEnumerator();
-        for (int i = 0; i < agents.Count; i++)
-        {
-            if (!playersEnum.MoveNext())
-            {
-                Debug.LogError("Players enum ended before agents.");
-                break;
-            }
-            playersEnum.Current.PlayerAgent = agents[i];
-            playersEnum.Current.id = i;
-            //playersEnum.Current.controller.Init(agents[i], i);
-            AgentsAliveCount++;
-            agents[i].AgentDied += OnAgentDied; //todo - this is OK, I think (Omer)
-        }
-        GameManager.Instance.Restart();
-    }
-
-    // Callback for when an agent died.
-    private void OnAgentDied(Agent agent)
-    {
-        AgentsAliveCount--;
-
-        if (AgentsAliveCount == 1 && EndOfGame != null)
-            EndOfGame();
-
-    }
 
     public void EndTheGame()
     {
-        EndOfGame();
+        if (EndOfGame != null)
+            EndOfGame();
     }
 
     private void OnGUI()

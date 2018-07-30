@@ -165,7 +165,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 30
+  orthographic size: 45
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -222,18 +222,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd5e1d6e9e1db014bbb78c694c7c7732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerAmount: 10
+  playerAmount: 50
   humanPlayerAmount: 0
   player: {fileID: 1337592422969652, guid: af807e0fc86d1ca4c9895200facdab2a, type: 2}
   aiController: {fileID: 11400000, guid: a8335a0f8b63fa74db7329e5d05928f5, type: 2}
   humenController: {fileID: 11400000, guid: a9ccdb440c7cb2c45a42317702a72250, type: 2}
-  gameTime: 30
+  gameTime: 120
   timeText: {fileID: 1691797136}
   wall: {fileID: 1885597121528306, guid: 1c50ce117990b144586ebf3f5b673064, type: 2}
-  horizontalSize: 90
-  verticalSize: 60
+  horizontalSize: 160
+  verticalSize: 90
   bullets: []
   players: []
+  useRNN: 0
+  FNNTopology: 15000000100000000c0000000800000004000000
 --- !u!4 &120069113
 Transform:
   m_ObjectHideFlags: 0

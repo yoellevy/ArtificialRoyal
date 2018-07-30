@@ -192,7 +192,7 @@ public class PlayerScript : MonoBehaviour
         double[] observation = Observation.Instant.GetObservationOfPlayerId(id);
         double[] myObservation = new double[observation.Length + 1];
         observation.CopyTo(myObservation, 0);
-        myObservation[myObservation.Length - 1] = shotInterval - timePass;
+        myObservation[myObservation.Length - 1] = 1 - ((shotInterval - timePass) / shotInterval);
         return myObservation;
     }
 }
