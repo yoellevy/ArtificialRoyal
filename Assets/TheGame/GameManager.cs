@@ -44,7 +44,6 @@ public class GameManager : MonoBehaviour
     public List<BulletData> bullets = new List<BulletData>();
     [HideInInspector]
     public List<PlayerScript> players = new List<PlayerScript>();
-    private int aliveCount;
 
     #region AgentsMembers
     [SerializeField]
@@ -84,7 +83,7 @@ public class GameManager : MonoBehaviour
 
     public EvaluationData GetPlayerEvaluationData()
     {
-        return new EvaluationData(aliveCount, timeRemain, gameTime - timeRemain);
+        return new EvaluationData(AgentsAliveCount, timeRemain, gameTime - timeRemain);
     }
 
     public void RemovePlayer(PlayerScript player)
@@ -118,7 +117,6 @@ public class GameManager : MonoBehaviour
     public void SetPlayerAmount(int amount)
     {
         playerAmount = amount;
-        aliveCount = amount;
         //Check arguments
         if (amount < 0) throw new System.Exception("Amount may not be less than zero.");
 

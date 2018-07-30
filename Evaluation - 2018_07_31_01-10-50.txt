@@ -1,0 +1,9 @@
+Evaluation of a Population with size 50, using the following GA operators: 
+Selection: DefaultSelectionOperator
+Recombination: RandomRecombination
+Mutation: MutateAllButBestTwo
+FitnessCalculation: DefaultFitnessCalculation
+
+1	35.70977
+2	35.0287
+3	35.00273

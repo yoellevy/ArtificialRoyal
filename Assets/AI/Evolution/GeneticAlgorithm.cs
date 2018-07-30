@@ -202,9 +202,11 @@ public class GeneticAlgorithm
         //Calculate fitness from evaluation
         FitnessCalculationMethod(currentPopulation);
 
-        //Sort population if flag was set
+        /*//Sort population if flag was set
         if (SortPopulation)
-            currentPopulation.Sort();
+            currentPopulation.Sort();*/
+
+        currentPopulation.Sort((a, b) => b.Evaluation.CompareTo(a.Evaluation)); //todo! Omer is here!
 
         //Fire fitness calculation finished event
         if (FitnessCalculationFinished != null)

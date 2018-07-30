@@ -51,6 +51,8 @@ public class EvolutionManager : MonoBehaviour
 
     [SerializeField]
     private Text _generationNumber;
+
+    private bool _toSaveGenotypes = false;
     #endregion
 
     #region Constructors
@@ -139,11 +141,13 @@ public class EvolutionManager : MonoBehaviour
         if (SaveStatistics)
         {
             //TODO: adding log?
-//            statisticsFileName = "Evaluation - " + GameStateManager.Instance.TrackName + " " + DateTime.Now.ToString("yyyy_MM_dd_HH-mm-ss");
-            //WriteStatisticsFileStart();
-            //geneticAlgorithm.FitnessCalculationFinished += WriteStatisticsToFile;
+            statisticsFileName = "Evaluation - " + DateTime.Now.ToString("yyyy_MM_dd_HH-mm-ss");
+            WriteStatisticsFileStart();
+            geneticAlgorithm.FitnessCalculationFinished += WriteStatisticsToFile;
+            //geneticAlgorithm.FitnessCalculationFinished += CheckForTrackFinished;
+            geneticAlgorithm.FitnessCalculationFinished += SaveBestGenotypes;
         }
-//        geneticAlgorithm.FitnessCalculationFinished += CheckForTrackFinished;
+        
 
 
 
@@ -153,14 +157,12 @@ public class EvolutionManager : MonoBehaviour
     // Writes the starting line to the statistics file, stating all genetic algorithm parameters.
     private void WriteStatisticsFileStart()
     {
-        //TODO: adding log?
-
-//        File.WriteAllText(statisticsFileName + ".txt", "Evaluation of a Population with size " + PopulationSize + 
-//                ", on Track \"" + GameStateManager.Instance.TrackName + "\", using the following GA operators: " + Environment.NewLine +
-//                "Selection: " + geneticAlgorithm.Selection.Method.Name + Environment.NewLine +
-//                "Recombination: " + geneticAlgorithm.Recombination.Method.Name + Environment.NewLine +
-//                "Mutation: " + geneticAlgorithm.Mutation.Method.Name + Environment.NewLine + 
-//                "FitnessCalculation: " + geneticAlgorithm.FitnessCalculationMethod.Method.Name + Environment.NewLine + Environment.NewLine);
+        File.WriteAllText(statisticsFileName + ".txt", "Evaluation of a Population with size " + GameManager.Instance.playerAmount +
+                ", using the following GA operators: " + Environment.NewLine +
+                "Selection: " + geneticAlgorithm.Selection.Method.Name + Environment.NewLine +
+                "Recombination: " + geneticAlgorithm.Recombination.Method.Name + Environment.NewLine +
+                "Mutation: " + geneticAlgorithm.Mutation.Method.Name + Environment.NewLine +
+                "FitnessCalculation: " + geneticAlgorithm.FitnessCalculationMethod.Method.Name + Environment.NewLine + Environment.NewLine);
     }
 
     // Appends the current generation count and the evaluation of the best genotype to the statistics file.
@@ -207,6 +209,34 @@ public class EvolutionManager : MonoBehaviour
     private void OnGUI()
     {
         _generationNumber.text = (GenerationCount).ToString(); //todo : move it to different area, we don't need to update this every frame.
+    }
+
+    public void SaveBestGenotypes_Btn()
+    {
+        _toSaveGenotypes = true;
+    }
+
+    private void SaveBestGenotypes(IEnumerable<Genotype> currentPopulation)
+    {
+        if(!_toSaveGenotypes)
+        {
+            return;
+        }
+
+
+        string saveFolder = statisticsFileName + "/";
+
+        if (!Directory.Exists(saveFolder))
+            Directory.CreateDirectory(saveFolder);
+
+        foreach (Genotype genotype in currentPopulation)
+        {
+            genotype.SaveToFile(saveFolder + "Genotype - Finished as " + (++genotypesSaved) + "." + GameData.GENOTYPE_SUFFIX);
+
+            if (genotypesSaved >= SaveFirstNGenotype) break ;
+        }
+        genotypesSaved = 0;
+        _toSaveGenotypes = false;
     }
 
     #region GA Operators
