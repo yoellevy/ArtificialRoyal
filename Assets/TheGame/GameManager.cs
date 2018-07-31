@@ -30,18 +30,16 @@ public class GameManager : MonoBehaviour
     private Text messageText;
 
     [SerializeField]
-    private GameObject wall;
-    [SerializeField]
-    private float horizontalSize = 160;
-    [SerializeField]
-    private float verticalSize = 90;
+    private Text AliveText;
 
-    public  GameObject _northWall { get; private set; }
-    public GameObject _eastWall { get; private set; }
-    public GameObject _southWall { get; private set; }
-    public GameObject _westWall { get; private set; }
 
-    private GameObject border;
+    [SerializeField]
+    private GameObject ground;
+
+    [SerializeField]
+    private Vector2 initialBoardSize = new Vector2(160, 90);
+
+
     [HideInInspector]
     public List<BulletData> bullets = new List<BulletData>();
     [HideInInspector]
@@ -95,28 +93,8 @@ public class GameManager : MonoBehaviour
         players.Remove(player);
     }
 
-    private void CreateBorder()
-    {
-        border = new GameObject("border");
-        float hv = verticalSize / 2;
-        float hh = horizontalSize / 2;
-
-        _northWall = GameObject.Instantiate(wall, new Vector3(0, hv, 0), wall.transform.rotation, border.transform);
-        _northWall.transform.localScale = new Vector3(_northWall.transform.localScale.x * horizontalSize,
-            _northWall.transform.localScale.y, _northWall.transform.localScale.z);
-
-        _eastWall = GameObject.Instantiate(wall, new Vector3(-hh, 0, 0), wall.transform.rotation, border.transform);
-        _eastWall.transform.localScale = new Vector3(_eastWall.transform.localScale.x,
-            _eastWall.transform.localScale.y * verticalSize, _eastWall.transform.localScale.z);
-
-        _southWall = GameObject.Instantiate(wall, new Vector3(0, -hv, 0), wall.transform.rotation, border.transform);
-        _southWall.transform.localScale = new Vector3(_southWall.transform.localScale.x * horizontalSize,
-            _southWall.transform.localScale.y, _southWall.transform.localScale.z);
-
-        _westWall = GameObject.Instantiate(wall, new Vector3(hh, 0, 0), wall.transform.rotation, border.transform);
-        _westWall.transform.localScale = new Vector3(_westWall.transform.localScale.x,
-            _westWall.transform.localScale.y * verticalSize, _westWall.transform.localScale.z);
-    }
+    
+  
 
     public void SetPlayerAmount(int amount)
     {
@@ -159,8 +137,8 @@ public class GameManager : MonoBehaviour
 
     public void RestartPlayers()
     {
-        float hv = verticalSize / 2 - 1;
-        float hh = horizontalSize / 2 - 1;
+        float hv = initialBoardSize.y / 2 - 1;
+        float hh = initialBoardSize.x / 2 - 1;
         
         foreach (PlayerScript player in players)
         {
@@ -231,7 +209,11 @@ public class GameManager : MonoBehaviour
 
         RemoveBullets();
 
+        UpdatePlayerAliveGUI();
+
         startTime = Time.timeSinceLevelLoad;
+
+        SetCurrentBoardSize(initialBoardSize);
 
         Observation.Instant.InitMaps();
     }
@@ -270,9 +252,6 @@ public class GameManager : MonoBehaviour
             return;
         }
         Instance = this;
-
-        CreateBorder();
-        
     }
 
     private void CreatGamePopulation()
@@ -311,7 +290,7 @@ public class GameManager : MonoBehaviour
     private void LateUpdate()
     {
         timeRemain = (gameTime - (Time.timeSinceLevelLoad - startTime));
-        if (timeRemain <= 0 )//|| PlayersAliveCount == 1)
+        if (timeRemain <= 0 || PlayersAliveCount == 1)
         {
             StartCoroutine(EndGame());
         }
@@ -331,5 +310,20 @@ public class GameManager : MonoBehaviour
     private void OnGUI()
     {
         timeText.text = ((int) (timeRemain)).ToString();
+    }
+
+    private void SetCurrentBoardSize(Vector2 size)
+    {
+        ground.transform.localScale = size;
+    }
+
+    public Vector2 getCurrentBoardSize()
+    {
+        return ground.transform.localScale;
+    }
+
+    public void UpdatePlayerAliveGUI()
+    {
+        AliveText.text = ((int)(PlayersAliveCount)).ToString();
     }
 }

@@ -177,19 +177,24 @@ public class Observation : MonoBehaviour
             int p1id = players[i].id;
             double dist;
             double p2wDist;
-            dist = Math.Min(players[i].GetComponent<Collider2D>().Distance(GameManager.Instance._northWall.GetComponent<Collider2D>()).distance, maxObservationDistance);
+
+            Vector2 boardSize = GameManager.Instance.getCurrentBoardSize();
+
+            float hv = boardSize.y / 2;
+            float hh = boardSize.x / 2;
+
+            dist = Math.Min(Math.Abs(players[i].transform.position.y - hv), maxObservationDistance);
             p2wDist = (maxObservationDistance - dist) / maxObservationDistance;
             PlayerToWallObservation[p1id][0] = p2wDist;
-            dist = Math.Min(players[i].GetComponent<Collider2D>().Distance(GameManager.Instance._eastWall.GetComponent<Collider2D>()).distance, maxObservationDistance);
+            dist = Math.Min(Math.Abs(players[i].transform.position.y - hh), maxObservationDistance);
             p2wDist = (maxObservationDistance - dist) / maxObservationDistance;
             PlayerToWallObservation[p1id][1] = p2wDist;
-            dist = Math.Min(players[i].GetComponent<Collider2D>().Distance(GameManager.Instance._southWall.GetComponent<Collider2D>()).distance, maxObservationDistance);
+            dist = Math.Min(Math.Abs(players[i].transform.position.y + hv), maxObservationDistance);
             p2wDist = (maxObservationDistance - dist) / maxObservationDistance;
             PlayerToWallObservation[p1id][2] = p2wDist;
-            dist = Math.Min(players[i].GetComponent<Collider2D>().Distance(GameManager.Instance._westWall.GetComponent<Collider2D>()).distance, maxObservationDistance);
+            dist = Math.Min(Math.Abs(players[i].transform.position.y + hh), maxObservationDistance);
             p2wDist = (maxObservationDistance - dist) / maxObservationDistance;
             PlayerToWallObservation[p1id][3] = p2wDist;
-
         }
     }
 

@@ -137,25 +137,37 @@ public class PlayerScript : MonoBehaviour
         SurvivelTime = ed.timeSurvived;
     }
 
-    private void Die(PlayerScript otherPlayer = null)
+    public void Die(PlayerScript otherPlayer = null)
     {
-        if (otherPlayer != null)
+        lock(this) //lock is needed because somehow some players died twice from the same other player.
         {
-            //update data for the shooter:
-            otherPlayer.KillCount++;
-        }
+            if (isAlive)
+            {
+                isAlive = false;
 
-        //remove this player
-        this.gameObject.SetActive(false);
+                //string diedBy = "unknown";
+                if (otherPlayer != null)
+                {
+                    //update data for the shooter:
+                    otherPlayer.KillCount++;
+                    //diedBy = "player #" + otherPlayer.id;
+                }
+                //Debug.Log(String.Format("Player ID: {0} died by {1}", id, diedBy));
 
-        GameManager.Instance.PlayersAliveCount--;
+                //remove this player
+                this.gameObject.SetActive(false);
 
-        //update data for this player:
-        isAlive = false;
-        if (PlayerAgent != null)
-        {
-            EvalSelf();
-            PlayerAgent.Kill();
+                GameManager.Instance.PlayersAliveCount--;
+                GameManager.Instance.UpdatePlayerAliveGUI();
+
+                //update data for this player:
+
+                if (PlayerAgent != null)
+                {
+                    EvalSelf();
+                    PlayerAgent.Kill();
+                }
+            }
         }
     }
 
@@ -173,11 +185,8 @@ public class PlayerScript : MonoBehaviour
                 Die(otherPlayer);               
             }
         }
-        else if (collision.gameObject.CompareTag("Wall"))
-        {
-            Die();
-        }
     }
+
 
     public void Restart()
     {
@@ -187,7 +196,7 @@ public class PlayerScript : MonoBehaviour
         this.gameObject.SetActive(true);
     }
 
-    public double[] getPlayerObservation()
+    public double[] GetPlayerObservation()
     {
         double[] observation = Observation.Instant.GetObservationOfPlayerId(id);
         double[] myObservation = new double[observation.Length + 1];
