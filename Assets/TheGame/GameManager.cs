@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -25,6 +26,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Text timeText;
     private float timeRemain;
+    [SerializeField]
+    private Text messageText;
 
     [SerializeField]
     private GameObject wall;
@@ -53,6 +56,8 @@ public class GameManager : MonoBehaviour
 
     // The current population of agents.
     private List<Agent> agents = new List<Agent>();
+
+    private List<Genotype> gamePopulation;
 
     /// <summary>
     /// The amount of agents that are currently alive.
@@ -143,24 +148,27 @@ public class GameManager : MonoBehaviour
             yield return players[i];
     }
 
-    public void Restart()
+    private void RemoveBullets()
     {
-        float hv = verticalSize / 2 - 1;
-        float hh = horizontalSize / 2 - 1;
         GameObject[] bullets = GameObject.FindGameObjectsWithTag("Bullet");
         for (int i = bullets.Length - 1; i >= 0; i--)
         {
             Destroy(bullets[i].gameObject);
         }
+    }
+
+    public void RestartPlayers()
+    {
+        float hv = verticalSize / 2 - 1;
+        float hh = horizontalSize / 2 - 1;
+        
         foreach (PlayerScript player in players)
         {
             player.Restart();
             player.transform.position = new Vector3(Random.Range(-hh, hh), Random.Range(-hv, hv));
         }
 
-        startTime = Time.timeSinceLevelLoad;
-
-        Observation.Instant.InitMaps();
+        PlayersAliveCount = players.Count;
     }
 
 
@@ -172,6 +180,19 @@ public class GameManager : MonoBehaviour
         foreach (Genotype genotype in currentPopulation)
         {
             agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, useRNN, FNNTopology));
+        }
+    }
+
+    public void CreatePlayers(IEnumerable<Genotype> currentPopulation)
+    {
+        CreateAgents(currentPopulation);
+
+        players.Clear();
+
+        CreateAIPlayers(agents.Count);
+        if (GameData.instance.toAddHumanPlayer)
+        {
+            CreateHumanPlayer();
         }
     }
 
@@ -198,24 +219,21 @@ public class GameManager : MonoBehaviour
         playerScript.controller = Instantiate(controller);
         playerClone.SetActive(true);
         players.Add(playerScript);
-        PlayersAliveCount++;
         return playerScript;
     }
 
     public void RestartTheGame(IEnumerable<Genotype> currentPopulation)
     {
-        CreateAgents(currentPopulation);
+        if (players.Count == 0)
+            CreatePlayers(currentPopulation);
 
-        players.Clear();
-        PlayersAliveCount = 0;
+        RestartPlayers();
 
-        CreateAIPlayers(agents.Count);
-        if (GameData.instance.toAddHumanPlayer)
-        {
-            CreateHumanPlayer();
-        }
+        RemoveBullets();
 
-        Restart();
+        startTime = Time.timeSinceLevelLoad;
+
+        Observation.Instant.InitMaps();
     }
 
     // Callback for when an agent died.
@@ -226,15 +244,20 @@ public class GameManager : MonoBehaviour
 
     }
 
-    private void EndGame()
+    private IEnumerator EndGame()
     {
         if (EvolutionManager.Instance != null)
         {
             EvolutionManager.Instance.EndTheGame();
-            return;
         }
-        //todo - add regular game ending.
-
+        else
+        {
+            //todo - add regular game ending.
+            messageText.text = "Game Over";
+            timeText.text = "0";
+            yield return new WaitForSeconds(5);
+            RestartTheGame(gamePopulation);
+        }
     }
 
 
@@ -252,45 +275,45 @@ public class GameManager : MonoBehaviour
         
     }
 
+    private void CreatGamePopulation()
+    {
+        gamePopulation = new List<Genotype>(playerAmount);
+        if (GameData.instance.genotypes.Count == 0)
+        {
+            int weightCount = NeuralNetwork.CalculateOverallWeightCount(useRNN, GameManager.Instance.FNNTopology);
+            for (int i = 0; i < playerAmount; i++)
+            {
+                Genotype genotype = new Genotype(new float[weightCount]);
+                genotype.SetRandomParameters(GeneticAlgorithm.DefInitParamMin, GeneticAlgorithm.DefInitParamMax); //todo!! load real genotype and not generate randoms.
+                gamePopulation.Add(genotype);
+            }
+        }
+        else
+        {
+            int i = 0;
+            while (gamePopulation.Count < playerAmount)
+            {
+                gamePopulation.Add(GameData.instance.genotypes[i]);
+                i = (i + 1) % GameData.instance.genotypes.Count;
+            }
+        }
+    }
+
     private void Start()
     {
-        if (EvolutionManager.Instance == null) //todo
+        if (EvolutionManager.Instance == null)
         {
-            //todo!!
-
-            List<Genotype> currentPopulation;
-            currentPopulation = new List<Genotype>(playerAmount);
-            if (GameData.instance.genotypes.Count == 0)
-            {
-                int weightCount = NeuralNetwork.CalculateOverallWeightCount(useRNN, GameManager.Instance.FNNTopology);
-                for (int i = 0; i < playerAmount; i++)
-                {
-                    Genotype genotype = new Genotype(new float[weightCount]);
-                    genotype.SetRandomParameters(GeneticAlgorithm.DefInitParamMin, GeneticAlgorithm.DefInitParamMax); //todo!! load real genotype and not generate randoms.
-                    currentPopulation.Add(genotype);
-                }
-            }
-            else
-            {
-                int i = 0;
-                while (currentPopulation.Count < playerAmount)
-                {
-                    currentPopulation.Add(GameData.instance.genotypes[i]);
-                    i = (i + 1) % GameData.instance.genotypes.Count;
-                }
-            }
-            RestartTheGame(currentPopulation);
+            CreatGamePopulation();
+            RestartTheGame(gamePopulation);
         }
-
-        startTime = Time.timeSinceLevelLoad;
     }
 
     private void LateUpdate()
     {
         timeRemain = (gameTime - (Time.timeSinceLevelLoad - startTime));
-        if (timeRemain <= 0 || PlayersAliveCount == 1)
+        if (timeRemain <= 0 )//|| PlayersAliveCount == 1)
         {
-            EndGame();
+            StartCoroutine(EndGame());
         }
     }
 
