@@ -192,7 +192,25 @@ public class GeneticAlgorithm
     {
         Running = true;
 
-        InitialisePopulation(currentPopulation);
+        if (GameData.instance.genotypes.Count == 0)
+        {
+            InitialisePopulation(currentPopulation);
+        }
+        else
+        {
+            List<Genotype> intermediatePopulation = GameData.instance.genotypes;
+
+            //Apply Recombination
+            List<Genotype> newPopulation = Recombination(intermediatePopulation, PopulationSize);
+
+            //Apply Mutation
+            Mutation(newPopulation);
+
+            //Set current population to newly generated one and start evaluation again
+            currentPopulation = newPopulation;
+
+            GameData.instance.genotypes.Clear();
+        }
 
         Evaluation(currentPopulation);
     }

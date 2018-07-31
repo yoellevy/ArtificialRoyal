@@ -12,20 +12,6 @@ public class MainMenu : MonoBehaviour {
     [SerializeField]
     private Text ErrorText;
 
-    [SerializeField]
-    private Text Data_File_Succeeded;
-
-    public const string DATA_LOCATION = "save_folder";
-    public const string DATA_SUFFIX = "AIData";
-
-    public const string GENOTYPES_FOLDER_NAME = "genotypes";
-    public const string GENOTYPE_SUFFIX = "genotype";
-
-    
-
-
-    List<Genotype> genotypes;
-
 
     public void TrainFromScratch()
     {
@@ -33,20 +19,56 @@ public class MainMenu : MonoBehaviour {
         SceneManager.LoadScene("Evolution");
     }
 
-    public void LoadGameData()
+    public void TrainFromData()
+    {
+        ErrorText.text = "";
+
+        try
+        {
+            LoadGameData();
+            SceneManager.LoadScene("Evolution");
+        }
+        catch (FileLoadException e)
+        {
+            ErrorText.text = e.ToString() + "\n" + ErrorText.text;
+        }
+    }
+
+    public void PlayGameJustAI()
+    {
+        ErrorText.text = "";
+
+        try
+        {
+            LoadGameData();
+            SceneManager.LoadScene("Game");
+        }
+        catch (FileLoadException e)
+        {
+            ErrorText.text = e.ToString() + "\n" + ErrorText.text;
+        }
+        
+    }
+
+
+
+    private void LoadGameData()
     {
         ErrorText.text = "";
 
         try
         {
             GameData.instance.LoadGenotypes();
-        } catch (DirectoryNotFoundException e)
-        {
-            ErrorText.text = string.Format("Can't find {0} Directory", GENOTYPES_FOLDER_NAME);
         }
-        catch (ArgumentException e)
+        catch (Exception e) 
         {
-            ErrorText.text = e.ToString();
+            if (e is DirectoryNotFoundException || e is ArgumentException || e is FileNotFoundException)
+            {
+                ErrorText.text = e.ToString();
+                throw new FileLoadException("can't load genotypes");
+            }
+
+            throw;
         }
     }
 }

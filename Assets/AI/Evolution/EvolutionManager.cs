@@ -157,7 +157,12 @@ public class EvolutionManager : MonoBehaviour
     // Writes the starting line to the statistics file, stating all genetic algorithm parameters.
     private void WriteStatisticsFileStart()
     {
-        File.WriteAllText(statisticsFileName + ".txt", "Evaluation of a Population with size " + GameManager.Instance.playerAmount +
+        string saveFolder = GameData.SAVE_DATA_DIRECTORY + "/";
+
+        if (!Directory.Exists(saveFolder))
+            Directory.CreateDirectory(saveFolder);
+
+        File.WriteAllText(saveFolder + statisticsFileName + ".txt", "Evaluation of a Population with size " + GameManager.Instance.playerAmount +
                 ", using the following GA operators: " + Environment.NewLine +
                 "Selection: " + geneticAlgorithm.Selection.Method.Name + Environment.NewLine +
                 "Recombination: " + geneticAlgorithm.Recombination.Method.Name + Environment.NewLine +
@@ -168,9 +173,11 @@ public class EvolutionManager : MonoBehaviour
     // Appends the current generation count and the evaluation of the best genotype to the statistics file.
     private void WriteStatisticsToFile(IEnumerable<Genotype> currentPopulation)
     {
+        string saveFolder = GameData.SAVE_DATA_DIRECTORY + "/";
+
         foreach (Genotype genotype in currentPopulation)
         {
-            File.AppendAllText(statisticsFileName + ".txt", geneticAlgorithm.GenerationCount + "\t" + genotype.Evaluation + Environment.NewLine);
+            File.AppendAllText(saveFolder + statisticsFileName + ".txt", geneticAlgorithm.GenerationCount + "\t" + genotype.Evaluation + Environment.NewLine);
             break; //Only write first
         }
     }
@@ -211,32 +218,21 @@ public class EvolutionManager : MonoBehaviour
         _generationNumber.text = (GenerationCount).ToString(); //todo : move it to different area, we don't need to update this every frame.
     }
 
-    public void SaveBestGenotypes_Btn()
-    {
-        _toSaveGenotypes = true;
-    }
 
     private void SaveBestGenotypes(IEnumerable<Genotype> currentPopulation)
     {
-        if(!_toSaveGenotypes)
-        {
-            return;
-        }
-
-
-        string saveFolder = statisticsFileName + "/";
+        string saveFolder = GameData.SAVE_DATA_DIRECTORY + "/" + statisticsFileName + "/"; //todo - change it to work in linux and windows.
 
         if (!Directory.Exists(saveFolder))
             Directory.CreateDirectory(saveFolder);
 
         foreach (Genotype genotype in currentPopulation)
         {
-            genotype.SaveToFile(saveFolder + "Genotype - Finished as " + (++genotypesSaved) + "." + GameData.GENOTYPE_SUFFIX);
+            genotype.SaveToFile(saveFolder + String.Format("Genotype - Generation #{0} Finished as {1}.{2}", GenerationCount, ++genotypesSaved, GameData.GENOTYPE_SUFFIX));
 
             if (genotypesSaved >= SaveFirstNGenotype) break ;
         }
         genotypesSaved = 0;
-        _toSaveGenotypes = false;
     }
 
     #region GA Operators

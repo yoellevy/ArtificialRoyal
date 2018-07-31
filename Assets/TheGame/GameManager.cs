@@ -246,14 +246,24 @@ public class GameManager : MonoBehaviour
             //todo!!
 
             List<Genotype> currentPopulation;
+            currentPopulation = new List<Genotype>(playerAmount);
+            if (GameData.instance.genotypes.Count == 0)
             {
-                currentPopulation = new List<Genotype>(playerAmount); //todo
                 int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameManager.Instance.FNNTopology);
                 for (int i = 0; i < playerAmount; i++)
                 {
                     Genotype genotype = new Genotype(new float[weightCount]);
                     genotype.SetRandomParameters(GeneticAlgorithm.DefInitParamMin, GeneticAlgorithm.DefInitParamMax); //todo!! load real genotype and not generate randoms.
                     currentPopulation.Add(genotype);
+                }
+            }
+            else
+            {
+                int i = 0;
+                while (currentPopulation.Count < playerAmount)
+                {
+                    currentPopulation.Add(GameData.instance.genotypes[i]);
+                    i = (i + 1) % GameData.instance.genotypes.Count;
                 }
             }
             RestartTheGame(currentPopulation);
