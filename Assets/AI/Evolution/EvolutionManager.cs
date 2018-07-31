@@ -87,28 +87,6 @@ public class EvolutionManager : MonoBehaviour
         Time.timeScale = timeScale;
     }
 
-    /**
-    // todo - to delete from here:
-    [SerializeField]
-    private bool useRNN = false;
-    // Topology of the agent's FNN, to be set in Unity Editor
-    [SerializeField]
-    private uint[] FNNTopology;
-
-    // The current population of agents.
-    private List<Agent> agents = new List<Agent>();
-
-    /// <summary>
-    /// The amount of agents that are currently alive.
-    /// </summary>
-    public int AgentsAliveCount
-    {
-        get;
-        private set;
-    }
-     //todo - to delete till here
-    */
-
     /// <summary>
     /// Event for when all agents have died or the game ended.
     /// </summary>
@@ -121,7 +99,7 @@ public class EvolutionManager : MonoBehaviour
     /// </summary>
     public void StartEvolution()
     {
-        int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameManager.Instance.FNNTopology);
+        int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameManager.Instance.useRNN, GameManager.Instance.FNNTopology);
 
         //Setup genetic algorithm
         geneticAlgorithm = new GeneticAlgorithm((uint) weightCount, (uint) GameManager.Instance.playerAmount);

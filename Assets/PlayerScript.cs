@@ -49,9 +49,6 @@ public class PlayerScript : MonoBehaviour
     public float SurvivelTime { get; set; }
     public bool isAlive;
 
-    [SerializeField]
-    private bool isHumanHelper = false;
-
     
     // Use this for initialization
     private void Awake()
@@ -148,13 +145,15 @@ public class PlayerScript : MonoBehaviour
             otherPlayer.KillCount++;
         }
 
-        if (!isHumanHelper)
-        {
-            //remove this player
-            this.gameObject.SetActive(false);
+        //remove this player
+        this.gameObject.SetActive(false);
 
-            //update data for this player:
-            isAlive = false;
+        GameManager.Instance.PlayersAliveCount--;
+
+        //update data for this player:
+        isAlive = false;
+        if (PlayerAgent != null)
+        {
             EvalSelf();
             PlayerAgent.Kill();
         }
@@ -183,7 +182,8 @@ public class PlayerScript : MonoBehaviour
     public void Restart()
     {
         isAlive = true;
-        PlayerAgent.Reset();
+        if (PlayerAgent != null)
+            PlayerAgent.Reset();
         this.gameObject.SetActive(true);
     }
 

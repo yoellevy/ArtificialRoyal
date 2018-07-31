@@ -50,6 +50,23 @@ public class MainMenu : MonoBehaviour {
         
     }
 
+    public void PlayGameWithAI()
+    {
+        ErrorText.text = "";
+
+        try
+        {
+            LoadGameData();
+            GameData.instance.toAddHumanPlayer = true;
+            SceneManager.LoadScene("Game");
+        }
+        catch (FileLoadException e)
+        {
+            ErrorText.text = e.ToString() + "\n" + ErrorText.text;
+        }
+
+    }
+
 
 
     private void LoadGameData()

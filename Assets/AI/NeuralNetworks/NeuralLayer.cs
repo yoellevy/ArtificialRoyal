@@ -76,11 +76,11 @@ public class NeuralLayer
         if (rnnLayer)
         {
             //todo
-            Weights = new double[nodeCount + 1 + outputCount, outputCount]; // + 1 for bias node
+            Weights = new double[nodeCount + 1 + 1, outputCount]; // + 1 for bias node and +1 for each Independent recurrent
             recurrents = new double[outputCount];
             for (int i = 0; i < recurrents.Length; i++)
             {
-                recurrents[i] = randomizer.NextDouble(); //todo
+                recurrents[i] = 0; // randomizer.NextDouble(); //todo
             }
         }
         else
@@ -132,14 +132,17 @@ public class NeuralLayer
             //Calculate sum for each neuron from weighted inputs and bias
             double[] sums = new double[OutputCount];
             //Add bias (always on) neuron to inputs
-            double[] biasedInputs = new double[NeuronCount + 1 + OutputCount];
+            double[] biasedInputs = new double[NeuronCount + 1];
             inputs.CopyTo(biasedInputs, 0);
-            recurrents.CopyTo(biasedInputs, inputs.Length);
-            biasedInputs[inputs.Length + recurrents.Length] = 1.0;
+            biasedInputs[inputs.Length] = 1.0;
 
             for (int j = 0; j < this.Weights.GetLength(1); j++)
-                for (int i = 0; i < this.Weights.GetLength(0); i++)
+                for (int i = 0; i < this.Weights.GetLength(0) - 1; i++)
                     sums[j] += biasedInputs[i] * Weights[i, j];
+
+            for (int j = 0; j < this.Weights.GetLength(1); j++)
+                sums[j] += recurrents[j] * Weights[Weights.GetLength(0) - 1, j];
+
 
             //Apply activation function to sum, if set
             if (NeuronActivationFunction != null)

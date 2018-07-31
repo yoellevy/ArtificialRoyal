@@ -16,6 +16,8 @@ public class GameData : MonoBehaviour {
 
     public List<Genotype> genotypes = new List<Genotype>();
 
+    public bool toAddHumanPlayer = false;
+
     private void Awake()
     {
         //Check if instance already exists
@@ -50,6 +52,8 @@ public class GameData : MonoBehaviour {
 
     public void BackToMainMenu()
     {
+        Time.timeScale = 1;
+        toAddHumanPlayer = false;
         SceneManager.LoadScene("MainMenu");
     }
 }

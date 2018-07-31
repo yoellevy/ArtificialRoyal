@@ -11,8 +11,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     public int playerAmount = 50;
-    [SerializeField]
-    private int humanPlayerAmount = 0;
+
     [SerializeField]
     private GameObject player;
     [SerializeField]
@@ -47,7 +46,7 @@ public class GameManager : MonoBehaviour
 
     #region AgentsMembers
     [SerializeField]
-    private bool useRNN = false;
+    public bool useRNN = false;
     // Topology of the agent's FNN, to be set in Unity Editor
     [SerializeField]
     public uint[] FNNTopology;
@@ -58,10 +57,10 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// The amount of agents that are currently alive.
     /// </summary>
-    public int AgentsAliveCount
+    public int PlayersAliveCount
     {
         get;
-        private set;
+        set;
     }
     #endregion
 
@@ -83,7 +82,7 @@ public class GameManager : MonoBehaviour
 
     public EvaluationData GetPlayerEvaluationData()
     {
-        return new EvaluationData(AgentsAliveCount, timeRemain, gameTime - timeRemain);
+        return new EvaluationData(PlayersAliveCount, timeRemain, gameTime - timeRemain);
     }
 
     public void RemovePlayer(PlayerScript player)
@@ -116,7 +115,6 @@ public class GameManager : MonoBehaviour
 
     public void SetPlayerAmount(int amount)
     {
-        playerAmount = amount;
         //Check arguments
         if (amount < 0) throw new System.Exception("Amount may not be less than zero.");
 
@@ -124,19 +122,7 @@ public class GameManager : MonoBehaviour
 
         if (amount > players.Count)
         {
-            float hv = verticalSize / 2 - 1;
-            float hh = horizontalSize / 2 - 1;
-            //Add new players
-            for (int toBeAdded = amount - players.Count; toBeAdded > 0; toBeAdded--)
-            {
-                GameObject playerClone = Instantiate(player, transform);
-                playerClone.transform.position = new Vector3(Random.Range(-hh, hh), Random.Range(-hv, hv));
-                PlayerControllerScriptable controller = Instantiate(aiController);
-                PlayerScript playerScript = playerClone.GetComponent<PlayerScript>();
-                playerScript.controller = controller;
-                playerClone.SetActive(true);
-                players.Add(playerScript);
-            }
+            CreateAIPlayers(amount);
         }
         else if (amount < players.Count)
         {
@@ -149,7 +135,6 @@ public class GameManager : MonoBehaviour
                 Destroy(last.gameObject);
             }
         }
-        //Observation.Instant.InitMaps();
     }
 
     public IEnumerator<PlayerScript> GetPlayerEnumerator()
@@ -183,7 +168,6 @@ public class GameManager : MonoBehaviour
     {
         //Create new agents from currentPopulation
         agents.Clear();
-        AgentsAliveCount = 0;
 
         foreach (Genotype genotype in currentPopulation)
         {
@@ -191,36 +175,65 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    private void CreateAIPlayers(int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            PlayerScript playerScript = CreatePlayer(aiController);
+            playerScript.PlayerAgent = agents[i];
+            playerScript.id = i;
+            agents[i].AgentDied += OnAgentDied;
+        }
+    }
+
+    private void CreateHumanPlayer()
+    {
+        CreatePlayer(humenController);
+    }
+
+    private PlayerScript CreatePlayer(PlayerControllerScriptable controller)
+    {
+        GameObject playerClone = Instantiate(player, transform);
+        PlayerScript playerScript = playerClone.GetComponent<PlayerScript>();
+        playerScript.controller = Instantiate(controller);
+        playerClone.SetActive(true);
+        players.Add(playerScript);
+        PlayersAliveCount++;
+        return playerScript;
+    }
+
     public void RestartTheGame(IEnumerable<Genotype> currentPopulation)
     {
         CreateAgents(currentPopulation);
 
-        //todo - change the implemantation to bettar one :
-        SetPlayerAmount(agents.Count);
+        players.Clear();
+        PlayersAliveCount = 0;
 
-        IEnumerator<PlayerScript> playersEnum = GameManager.Instance.GetPlayerEnumerator();
-        for (int i = 0; i < agents.Count; i++)
+        CreateAIPlayers(agents.Count);
+        if (GameData.instance.toAddHumanPlayer)
         {
-            if (!playersEnum.MoveNext())
-            {
-                Debug.LogError("Players enum ended before agents.");
-                break;
-            }
-            playersEnum.Current.PlayerAgent = agents[i];
-            playersEnum.Current.id = i;
-            AgentsAliveCount++;
-            agents[i].AgentDied += OnAgentDied;
+            CreateHumanPlayer();
         }
-        GameManager.Instance.Restart();
+
+        Restart();
     }
 
     // Callback for when an agent died.
     private void OnAgentDied(Agent agent)
     {
-        AgentsAliveCount--;
-
-        if (AgentsAliveCount == 1 && EvolutionManager.Instance != null)
+        if (PlayersAliveCount == 1 && EvolutionManager.Instance != null)
             EvolutionManager.Instance.EndTheGame();
+
+    }
+
+    private void EndGame()
+    {
+        if (EvolutionManager.Instance != null)
+        {
+            EvolutionManager.Instance.EndTheGame();
+            return;
+        }
+        //todo - add regular game ending.
 
     }
 
@@ -249,7 +262,7 @@ public class GameManager : MonoBehaviour
             currentPopulation = new List<Genotype>(playerAmount);
             if (GameData.instance.genotypes.Count == 0)
             {
-                int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameManager.Instance.FNNTopology);
+                int weightCount = NeuralNetwork.CalculateOverallWeightCount(useRNN, GameManager.Instance.FNNTopology);
                 for (int i = 0; i < playerAmount; i++)
                 {
                     Genotype genotype = new Genotype(new float[weightCount]);
@@ -275,9 +288,9 @@ public class GameManager : MonoBehaviour
     private void LateUpdate()
     {
         timeRemain = (gameTime - (Time.timeSinceLevelLoad - startTime));
-        if (timeRemain <= 0)
+        if (timeRemain <= 0 || PlayersAliveCount == 1)
         {
-            EvolutionManager.Instance.EndTheGame();
+            EndGame();
         }
     }
 

@@ -431,7 +431,7 @@ MonoBehaviour:
   verticalSize: 90
   bullets: []
   players: []
-  useRNN: 0
+  useRNN: 1
   FNNTopology: 15000000100000000c0000000800000004000000
 --- !u!4 &120069113
 Transform:
@@ -767,3 +767,45 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1691797134}
+--- !u!1001 &1968329318
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4588984471501680, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4588984471501680, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4588984471501680, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4588984471501680, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4588984471501680, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4588984471501680, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4588984471501680, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4588984471501680, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}
+  m_IsPrefabParent: 0
