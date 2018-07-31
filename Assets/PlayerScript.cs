@@ -128,6 +128,7 @@ public class PlayerScript : MonoBehaviour
     {
         UpdatePlayerData();
         PlayerAgent.Genotype.Evaluation = EvaluationFunctionsImplementaion.EvalPlayer(this);
+        //Debug.Log(string.Format("Evaluation for player {0}: \t{1}", id, PlayerAgent.Genotype.Evaluation));
     }
 
     private void UpdatePlayerData()

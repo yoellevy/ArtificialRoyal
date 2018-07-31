@@ -161,13 +161,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void CreatePlayers(IEnumerable<Genotype> currentPopulation)
+    public void CreatePlayers(int amount)
     {
-        CreateAgents(currentPopulation);
-
         players.Clear();
 
-        CreateAIPlayers(agents.Count);
+        CreateAIPlayers(amount);
         if (GameData.instance.toAddHumanPlayer)
         {
             CreateHumanPlayer();
@@ -179,9 +177,6 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < amount; i++)
         {
             PlayerScript playerScript = CreatePlayer(aiController);
-            playerScript.PlayerAgent = agents[i];
-            playerScript.id = i;
-            agents[i].AgentDied += OnAgentDied;
         }
     }
 
@@ -200,10 +195,24 @@ public class GameManager : MonoBehaviour
         return playerScript;
     }
 
+    private void AssignAgents(int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            PlayerScript playerScript = players[i];
+            playerScript.PlayerAgent = agents[i];
+            playerScript.id = i;
+            agents[i].AgentDied += OnAgentDied;
+        }
+    }
+
     public void RestartTheGame(IEnumerable<Genotype> currentPopulation)
     {
+        CreateAgents(currentPopulation);
         if (players.Count == 0)
-            CreatePlayers(currentPopulation);
+            CreatePlayers(agents.Count);
+
+        AssignAgents(agents.Count);
 
         RestartPlayers();
 
