@@ -112,7 +112,7 @@ public class EvolutionManager : MonoBehaviour
         geneticAlgorithm.Mutation = MutateAllButBestTwo;
         
 
-        EndOfGame += GameManager.Instance.EvalAlives;
+        EndOfGame += GameManager.Instance.EvalOfEndGame;
         EndOfGame += geneticAlgorithm.EvaluationFinished;
 
         //Statistics

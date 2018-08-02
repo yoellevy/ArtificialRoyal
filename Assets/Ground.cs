@@ -7,6 +7,7 @@ public class Ground : MonoBehaviour {
     private void FixedUpdate()
     {
         //transform.localScale -= new Vector3(decreaseRate, decreaseRate, 0);
+        transform.localScale *= 0.9999f;
     }
 
     private void OnTriggerExit2D(Collider2D collision)

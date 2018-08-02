@@ -124,14 +124,21 @@ public class PlayerScript : MonoBehaviour
         return speed;
     }
 
+    public void NormalizePlayerData(float gameTime, int playersAliveAmount, int playersThatDiedAmount)
+    {
+        // todo - please that some one other than me (Omer) will check this.
+        SurvivelTime = SurvivelTime / gameTime;
+        Rank = 1 - (Rank - playersAliveAmount) / playersThatDiedAmount;
+        KillCount = KillCount / playersThatDiedAmount;
+    }
+
     public void EvalSelf()
     {
-        UpdatePlayerData();
         PlayerAgent.Genotype.Evaluation = EvaluationFunctionsImplementaion.EvalPlayer(this);
         //Debug.Log(string.Format("Evaluation for player {0}: \t{1}", id, PlayerAgent.Genotype.Evaluation));
     }
 
-    private void UpdatePlayerData()
+    public void UpdatePlayerData()
     {
         GameManager.EvaluationData ed = GameManager.Instance.GetPlayerEvaluationData();
         Rank = ed.rankInGame;
@@ -162,10 +169,10 @@ public class PlayerScript : MonoBehaviour
                 GameManager.Instance.UpdatePlayerAliveGUI();
 
                 //update data for this player:
+                UpdatePlayerData();
 
                 if (PlayerAgent != null)
                 {
-                    EvalSelf();
                     PlayerAgent.Kill();
                 }
             }

@@ -305,14 +305,17 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void EvalAlives()
+    public void EvalOfEndGame()
     {
+        int playersThatDiedAmount = (playerAmount - PlayersAliveCount);
         foreach (PlayerScript player in players)
         {
             if (player.isAlive)
             {
-                player.EvalSelf();
+                player.UpdatePlayerData();
             }
+            player.NormalizePlayerData(gameTime, PlayersAliveCount, playersThatDiedAmount);
+            player.EvalSelf();
         }
     }
 
