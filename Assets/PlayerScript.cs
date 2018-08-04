@@ -44,8 +44,8 @@ public class PlayerScript : MonoBehaviour
     // Evaluation functions.
     public EvaluationFunctions EvaluationFunction { get; set; }
     public float[] Weights { get; set; }
-    public int Rank { get; set; }
-    public int KillCount { get; set; }
+    public float Rank { get; set; }
+    public float KillCount { get; set; }
     public float SurvivelTime { get; set; }
     public bool isAlive;
 
@@ -123,12 +123,12 @@ public class PlayerScript : MonoBehaviour
         return speed;
     }
 
-    public void NormalizePlayerData(float gameTime, int playersAliveAmount, int playersThatDiedAmount)
+    public void NormalizePlayerData(float gameTime, int playersAliveAmount, int playersThatDiedAmount, float maxKills)
     {
         // todo - please that some one other than me (Omer) will check this.
         SurvivelTime = SurvivelTime / gameTime;
         Rank = 1 - (Rank - playersAliveAmount) / playersThatDiedAmount;
-        KillCount = KillCount / playersThatDiedAmount;
+        KillCount = maxKills > 0.5 ? KillCount / maxKills : KillCount;
     }
 
     public void EvalSelf()

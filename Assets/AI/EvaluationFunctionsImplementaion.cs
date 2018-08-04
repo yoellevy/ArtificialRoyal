@@ -45,14 +45,13 @@ namespace AI
         private static float HandleKill(PlayerScript agent)
         {
             var killCount = agent.KillCount;
-            Debug.Log(killCount);
-            return (float) Math.Sqrt(killCount);
+            return (float) Math.Sqrt(killCount);  // Lower kills gets buff.
         }
 
         private static float HandleSurvive(PlayerScript agent)
         {
             var survivalTime = agent.SurvivelTime;
-            return (float) Math.Pow(survivalTime, 3);
+            return (float) Math.Pow(survivalTime, 2); // Late game earns more.
         }
     }
 }

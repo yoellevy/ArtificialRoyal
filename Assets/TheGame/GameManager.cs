@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -308,16 +309,23 @@ public class GameManager : MonoBehaviour
     public void EvalOfEndGame()
     {
         int playersThatDiedAmount = (playerAmount - PlayersAliveCount);
+        var maxKills = GetMaxKills();
         foreach (PlayerScript player in players)
         {
             if (player.isAlive)
             {
                 player.UpdatePlayerData();
             }
-            player.NormalizePlayerData(gameTime, PlayersAliveCount, playersThatDiedAmount);
+            player.NormalizePlayerData(gameTime, PlayersAliveCount, playersThatDiedAmount,maxKills);
             player.EvalSelf();
         }
     }
+
+    private float GetMaxKills()
+    {
+        return players.Max((script => script.KillCount));
+    }
+
 
     private void OnGUI()
     {
