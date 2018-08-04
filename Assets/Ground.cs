@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Ground : MonoBehaviour {
-    private float decreaseRate = 0.01f;
     private void FixedUpdate()
     {
         //transform.localScale -= new Vector3(decreaseRate, decreaseRate, 0);
-        transform.localScale *= 0.9999f;
+        transform.localScale *= 0.99975f;
     }
 
     private void OnTriggerExit2D(Collider2D collision)

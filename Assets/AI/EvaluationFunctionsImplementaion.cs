@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace AI
 {
@@ -18,9 +19,9 @@ namespace AI
                 case EvaluationFunctions.Kill:
                     return HandleKill(playerScript);
 
-                case EvaluationFunctions.Rank: // ferst ranked is the last one to servive , and rank last is the first one to die
+                case EvaluationFunctions.Rank:
                     return HandleRank(playerScript);
-                    
+
                 case EvaluationFunctions.LinearComposition:
                     return HandleLinearComposition(playerScript);
 
@@ -32,25 +33,26 @@ namespace AI
         private static float HandleLinearComposition(PlayerScript agent)
         {
             var weights = agent.Weights;
-            return weights[0]*HandleRank(agent) + weights[1]*HandleKill(agent) + weights[2]*HandleSurvive(agent);
+            return weights[0] * HandleRank(agent) + weights[1] * HandleKill(agent) + weights[2] * HandleSurvive(agent);
         }
 
         private static float HandleRank(PlayerScript agent)
         {
             var rank = agent.Rank;
-            return -rank; // the lower the rank, the better.
+            return rank;
         }
 
         private static float HandleKill(PlayerScript agent)
         {
             var killCount = agent.KillCount;
-            return killCount;
+            Debug.Log(killCount);
+            return (float) Math.Sqrt(killCount);
         }
 
         private static float HandleSurvive(PlayerScript agent)
         {
             var survivalTime = agent.SurvivelTime;
-            return survivalTime;
+            return (float) Math.Pow(survivalTime, 3);
         }
     }
 }

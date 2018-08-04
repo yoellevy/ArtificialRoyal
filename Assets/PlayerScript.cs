@@ -49,7 +49,6 @@ public class PlayerScript : MonoBehaviour
     public float SurvivelTime { get; set; }
     public bool isAlive;
 
-    
     // Use this for initialization
     private void Awake()
     {
