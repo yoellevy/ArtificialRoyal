@@ -102,7 +102,7 @@ public class EvolutionManager : MonoBehaviour
         int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameManager.Instance.useRNN, GameManager.Instance.FNNTopology);
 
         //Setup genetic algorithm
-        geneticAlgorithm = new GeneticAlgorithm((uint) weightCount, (uint) GameManager.Instance.playerAmount);
+        geneticAlgorithm = new GeneticAlgorithm((uint) weightCount, (uint) (GameManager.Instance.playerAmount- GameManager.Instance.randomPlayerAmount));
         genotypesSaved = 0;
 
         geneticAlgorithm.Evaluation = GameManager.Instance.RestartTheGame;
