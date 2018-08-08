@@ -26,7 +26,10 @@ public class PlayerScript : MonoBehaviour
     float shotInterval = 0.25f;
     [SerializeField]
     float bulletLifeTime = 2;
-
+    [SerializeField]
+    float timeShotToDelay = 20;
+    private float delayTime;
+    //private float timeShot = 0;
     float timePass = 0;
     Animator m_animator;
     Rigidbody2D m_rigibody;
@@ -38,9 +41,7 @@ public class PlayerScript : MonoBehaviour
         get;
         set;
     }
-    
-    
-    
+           
     // Evaluation functions.
     public EvaluationFunctions EvaluationFunction { get; set; }
     public float[] Weights { get; set; }
@@ -58,7 +59,6 @@ public class PlayerScript : MonoBehaviour
 
     void Start()
     {    
-
         Weights = new[]{1f/3f,1f/3f,1f/3f};
 
         m_animator = GetComponent<Animator>();
@@ -72,6 +72,8 @@ public class PlayerScript : MonoBehaviour
     {
         controller.CalculateNextAction();
         movePlayer();
+        if ((delayTime -= Time.deltaTime) > 0)
+            return;
         shootBullet();
     }
 
@@ -194,9 +196,9 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-
     public void Restart()
     {
+        delayTime = timeShotToDelay;
         isAlive = true;
         if (PlayerAgent != null)
             PlayerAgent.Reset();
