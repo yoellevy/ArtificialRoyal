@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Text;
 #endregion
 
 /// <summary>
@@ -121,6 +122,7 @@ public class EvolutionManager : MonoBehaviour
             //TODO: adding log?
             statisticsFileName = "Evaluation - " + DateTime.Now.ToString("yyyy_MM_dd_HH-mm-ss");
             WriteStatisticsFileStart();
+            WriteNNData();
             geneticAlgorithm.FitnessCalculationFinished += WriteStatisticsToFile;
             //geneticAlgorithm.FitnessCalculationFinished += CheckForTrackFinished;
             geneticAlgorithm.FitnessCalculationFinished += SaveBestGenotypes;
@@ -196,6 +198,23 @@ public class EvolutionManager : MonoBehaviour
         _generationNumber.text = (GenerationCount).ToString(); //todo : move it to different area, we don't need to update this every frame.
     }
 
+    private void WriteNNData()
+    {
+        string saveFolder = GameData.SAVE_DATA_DIRECTORY + "/" + statisticsFileName + "/";
+        if (!Directory.Exists(saveFolder))
+            Directory.CreateDirectory(saveFolder);
+
+        string fileName = "NNdata." + GameData.NEURAL_NETWORK_SUFFIX;
+
+        StringBuilder builder = new StringBuilder();
+        builder.Append(GameManager.Instance.useRNN ? "1;" : "0;");
+        foreach (uint param in GameManager.Instance.FNNTopology)
+            builder.Append(param.ToString()).Append(";");
+
+        builder.Remove(builder.Length - 1, 1);
+
+        File.WriteAllText(saveFolder + fileName, builder.ToString());
+    }
 
     private void SaveBestGenotypes(IEnumerable<Genotype> currentPopulation)
     {

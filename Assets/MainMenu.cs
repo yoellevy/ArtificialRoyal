@@ -73,7 +73,7 @@ public class MainMenu : MonoBehaviour {
 
         try
         {
-            GameData.instance.LoadCompareBattleGenotypes();
+            GameData.instance.LoadCompareBattleData();
         }
         catch (Exception e)
         {
@@ -97,7 +97,7 @@ public class MainMenu : MonoBehaviour {
 
         try
         {
-            GameData.instance.LoadGenotypes();
+            GameData.instance.LoadGroupData();
         }
         catch (Exception e) 
         {

@@ -55,8 +55,8 @@ public class CompareBattleManager : MonoBehaviour {
         group_A_victory_count = 0;
         group_B_victory_count = 0;
         gameCount = 0;
-        group_A = CreatGamePopulation(GameData.instance.group_A_genotypes, GameManager.Instance.playerAmount / 2);
-        group_B = CreatGamePopulation(GameData.instance.group_B_genotypes, GameManager.Instance.playerAmount / 2);
+        group_A = CreatGamePopulation(GameData.instance.group_A_data.genotypes, GameManager.Instance.playerAmount / 2);
+        group_B = CreatGamePopulation(GameData.instance.group_B_data.genotypes, GameManager.Instance.playerAmount / 2);
         GameManager.Instance.RestartTheGame(group_A, group_B);
     }
 

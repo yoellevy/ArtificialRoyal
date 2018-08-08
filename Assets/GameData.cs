@@ -13,13 +13,20 @@ public class GameData : MonoBehaviour {
 
     public const string GENOTYPES_FOLDER_NAME = "genotypes";
     public const string GENOTYPE_SUFFIX = "genotype";
+    public const string NEURAL_NETWORK_SUFFIX = "nnd";
     public const string COMPARE_BATTLE_GROUPS_FOLDER_NAME = "CompareBattle";
     public const string GROUP_A_GENOTYPES_FOLDER_NAME = "Group_A";
     public const string GROUP_B_GENOTYPES_FOLDER_NAME = "Group_B";
 
-    public List<Genotype> genotypes = new List<Genotype>();
-    public List<Genotype> group_A_genotypes = new List<Genotype>();
-    public List<Genotype> group_B_genotypes = new List<Genotype>();
+    public class GroupData
+    {
+        public List<Genotype> genotypes = new List<Genotype>();
+        public bool useRNN = true;
+        public uint[] Topology;
+    }
+
+    public GroupData group_A_data = new GroupData();
+    public GroupData group_B_data = new GroupData();
 
     public bool toAddHumanPlayer = false;
 
@@ -41,40 +48,61 @@ public class GameData : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 
-    public void LoadGenotypes()
+    public void LoadGroupData()
     {
-        if (!Directory.Exists(GENOTYPES_FOLDER_NAME)) throw new DirectoryNotFoundException(string.Format("Can't find {0} Directory", GENOTYPES_FOLDER_NAME));
+        LoadSomeGenotypes(GENOTYPES_FOLDER_NAME, group_A_data);
+        LoadNNDFile(GENOTYPES_FOLDER_NAME, group_A_data);
+    }
 
-        string[] files = Directory.GetFiles(GENOTYPES_FOLDER_NAME, "*." + GENOTYPE_SUFFIX);
+    private void LoadSomeGenotypes(string genotype_folder, GroupData groupData)
+    {
+        if (!Directory.Exists(genotype_folder)) throw new DirectoryNotFoundException(string.Format("Can't find {0} Directory", GENOTYPES_FOLDER_NAME));
 
-        if (files.Length == 0) throw new FileNotFoundException(string.Format("Can't find files with suffix \"{0}\"", GENOTYPE_SUFFIX));
+        string[] genotype_files = Directory.GetFiles(genotype_folder, "*." + GENOTYPE_SUFFIX);
 
-        foreach (string file in files)
+        if (genotype_files.Length == 0) throw new FileNotFoundException(string.Format("Can't find files with suffix \"{0}\"", GENOTYPE_SUFFIX));
+
+        foreach (string file in genotype_files)
         {
-            genotypes.Add(Genotype.LoadFromFile(file));
+            groupData.genotypes.Add(Genotype.LoadFromFile(file));
         }
     }
 
-    public void LoadCompareBattleGenotypes()
+    private void LoadNNDFile(string nnd_folder, GroupData groupData)
     {
+        string[] nnd_files = Directory.GetFiles(nnd_folder, "*." + NEURAL_NETWORK_SUFFIX);
+
+        if (nnd_files.Length == 0) throw new FileNotFoundException(string.Format("Can't find file with suffix \"{0}\"", NEURAL_NETWORK_SUFFIX));
+        if (nnd_files.Length > 1) throw new FileNotFoundException(string.Format("Too many files with suffix \"{0}\"", NEURAL_NETWORK_SUFFIX));
+
+        string data = File.ReadAllText(nnd_files[0]);
+
+        List<float> parameters = new List<float>();
+        string[] paramStrings = data.Split(';');
+
+        groupData.useRNN = paramStrings[0].Equals("1");
+
+        List<uint> topology_list = new List<uint>();
+
+        for (int i = 1; i < paramStrings.Length; i++)
+        {
+            uint parsed;
+            if (!uint.TryParse(paramStrings[i], out parsed)) throw new ArgumentException("The file at given file path does not contain a valid topology serialisation.");
+            topology_list.Add(parsed);
+        }
+
+        groupData.Topology = topology_list.ToArray();
+    }
+
+    public void LoadCompareBattleData()
+    {
+        
         string group_A_location = COMPARE_BATTLE_GROUPS_FOLDER_NAME + "\\" + GROUP_A_GENOTYPES_FOLDER_NAME;
         string group_B_location = COMPARE_BATTLE_GROUPS_FOLDER_NAME + "\\" + GROUP_B_GENOTYPES_FOLDER_NAME;
-        if (!Directory.Exists(group_A_location)) throw new DirectoryNotFoundException(string.Format("Can't find {0} Directory", group_A_location));
-        if (!Directory.Exists(group_B_location)) throw new DirectoryNotFoundException(string.Format("Can't find {0} Directory", group_B_location));
-
-        string[] group_A_files = Directory.GetFiles(group_A_location, "*." + GENOTYPE_SUFFIX);
-        string[] group_B_files = Directory.GetFiles(group_B_location, "*." + GENOTYPE_SUFFIX);
-
-        if (group_A_files.Length == 0 || group_B_files.Length == 0) throw new FileNotFoundException(string.Format("Can't find files with suffix \"{0}\"", GENOTYPE_SUFFIX));
-
-        foreach (string file in group_A_files)
-        {
-            group_A_genotypes.Add(Genotype.LoadFromFile(file));
-        }
-        foreach (string file in group_B_files)
-        {
-            group_B_genotypes.Add(Genotype.LoadFromFile(file));
-        }
+        LoadSomeGenotypes(group_A_location, group_A_data);
+        LoadNNDFile(group_A_location, group_A_data);
+        LoadSomeGenotypes(group_B_location, group_B_data);
+        LoadNNDFile(group_B_location, group_B_data);
     }
 
     public void BackToMainMenu()
