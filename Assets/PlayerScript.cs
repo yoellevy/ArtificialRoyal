@@ -27,7 +27,7 @@ public class PlayerScript : MonoBehaviour
     [SerializeField]
     float bulletLifeTime = 2;
     [SerializeField]
-    float timeShotToDelay = 20;
+    float timeShotToDelay = 5;
     private float delayTime;
     //private float timeShot = 0;
     float timePass = 0;
@@ -74,7 +74,7 @@ public class PlayerScript : MonoBehaviour
     {
         controller.CalculateNextAction();
         movePlayer();
-        if ((delayTime -= Time.deltaTime) > 0)
+        if ((delayTime -= Time.fixedDeltaTime) > 0)
             return;
         shootBullet();
     }
