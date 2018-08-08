@@ -67,6 +67,28 @@ public class MainMenu : MonoBehaviour {
 
     }
 
+    public void PlayCompareBattle()
+    {
+        ErrorText.text = "";
+
+        try
+        {
+            GameData.instance.LoadCompareBattleGenotypes();
+        }
+        catch (Exception e)
+        {
+            if (e is DirectoryNotFoundException || e is ArgumentException || e is FileNotFoundException)
+            {
+                ErrorText.text = e.ToString();
+            }
+
+            throw e;
+        }
+
+        SceneManager.LoadScene("CompareBattle");
+
+    }
+
 
 
     private void LoadGameData()
@@ -85,7 +107,7 @@ public class MainMenu : MonoBehaviour {
                 throw new FileLoadException("can't load genotypes");
             }
 
-            throw;
+            throw e;
         }
     }
 }

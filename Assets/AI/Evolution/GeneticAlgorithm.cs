@@ -51,7 +51,7 @@ public class GeneticAlgorithm
     /// Method template for methods used to evaluate (or start the evluation process of) the current population.
     /// </summary>
     /// <param name="currentPopulation">The current population.</param>
-    public delegate void EvaluationOperator(IEnumerable<Genotype> currentPopulation);
+    public delegate void EvaluationOperator(IEnumerable<Genotype> currentPopulation, IEnumerable<Genotype> grou_b = null);
     /// <summary>
     /// Method template for methods used to calculate the fitness value of each genotype of the current population.
     /// </summary>
@@ -261,7 +261,7 @@ public class GeneticAlgorithm
             genotype.SetRandomParameters(DefInitParamMin, DefInitParamMax);
     }
 
-    public static void AsyncEvaluation(IEnumerable<Genotype> currentPopulation)
+    public static void AsyncEvaluation(IEnumerable<Genotype> currentPopulation, IEnumerable<Genotype> group_b = null)
     {
         //At this point the async evaluation should be started and after it is finished EvaluationFinished should be called
     }

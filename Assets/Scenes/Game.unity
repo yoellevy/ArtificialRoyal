@@ -181,7 +181,6 @@ GameObject:
   - component: {fileID: 80347625}
   - component: {fileID: 80347624}
   - component: {fileID: 80347623}
-  - component: {fileID: 80347622}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -189,13 +188,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &80347622
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 80347621}
-  m_Enabled: 1
 --- !u!124 &80347623
 Behaviour:
   m_ObjectHideFlags: 0
@@ -482,7 +474,7 @@ MonoBehaviour:
   player: {fileID: 1337592422969652, guid: af807e0fc86d1ca4c9895200facdab2a, type: 2}
   aiController: {fileID: 11400000, guid: a8335a0f8b63fa74db7329e5d05928f5, type: 2}
   humenController: {fileID: 11400000, guid: a9ccdb440c7cb2c45a42317702a72250, type: 2}
-  randomController: {fileID: 11400000, guid: 37b830e1d09d15b4f8f86fc5d05a7804, type: 2}
+  randomController: {fileID: 11400000, guid: c8c531fe68f9bfd46ac50b84d6e617ea, type: 2}
   gameTime: 120
   timeText: {fileID: 1691797136}
   messageText: {fileID: 454217706}

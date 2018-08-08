@@ -60,6 +60,8 @@ public class GameManager : MonoBehaviour
     // The current population of agents.
     private List<Agent> agents = new List<Agent>();
 
+    private List<Agent> agents_group_B = new List<Agent>();
+
     private List<Genotype> gamePopulation;
 
     /// <summary>
@@ -98,29 +100,29 @@ public class GameManager : MonoBehaviour
         players.Remove(player);
     }
 
-    public void SetPlayerAmount(int amount)
-    {
-        //Check arguments
-        if (amount < 0) throw new System.Exception("Amount may not be less than zero.");
+    //public void SetPlayerAmount(int amount)
+    //{
+    //    //Check arguments
+    //    if (amount < 0) throw new System.Exception("Amount may not be less than zero.");
 
-        if (amount == players.Count) return;
+    //    if (amount == players.Count) return;
 
-        if (amount > players.Count)
-        {
-            CreateAIPlayers(amount);
-        }
-        else if (amount < players.Count)
-        {
-            //Remove existing players
-            for (int toBeRemoved = players.Count - amount; toBeRemoved > 0; toBeRemoved--)
-            {
-                PlayerScript last = players[players.Count - 1];
-                players.RemoveAt(players.Count - 1);
+    //    if (amount > players.Count)
+    //    {
+    //        CreateAIPlayers(amount, 0);
+    //    }
+    //    else if (amount < players.Count)
+    //    {
+    //        //Remove existing players
+    //        for (int toBeRemoved = players.Count - amount; toBeRemoved > 0; toBeRemoved--)
+    //        {
+    //            PlayerScript last = players[players.Count - 1];
+    //            players.RemoveAt(players.Count - 1);
 
-                Destroy(last.gameObject);
-            }
-        }
-    }
+    //            Destroy(last.gameObject);
+    //        }
+    //    }
+    //}
 
     public IEnumerator<PlayerScript> GetPlayerEnumerator()
     {
@@ -152,22 +154,23 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void CreateAgents(IEnumerable<Genotype> currentPopulation)
+    public void CreateAgents(List<Agent> agents, IEnumerable<Genotype> population)
     {
         //Create new agents from currentPopulation
         agents.Clear();
 
-        foreach (Genotype genotype in currentPopulation)
+        foreach (Genotype genotype in population)
         {
             agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, useRNN, FNNTopology));
         }
     }
 
-    public void CreatePlayers(int amount)
+    public void CreatePlayers(int amount, int group_B_amount)
     {
         players.Clear();
 
-        CreateAIPlayers(amount);
+        CreateAIPlayers(amount, CompareBattleManager.GroupName.A);
+        CreateAIPlayers(group_B_amount, CompareBattleManager.GroupName.B);
         if (GameData.instance.toAddHumanPlayer)
         {
             CreateHumanPlayer();
@@ -189,11 +192,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void CreateAIPlayers(int amount)
+    private void CreateAIPlayers(int amount, CompareBattleManager.GroupName group)
     {
         for (int i = 0; i < amount; i++)
         {
             PlayerScript playerScript = CreatePlayer(aiController);
+            playerScript.group = group;
         }        
     }
 
@@ -212,24 +216,26 @@ public class GameManager : MonoBehaviour
         return playerScript;
     }
 
-    private void AssignAgents(int amount)
+    private void AssignAgents(List<Agent> agents, int id_start = 0)
     {
-        for (int i = 0; i < amount; i++)
+        for (int i = 0; i < agents.Count; i++)
         {
-            PlayerScript playerScript = players[i];
+            PlayerScript playerScript = players[i + id_start];
             playerScript.PlayerAgent = agents[i];
-            playerScript.id = i;
+            playerScript.id = i + id_start;
             agents[i].AgentDied += OnAgentDied;
         }
     }
 
-    public void RestartTheGame(IEnumerable<Genotype> currentPopulation)
+    public void RestartTheGame(IEnumerable<Genotype> currentPopulation, IEnumerable<Genotype> compare_battle_group_B_Population = null)
     {
-        CreateAgents(currentPopulation);
+        CreateAgents(agents, currentPopulation);
+        CreateAgents(agents_group_B, compare_battle_group_B_Population);
         if (players.Count == 0)
-            CreatePlayers(agents.Count);
+            CreatePlayers(agents.Count, agents_group_B.Count);
 
-        AssignAgents(agents.Count);
+        AssignAgents(agents);
+        AssignAgents(agents_group_B, agents.Count);
 
         RestartPlayers();
 
@@ -257,6 +263,10 @@ public class GameManager : MonoBehaviour
         if (EvolutionManager.Instance != null)
         {
             EvolutionManager.Instance.EndTheGame();
+        }
+        else if (CompareBattleManager.Instance != null)
+        {
+            CompareBattleManager.Instance.EndCompareGame();
         }
         else
         {
@@ -306,7 +316,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        if (EvolutionManager.Instance == null)
+        if (EvolutionManager.Instance == null && CompareBattleManager.Instance == null)
         {
             CreatGamePopulation();
             RestartTheGame(gamePopulation);

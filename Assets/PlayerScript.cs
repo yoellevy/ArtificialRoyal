@@ -49,6 +49,8 @@ public class PlayerScript : MonoBehaviour
     public float SurvivelTime { get; set; }
     public bool isAlive;
 
+    public CompareBattleManager.GroupName group;
+
     // Use this for initialization
     private void Awake()
     {
