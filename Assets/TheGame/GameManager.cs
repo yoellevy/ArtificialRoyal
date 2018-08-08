@@ -197,6 +197,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < amount; i++)
         {
             PlayerScript playerScript = CreatePlayer(aiController);
+            playerScript.group = group;
             if (playerScript.group == CompareBattleManager.GroupName.B)
             {
                 playerScript.GetComponent<SpriteRenderer>().color = Color.cyan;
