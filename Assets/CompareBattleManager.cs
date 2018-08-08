@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class CompareBattleManager : MonoBehaviour {
 
@@ -20,6 +21,14 @@ public class CompareBattleManager : MonoBehaviour {
     [SerializeField]
     int gameNumberToPlay = 10; //todo - change if necesery
     int gameCount = 0;
+
+    [SerializeField]
+    private Text group_A_victory_count_text;
+    [SerializeField]
+    private Text group_B_victory_count_text;
+
+    [SerializeField]
+    private Text GameCountText;
 
     public event System.Action EndOfGame;
 
@@ -54,7 +63,10 @@ public class CompareBattleManager : MonoBehaviour {
     {
         group_A_victory_count = 0;
         group_B_victory_count = 0;
-        gameCount = 0;
+        group_A_victory_count_text.text = group_A_victory_count.ToString();
+        group_B_victory_count_text.text = group_B_victory_count.ToString();
+        gameCount = 1;
+        GameCountText.text = gameCount.ToString();
         group_A = CreatGamePopulation(GameData.instance.group_A_data.genotypes, GameManager.Instance.playerAmount / 2);
         group_B = CreatGamePopulation(GameData.instance.group_B_data.genotypes, GameManager.Instance.playerAmount / 2);
         GameManager.Instance.RestartTheGame(group_A, group_B);
@@ -77,11 +89,15 @@ public class CompareBattleManager : MonoBehaviour {
                 }
             }
         }
+        group_A_victory_count_text.text = group_A_victory_count.ToString();
+        group_B_victory_count_text.text = group_B_victory_count.ToString();
+        
         //increase game count
         gameCount++;
+        GameCountText.text = gameCount.ToString();
 
         //if game count > games to play ==> save data to file end return to main menu
-        if (gameCount >= gameNumberToPlay)
+        if (gameCount > gameNumberToPlay)
         {
             SaveDataToFile();
             GameData.instance.BackToMainMenu();
