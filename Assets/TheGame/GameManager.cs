@@ -229,13 +229,19 @@ public class GameManager : MonoBehaviour
 
     public void RestartTheGame(IEnumerable<Genotype> currentPopulation, IEnumerable<Genotype> compare_battle_group_B_Population = null)
     {
+        int group_B_player_count = 0;
         CreateAgents(agents, currentPopulation);
-        CreateAgents(agents_group_B, compare_battle_group_B_Population);
+        if (compare_battle_group_B_Population != null)
+        {
+            CreateAgents(agents_group_B, compare_battle_group_B_Population);
+            group_B_player_count = agents_group_B.Count;
+        }
         if (players.Count == 0)
-            CreatePlayers(agents.Count, agents_group_B.Count);
+            CreatePlayers(agents.Count, group_B_player_count);
 
         AssignAgents(agents);
-        AssignAgents(agents_group_B, agents.Count);
+        if (compare_battle_group_B_Population != null)
+            AssignAgents(agents_group_B, agents.Count);
 
         RestartPlayers();
 
