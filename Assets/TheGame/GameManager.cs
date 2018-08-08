@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -13,13 +14,16 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     public int playerAmount = 50;
-
+    [SerializeField]
+    public int randomPlayerAmount = 5;
     [SerializeField]
     private GameObject player;
     [SerializeField]
     private PlayerControllerScriptable aiController;
     [SerializeField]
     private PlayerControllerScriptable humenController;
+    [SerializeField]
+    private PlayerControllerScriptable randomController;
 
     [SerializeField]
     private int gameTime = 2 * 60;
@@ -94,9 +98,6 @@ public class GameManager : MonoBehaviour
         players.Remove(player);
     }
 
-    
-  
-
     public void SetPlayerAmount(int amount)
     {
         //Check arguments
@@ -144,7 +145,7 @@ public class GameManager : MonoBehaviour
         foreach (PlayerScript player in players)
         {
             player.Restart();
-            player.transform.position = new Vector3(Random.Range(-hh, hh), Random.Range(-hv, hv));
+            player.transform.position = new Vector3(UnityEngine.Random.Range(-hh, hh), UnityEngine.Random.Range(-hv, hv));
         }
 
         PlayersAliveCount = players.Count;
@@ -171,6 +172,21 @@ public class GameManager : MonoBehaviour
         {
             CreateHumanPlayer();
         }
+
+        if (EvolutionManager.Instance != null)
+        {// we are in training
+            CreateRandomPlayers();
+            //add random player
+        }
+    }
+
+    private void CreateRandomPlayers()
+    {
+        for (int i = 0; i < randomPlayerAmount; i++)
+        {
+            PlayerScript playerScript= CreatePlayer(randomController);
+            playerScript.GetComponent<SpriteRenderer>().color = Color.red;
+        }
     }
 
     private void CreateAIPlayers(int amount)
@@ -178,7 +194,7 @@ public class GameManager : MonoBehaviour
         for (int i = 0; i < amount; i++)
         {
             PlayerScript playerScript = CreatePlayer(aiController);
-        }
+        }        
     }
 
     private void CreateHumanPlayer()
@@ -312,6 +328,10 @@ public class GameManager : MonoBehaviour
         var maxKills = GetMaxKills();
         foreach (PlayerScript player in players)
         {
+            if (player.PlayerAgent == null)
+            {
+                continue;
+            }
             if (player.isAlive)
             {
                 player.UpdatePlayerData();
