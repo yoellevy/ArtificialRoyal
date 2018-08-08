@@ -488,7 +488,7 @@ MonoBehaviour:
   messageText: {fileID: 454217706}
   AliveText: {fileID: 1685140414}
   ground: {fileID: 539247949}
-  initialBoardSize: {x: 160, y: 90}
+  initialBoardSize: {x: 90, y: 90}
   bullets: []
   players: []
   useRNN: 1

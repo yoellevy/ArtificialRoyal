@@ -316,7 +316,7 @@ public class GameManager : MonoBehaviour
     private void LateUpdate()
     {
         timeRemain = (gameTime - (Time.timeSinceLevelLoad - startTime));
-        if (timeRemain <= 0 || PlayersAliveCount == 1)
+        if (/*timeRemain <= 0 || */PlayersAliveCount <= 1)
         {
             StartCoroutine(EndGame());
         }
