@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+[Serializable]
 public class GameManager : MonoBehaviour
 {
     #region Members
@@ -50,20 +51,6 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public List<PlayerScript> players = new List<PlayerScript>();
 
-    #region AgentsMembers
-    [SerializeField]
-    public bool useRNN = false;
-    // Topology of the agent's FNN, to be set in Unity Editor
-    [SerializeField]
-    public uint[] FNNTopology;
-
-    // The current population of agents.
-    private List<Agent> agents = new List<Agent>();
-
-    private List<Agent> agents_group_B = new List<Agent>();
-
-    private List<Genotype> gamePopulation;
-
     /// <summary>
     /// The amount of agents that are currently alive.
     /// </summary>
@@ -72,7 +59,6 @@ public class GameManager : MonoBehaviour
         get;
         set;
     }
-    #endregion
 
     #endregion
 
@@ -99,30 +85,6 @@ public class GameManager : MonoBehaviour
     {
         players.Remove(player);
     }
-
-    //public void SetPlayerAmount(int amount)
-    //{
-    //    //Check arguments
-    //    if (amount < 0) throw new System.Exception("Amount may not be less than zero.");
-
-    //    if (amount == players.Count) return;
-
-    //    if (amount > players.Count)
-    //    {
-    //        CreateAIPlayers(amount, 0);
-    //    }
-    //    else if (amount < players.Count)
-    //    {
-    //        //Remove existing players
-    //        for (int toBeRemoved = players.Count - amount; toBeRemoved > 0; toBeRemoved--)
-    //        {
-    //            PlayerScript last = players[players.Count - 1];
-    //            players.RemoveAt(players.Count - 1);
-
-    //            Destroy(last.gameObject);
-    //        }
-    //    }
-    //}
 
     public IEnumerator<PlayerScript> GetPlayerEnumerator()
     {
@@ -153,17 +115,6 @@ public class GameManager : MonoBehaviour
         PlayersAliveCount = players.Count;
     }
 
-
-    public void CreateAgents(List<Agent> agents, IEnumerable<Genotype> population, bool rnn, uint[] Topology)
-    {
-        //Create new agents from currentPopulation
-        agents.Clear();
-
-        foreach (Genotype genotype in population)
-        {
-            agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, rnn, Topology));
-        }
-    }
 
     public void CreatePlayers(int amount, int group_B_amount)
     {
@@ -221,35 +172,82 @@ public class GameManager : MonoBehaviour
         return playerScript;
     }
 
-    private void AssignAgents(List<Agent> agents, int id_start = 0)
+    private void AssignAgents(IEnumerable<Agent> agents, int id_start = 0)
     {
-        for (int i = 0; i < agents.Count; i++)
+        foreach (Agent agent in agents)
         {
-            PlayerScript playerScript = players[i + id_start];
-            playerScript.PlayerAgent = agents[i];
-            playerScript.id = i + id_start;
-            agents[i].AgentDied += OnAgentDied;
+            PlayerScript playerScript = players[id_start];
+            playerScript.PlayerAgent = agent;
+            playerScript.id = id_start;
+            playerScript.PlayerAgent.AgentDied += OnAgentDied;
+            id_start++;
         }
     }
 
-    public void RestartTheGame(IEnumerable<Genotype> currentPopulation, IEnumerable<Genotype> compare_battle_group_B_Population = null)
+
+    public void RestartTheGame(IEnumerable<Genotype> currentPopulation)
     {
-        int group_B_player_count = 0;
+        GameData.instance.CreateAgents(out GameData.instance.agents, currentPopulation, EvolutionManager.Instance.useRNN, EvolutionManager.Instance.NNTopology);
+        RestartTheGame();
+    }
 
-        CreateAgents(agents, currentPopulation, useRNN, FNNTopology);
-
-        if (compare_battle_group_B_Population != null)
+    private void ChangeAgentsAmountToPlayerAmount()
+    {
+        if (CompareBattleManager.Instance != null)
         {
-            CreateAgents(agents_group_B, compare_battle_group_B_Population, GameData.instance.group_B_data.useRNN, GameData.instance.group_B_data.Topology);
-            group_B_player_count = agents_group_B.Count;
+            //Compare Battle Game
+
+            //we have just 2 groups and no human player
+            int amount = playerAmount / 2;
+
+            ChangeAgentsAmountToPlayerAmountHelper(GameData.instance.agents, amount);
+            ChangeAgentsAmountToPlayerAmountHelper(GameData.instance.agents_group_B, amount);
+        }
+        else if (EvolutionManager.Instance == null)
+        {
+            //regular game
+            ChangeAgentsAmountToPlayerAmountHelper(GameData.instance.agents, playerAmount);
+        }
+        //other cases should be OK.
+
+    }
+
+    private void ChangeAgentsAmountToPlayerAmountHelper(List<Agent> agents, int amount)
+    {
+        //Check arguments
+        if (amount < 0) throw new ArgumentException("Amount may not be less than zero.");
+
+        if (amount == agents.Count) return;
+
+        if (amount > agents.Count)
+        {
+            for (int i = 0; agents.Count < amount; i++)
+            {
+                agents.Add(agents[i]);
+            }
+        }
+        else if (amount < agents.Count)
+        {
+            //Remove existing agents
+            for (int toBeRemoved = agents.Count - amount; toBeRemoved > 0; toBeRemoved--)
+            {
+                agents.RemoveAt(agents.Count - 1);
+            }
+        }
+    }
+    
+
+    public void RestartTheGame()
+    {
+        if (players.Count == 0)
+        {
+            ChangeAgentsAmountToPlayerAmount();
+            CreatePlayers(GameData.instance.agents.Count, GameData.instance.agents_group_B.Count);
         }
 
-        if (players.Count == 0)
-            CreatePlayers(agents.Count, group_B_player_count);
-
-        AssignAgents(agents);
-        if (compare_battle_group_B_Population != null)
-            AssignAgents(agents_group_B, agents.Count);
+        AssignAgents(GameData.instance.agents);
+        if (GameData.instance.agents_group_B != null)
+            AssignAgents(GameData.instance.agents_group_B, GameData.instance.agents.Count);
 
         RestartPlayers();
 
@@ -288,8 +286,9 @@ public class GameManager : MonoBehaviour
             messageText.text = "Game Over";
             timeText.text = "0";
             yield return new WaitForSeconds(5);
-            RestartTheGame(gamePopulation);
+            
         }
+        RestartTheGame();
     }
 
 
@@ -304,38 +303,39 @@ public class GameManager : MonoBehaviour
         Instance = this;
     }
 
-    private void CreatGamePopulation()
+    /*private void CreatGamePopulation()
     {
-        gamePopulation = new List<Genotype>(playerAmount);
+        GameData.instance.gamePopulation = new List<Genotype>(playerAmount);
         if (GameData.instance.group_A_data.genotypes.Count == 0)
         {
-            int weightCount = NeuralNetwork.CalculateOverallWeightCount(useRNN, GameManager.Instance.FNNTopology);
+            int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameData.instance.useRNN, GameData.instance.FNNTopology);
             for (int i = 0; i < playerAmount; i++)
             {
                 Genotype genotype = new Genotype(new float[weightCount]);
                 genotype.SetRandomParameters(GeneticAlgorithm.DefInitParamMin, GeneticAlgorithm.DefInitParamMax); //todo!! load real genotype and not generate randoms.
-                gamePopulation.Add(genotype);
+                GameData.instance.gamePopulation.Add(genotype);
             }
         }
         else
         {
-            useRNN = GameData.instance.group_A_data.useRNN;
-            FNNTopology = GameData.instance.group_A_data.Topology;
+            GameData.instance.useRNN = GameData.instance.group_A_data.useRNN;
+            GameData.instance.FNNTopology = GameData.instance.group_A_data.Topology;
             int i = 0;
-            while (gamePopulation.Count < playerAmount)
+            while (GameData.instance.gamePopulation.Count < playerAmount)
             {
-                gamePopulation.Add(GameData.instance.group_A_data.genotypes[i]);
+                GameData.instance.gamePopulation.Add(GameData.instance.group_A_data.genotypes[i]);
                 i = (i + 1) % GameData.instance.group_A_data.genotypes.Count;
             }
         }
-    }
+    }*/
 
     private void Start()
     {
         if (EvolutionManager.Instance == null && CompareBattleManager.Instance == null)
         {
-            CreatGamePopulation();
-            RestartTheGame(gamePopulation);
+            //CreatGamePopulation();
+            //GameData.instance.CreateAgents(out GameData.instance.agents, GameData.instance.group_A_data.genotypes, GameData.instance.useRNN, GameData.instance.FNNTopology);
+            RestartTheGame();
         }
     }
 

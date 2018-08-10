@@ -73,7 +73,10 @@ public class MainMenu : MonoBehaviour {
 
         try
         {
-            GameData.instance.LoadCompareBattleData();
+            string group_A_location = GameData.COMPARE_BATTLE_GROUPS_FOLDER_NAME + "\\" + GameData.GROUP_A_FOLDER_NAME;
+            string group_B_location = GameData.COMPARE_BATTLE_GROUPS_FOLDER_NAME + "\\" + GameData.GROUP_B_FOLDER_NAME;
+            GameData.instance.LoadAgents(group_A_location, out GameData.instance.agents);
+            GameData.instance.LoadAgents(group_B_location, out GameData.instance.agents_group_B);
         }
         catch (Exception e)
         {
@@ -97,14 +100,14 @@ public class MainMenu : MonoBehaviour {
 
         try
         {
-            GameData.instance.LoadGroupData();
+            GameData.instance.LoadAgents(GameData.AGENTS_FOLDER_NAME, out GameData.instance.agents);
         }
         catch (Exception e) 
         {
             if (e is DirectoryNotFoundException || e is ArgumentException || e is FileNotFoundException)
             {
                 ErrorText.text = e.ToString();
-                throw new FileLoadException("can't load genotypes");
+                throw new FileLoadException("can't load agents");
             }
 
             throw e;

@@ -12,9 +12,11 @@ using System.Text;
 /// <summary>
 /// Class representing one member of a population
 /// </summary>
+[Serializable]
 public class Genotype : IComparable<Genotype>, IEnumerable<float>
 {
     #region Members
+    [NonSerialized]
     private static Random randomizer = new Random();
 
     /// <summary>
@@ -36,7 +38,7 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
     }
 
     // The vector of parameters of this genotype.
-    private float[] parameters;
+    private List<float> parameters;
 
     /// <summary>
     /// The amount of parameters stored in the parameter vector of this genotype.
@@ -46,7 +48,7 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
         get
         {
             if (parameters == null) return 0;
-            return parameters.Length;
+            return parameters.Count;
         }
     }
 
@@ -57,18 +59,37 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
         set { parameters[index] = value; }
     }
     #endregion
-
+    
     #region Constructors
     /// <summary>
     /// Instance of a new genotype with given parameter vector and initial fitness of 0.
     /// </summary>
     /// <param name="parameters">The parameter vector to initialise this genotype with.</param>
-    public Genotype(float[] parameters)
+    public Genotype(List<float> parameters)
     {
         this.parameters = parameters;
         Fitness = 0;
     }
+
+    public Genotype(float[] parameters)
+    {
+        this.parameters = new List<float>(parameters);
+        Fitness = 0;
+    }
+
+    public Genotype(int parametersCapacity)
+    {
+        this.parameters = new List<float>(parametersCapacity);
+        Fitness = 0;
+    }
+
+    public Genotype()
+    {
+        this.parameters = new List<float>();
+        Fitness = 0;
+    }
     #endregion
+    
 
     #region Methods
     #region IComparable
@@ -83,13 +104,14 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
     }
     #endregion
 
+    
     #region IEnumerable
     /// <summary>
     /// Gets an Enumerator to iterate over all parameters of this genotype.
     /// </summary>
     public IEnumerator<float> GetEnumerator()
     {
-        for (int i = 0; i < parameters.Length; i++)
+        for (int i = 0; i < parameters.Count; i++)
             yield return parameters[i];
     }
 
@@ -98,10 +120,29 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
     /// </summary>
     IEnumerator IEnumerable.GetEnumerator()
     {
-        for (int i = 0; i < parameters.Length; i++)
+        for (int i = 0; i < parameters.Count; i++)
             yield return parameters[i];
     }
+
+    public void Add(float value)
+    {
+        parameters.Add(value);
+        //yes, this is stupid way.
+
+        /*int size = 1;
+        if (parameters != null)
+            size = parameters.Count + 1;
+        float[] parametersTemp = new float[size];
+        parametersTemp[size - 1] = value;
+        for(int i = 0; i < size - 1; i++)
+        {
+            parametersTemp[i] = parameters[i];
+        }
+        parameters = parametersTemp;*/
+        //throw new NotSupportedException("Add is not supported for paged results.  Try adding new items to the repository instead.");
+    }
     #endregion
+    
 
     /// <summary>
     /// Sets the parameters of this genotype to random values in given range.
@@ -115,16 +156,25 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
 
         //Generate random parameter vector
         float range = maxValue - minValue;
-        for (int i = 0; i < parameters.Length; i++)
+        for (int i = 0; i < parameters.Count; i++)
             parameters[i] = (float)((randomizer.NextDouble() * range) + minValue); //Create a random float between minValue and maxValue
     }
 
     /// <summary>
     /// Returns a copy of the parameter vector.
     /// </summary>
-    public float[] GetParameterCopy()
+    /*public float[] GetParameterCopy()
     {
         float[] copy = new float[ParameterCount];
+        for (int i = 0; i < ParameterCount; i++)
+            copy[i] = parameters[i];
+
+        return copy;
+    }*/
+
+    public List<float> GetParameterCopy()
+    {
+        List<float> copy = new List<float>(ParameterCount);
         for (int i = 0; i < ParameterCount; i++)
             copy[i] = parameters[i];
 
@@ -148,6 +198,7 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
     }
 
     #region Static Methods
+    /*
     /// <summary>
     /// Generates a random genotype with parameters in given range.
     /// </summary>
@@ -164,8 +215,9 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
         randomGenotype.SetRandomParameters(minValue, maxValue);
 
         return randomGenotype;
-    }
+    }*/
 
+    /*
     /// <summary>
     /// Loads a genotype from a file with given file path.
     /// </summary>
@@ -186,7 +238,7 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
         }
 
         return new Genotype(parameters.ToArray());
-    }
+    }*/
     #endregion
     #endregion
 }

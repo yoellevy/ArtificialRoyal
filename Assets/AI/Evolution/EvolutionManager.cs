@@ -35,6 +35,8 @@ public class EvolutionManager : MonoBehaviour
     [SerializeField]
     private uint SaveFirstNGenotype = 0;
     private uint genotypesSaved = 0;
+    [SerializeField]
+    private uint SaveFirstNAgents = 3;
 
 
     private GeneticAlgorithm geneticAlgorithm;
@@ -54,6 +56,12 @@ public class EvolutionManager : MonoBehaviour
     private Text _generationNumber;
 
     private bool _toSaveGenotypes = false;
+
+    [SerializeField]
+    public bool useRNN = false;
+    // Topology of the agent's FNN, to be set in Unity Editor
+    [SerializeField]
+    public uint[] NNTopology;
     #endregion
 
     #region Constructors
@@ -100,7 +108,7 @@ public class EvolutionManager : MonoBehaviour
     /// </summary>
     public void StartEvolution()
     {
-        int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameManager.Instance.useRNN, GameManager.Instance.FNNTopology);
+        int weightCount = NeuralNetwork.CalculateOverallWeightCount(useRNN, NNTopology);
 
         //Setup genetic algorithm
         geneticAlgorithm = new GeneticAlgorithm((uint) weightCount, (uint) (GameManager.Instance.playerAmount- GameManager.Instance.randomPlayerAmount));
@@ -122,10 +130,10 @@ public class EvolutionManager : MonoBehaviour
             //TODO: adding log?
             statisticsFileName = "Evaluation - " + DateTime.Now.ToString("yyyy_MM_dd_HH-mm-ss");
             WriteStatisticsFileStart();
-            WriteNNData();
+            //WriteNNData();
             geneticAlgorithm.FitnessCalculationFinished += WriteStatisticsToFile;
             //geneticAlgorithm.FitnessCalculationFinished += CheckForTrackFinished;
-            geneticAlgorithm.FitnessCalculationFinished += SaveBestGenotypes;
+            //geneticAlgorithm.FitnessCalculationFinished += SaveBestGenotypes;
         }
         
 
@@ -160,6 +168,8 @@ public class EvolutionManager : MonoBehaviour
             File.AppendAllText(saveFolder + statisticsFileName + ".txt", geneticAlgorithm.GenerationCount + "\t" + genotype.Evaluation + Environment.NewLine);
             break; //Only write first
         }
+
+        SaveBestAgents(SaveFirstNAgents);
     }
 
     // Checks the current population and saves genotypes to a file if their evaluation is greater than or equal to 1
@@ -198,39 +208,28 @@ public class EvolutionManager : MonoBehaviour
         _generationNumber.text = (GenerationCount).ToString(); //todo : move it to different area, we don't need to update this every frame.
     }
 
-    private void WriteNNData()
-    {
-        string saveFolder = GameData.SAVE_DATA_DIRECTORY + "/" + statisticsFileName + "/";
-        if (!Directory.Exists(saveFolder))
-            Directory.CreateDirectory(saveFolder);
 
-        string fileName = "NNdata." + GameData.NEURAL_NETWORK_SUFFIX;
-
-        StringBuilder builder = new StringBuilder();
-        builder.Append(GameManager.Instance.useRNN ? "1;" : "0;");
-        foreach (uint param in GameManager.Instance.FNNTopology)
-            builder.Append(param.ToString()).Append(";");
-
-        builder.Remove(builder.Length - 1, 1);
-
-        File.WriteAllText(saveFolder + fileName, builder.ToString());
-    }
-
-    private void SaveBestGenotypes(IEnumerable<Genotype> currentPopulation)
+    public void SaveBestAgents(uint amountToSave)
     {
         string saveFolder = GameData.SAVE_DATA_DIRECTORY + "/" + statisticsFileName + "/"; //todo - change it to work in linux and windows.
 
+        uint agentSaved = 0;
+
         if (!Directory.Exists(saveFolder))
             Directory.CreateDirectory(saveFolder);
 
-        foreach (Genotype genotype in currentPopulation)
-        {
-            genotype.SaveToFile(saveFolder + String.Format("Genotype - Generation #{0} Finished as {1}.{2}", GenerationCount, ++genotypesSaved, GameData.GENOTYPE_SUFFIX));
+        GameData.instance.agents.Sort();
 
-            if (genotypesSaved >= SaveFirstNGenotype) break ;
+        foreach (Agent agent in GameData.instance.agents)
+        {
+            string filePath = saveFolder + String.Format("Agnet - Generation #{0} Finished as {1}.{2}", GenerationCount, ++agentSaved, GameData.AGENT_SUFFIX);
+            agent.SaveToFile(filePath);
+
+            if (agentSaved >= amountToSave) break;
         }
-        genotypesSaved = 0;
     }
+
+
 
     #region GA Operators
     // Selection operator for the genetic algorithm, using a method called remainder stochastic sampling.

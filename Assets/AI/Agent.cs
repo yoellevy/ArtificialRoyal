@@ -4,6 +4,7 @@
 #region Includes
 using System;
 using System.Collections.Generic;
+using System.Text;
 using AI;
 
 #endregion
@@ -11,6 +12,7 @@ using AI;
 /// <summary>
 /// Class that combines a genotype and a feedforward neural network (FNN).
 /// </summary>
+[Serializable]
 public class Agent : IComparable<Agent>
 {
     #region Members
@@ -126,6 +128,39 @@ public class Agent : IComparable<Agent>
         return this.Genotype.CompareTo(other.Genotype);
     }
     #endregion
+
+    [Serializable]
+    public class AgentData
+    {
+        public Genotype genotype;
+        public NeuralLayer.ActivationFunctionType activationFunctionType;
+        public bool useRNN;
+        public uint[] topology;
+
+        public AgentData() { }
+
+        public AgentData(Genotype genotype, NeuralLayer.ActivationFunctionType activationFunctionType, bool useRNN, uint[] topology)
+        {
+            this.genotype = genotype;
+            this.activationFunctionType = activationFunctionType;
+            this.useRNN = useRNN;
+            this.topology = topology;
+        }
+    }
+
+    public void SaveToFile(string filePath)
+    {
+        NeuralLayer.ActivationFunctionType AFType = NeuralLayer.GetActivationFunctionType(FNN.Layers[0].NeuronActivationFunction);
+        AgentData ad = new AgentData(Genotype, AFType, FNN.useRNN, FNN.Topology);
+        Save.WriteToXmlFile(filePath, ad);
+    }
+
+    public static Agent LoadFromFile(string filePath)
+    {
+        AgentData ad = Save.ReadFromXmlFile<AgentData>(filePath);
+        NeuralLayer.ActivationFunction af = NeuralLayer.GetActivitionFunction(ad.activationFunctionType);
+        return new Agent(ad.genotype, af, ad.useRNN, ad.topology); 
+    }
     #endregion
 }
 

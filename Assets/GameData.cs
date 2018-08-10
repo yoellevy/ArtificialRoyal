@@ -11,24 +11,22 @@ public class GameData : MonoBehaviour {
 
     public const string SAVE_DATA_DIRECTORY = "saves";
 
-    public const string GENOTYPES_FOLDER_NAME = "genotypes";
-    public const string GENOTYPE_SUFFIX = "genotype";
-    public const string NEURAL_NETWORK_SUFFIX = "nnd";
+    public const string AGENTS_FOLDER_NAME = "agents";
+    public const string AGENT_SUFFIX = "agent";
+
     public const string COMPARE_BATTLE_GROUPS_FOLDER_NAME = "CompareBattle";
-    public const string GROUP_A_GENOTYPES_FOLDER_NAME = "Group_A";
-    public const string GROUP_B_GENOTYPES_FOLDER_NAME = "Group_B";
+    public const string GROUP_A_FOLDER_NAME = "Group_A";
+    public const string GROUP_B_FOLDER_NAME = "Group_B";
 
-    public class GroupData
-    {
-        public List<Genotype> genotypes = new List<Genotype>();
-        public bool useRNN = true;
-        public uint[] Topology;
-    }
 
-    public GroupData group_A_data = new GroupData();
-    public GroupData group_B_data = new GroupData();
-
+    [HideInInspector]
     public bool toAddHumanPlayer = false;
+    [HideInInspector]
+    public List<Agent> agents = new List<Agent>();
+    [HideInInspector]
+    public List<Agent> agents_group_B = new List<Agent>();
+
+
 
     private void Awake()
     {
@@ -48,67 +46,40 @@ public class GameData : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 
-    public void LoadGroupData()
+    
+
+    public void LoadAgents(string agents_folder, out List<Agent> agents)
     {
-        LoadSomeGenotypes(GENOTYPES_FOLDER_NAME, group_A_data);
-        LoadNNDFile(GENOTYPES_FOLDER_NAME, group_A_data);
-    }
+        agents = new List<Agent>();
 
-    private void LoadSomeGenotypes(string genotype_folder, GroupData groupData)
-    {
-        if (!Directory.Exists(genotype_folder)) throw new DirectoryNotFoundException(string.Format("Can't find {0} Directory", GENOTYPES_FOLDER_NAME));
+        if (!Directory.Exists(agents_folder)) throw new DirectoryNotFoundException(string.Format("Can't find {0} Directory", agents_folder));
 
-        string[] genotype_files = Directory.GetFiles(genotype_folder, "*." + GENOTYPE_SUFFIX);
+        string[] agent_files = Directory.GetFiles(agents_folder, "*." + AGENT_SUFFIX);
 
-        if (genotype_files.Length == 0) throw new FileNotFoundException(string.Format("Can't find files with suffix \"{0}\"", GENOTYPE_SUFFIX));
+        if (agent_files.Length == 0) throw new FileNotFoundException(string.Format("Can't find files with suffix \"{0}\"", AGENT_SUFFIX));
 
-        foreach (string file in genotype_files)
+        foreach (string file in agent_files)
         {
-            groupData.genotypes.Add(Genotype.LoadFromFile(file));
+            agents.Add(Agent.LoadFromFile(file));
         }
     }
 
-    private void LoadNNDFile(string nnd_folder, GroupData groupData)
-    {
-        string[] nnd_files = Directory.GetFiles(nnd_folder, "*." + NEURAL_NETWORK_SUFFIX);
-
-        if (nnd_files.Length == 0) throw new FileNotFoundException(string.Format("Can't find file with suffix \"{0}\"", NEURAL_NETWORK_SUFFIX));
-        if (nnd_files.Length > 1) throw new FileNotFoundException(string.Format("Too many files with suffix \"{0}\"", NEURAL_NETWORK_SUFFIX));
-
-        string data = File.ReadAllText(nnd_files[0]);
-
-        List<float> parameters = new List<float>();
-        string[] paramStrings = data.Split(';');
-
-        groupData.useRNN = paramStrings[0].Equals("1");
-
-        List<uint> topology_list = new List<uint>();
-
-        for (int i = 1; i < paramStrings.Length; i++)
-        {
-            uint parsed;
-            if (!uint.TryParse(paramStrings[i], out parsed)) throw new ArgumentException("The file at given file path does not contain a valid topology serialisation.");
-            topology_list.Add(parsed);
-        }
-
-        groupData.Topology = topology_list.ToArray();
-    }
-
-    public void LoadCompareBattleData()
-    {
-        
-        string group_A_location = COMPARE_BATTLE_GROUPS_FOLDER_NAME + "\\" + GROUP_A_GENOTYPES_FOLDER_NAME;
-        string group_B_location = COMPARE_BATTLE_GROUPS_FOLDER_NAME + "\\" + GROUP_B_GENOTYPES_FOLDER_NAME;
-        LoadSomeGenotypes(group_A_location, group_A_data);
-        LoadNNDFile(group_A_location, group_A_data);
-        LoadSomeGenotypes(group_B_location, group_B_data);
-        LoadNNDFile(group_B_location, group_B_data);
-    }
 
     public void BackToMainMenu()
     {
         Time.timeScale = 1;
         toAddHumanPlayer = false;
         SceneManager.LoadScene("MainMenu");
+    }
+
+    public void CreateAgents(out List<Agent> agents, IEnumerable<Genotype> population, bool rnn, uint[] Topology)
+    {
+        //Create new agents from currentPopulation
+        agents = new List<Agent>();
+
+        foreach (Genotype genotype in population)
+        {
+            agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, rnn, Topology));
+        }
     }
 }

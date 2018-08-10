@@ -11,6 +11,10 @@ using System;
 public class NeuralLayer
 {
     #region Members
+
+    public enum ActivationFunctionType {Sigmoid, TanH, SoftSign}
+
+
     private bool rnnLayer;
     private double[] recurrents;
 
@@ -232,6 +236,33 @@ public class NeuralLayer
         }
 
         return output;
+    }
+
+    public static ActivationFunction GetActivitionFunction(ActivationFunctionType type)
+    {
+        switch (type)
+        {
+            case ActivationFunctionType.Sigmoid:
+                return MathHelper.SigmoidFunction;
+            case ActivationFunctionType.SoftSign:
+                return MathHelper.SoftSignFunction;
+            case ActivationFunctionType.TanH:
+                return MathHelper.TanHFunction;
+            default:
+                return MathHelper.SigmoidFunction;
+        }
+    }
+
+    public static ActivationFunctionType GetActivationFunctionType(ActivationFunction af)
+    {
+        if (af == MathHelper.SigmoidFunction)
+            return ActivationFunctionType.Sigmoid;
+        if (af == MathHelper.SoftSignFunction)
+            return ActivationFunctionType.SoftSign;
+        if (af == MathHelper.TanHFunction)
+            return ActivationFunctionType.TanH;
+
+        return ActivationFunctionType.Sigmoid;
     }
     #endregion
 }

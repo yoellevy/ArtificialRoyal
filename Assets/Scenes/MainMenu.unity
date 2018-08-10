@@ -333,6 +333,21 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 114547288440806656, guid: 0064ebb90c2e3b748a75b5d0f8f36a03,
+        type: 2}
+      propertyPath: agents.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114547288440806656, guid: 0064ebb90c2e3b748a75b5d0f8f36a03,
+        type: 2}
+      propertyPath: FNNTopology.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114547288440806656, guid: 0064ebb90c2e3b748a75b5d0f8f36a03,
+        type: 2}
+      propertyPath: agents.Array.data[0].Weights.Array.size
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4588984471501680, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -364,6 +379,36 @@ Prefab:
     - target: {fileID: 4588984471501680, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}
       propertyPath: m_RootOrder
       value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114547288440806656, guid: 0064ebb90c2e3b748a75b5d0f8f36a03,
+        type: 2}
+      propertyPath: FNNTopology.Array.data[0]
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 114547288440806656, guid: 0064ebb90c2e3b748a75b5d0f8f36a03,
+        type: 2}
+      propertyPath: FNNTopology.Array.data[4]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 114547288440806656, guid: 0064ebb90c2e3b748a75b5d0f8f36a03,
+        type: 2}
+      propertyPath: FNNTopology.Array.data[1]
+      value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 114547288440806656, guid: 0064ebb90c2e3b748a75b5d0f8f36a03,
+        type: 2}
+      propertyPath: FNNTopology.Array.data[2]
+      value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 114547288440806656, guid: 0064ebb90c2e3b748a75b5d0f8f36a03,
+        type: 2}
+      propertyPath: FNNTopology.Array.data[3]
+      value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 114547288440806656, guid: 0064ebb90c2e3b748a75b5d0f8f36a03,
+        type: 2}
+      propertyPath: useRNN
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}

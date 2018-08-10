@@ -51,7 +51,7 @@ public class GeneticAlgorithm
     /// Method template for methods used to evaluate (or start the evluation process of) the current population.
     /// </summary>
     /// <param name="currentPopulation">The current population.</param>
-    public delegate void EvaluationOperator(IEnumerable<Genotype> currentPopulation, IEnumerable<Genotype> grou_b = null);
+    public delegate void EvaluationOperator(IEnumerable<Genotype> currentPopulation);
     /// <summary>
     /// Method template for methods used to calculate the fitness value of each genotype of the current population.
     /// </summary>
@@ -192,13 +192,20 @@ public class GeneticAlgorithm
     {
         Running = true;
 
-        if (GameData.instance.group_A_data.genotypes.Count == 0)
+        if (GameData.instance.agents == null || GameData.instance.agents.Count == 0)
         {
             InitialisePopulation(currentPopulation);
         }
         else
         {
-            List<Genotype> intermediatePopulation = GameData.instance.group_A_data.genotypes;
+            EvolutionManager.Instance.useRNN = GameData.instance.agents[0].FNN.useRNN;
+            EvolutionManager.Instance.NNTopology = GameData.instance.agents[0].FNN.Topology;
+
+            List<Genotype> intermediatePopulation = new List<Genotype>();
+            foreach (Agent agent in GameData.instance.agents)
+            {
+                intermediatePopulation.Add(agent.Genotype);
+            }
 
             //Apply Recombination
             List<Genotype> newPopulation = Recombination(intermediatePopulation, PopulationSize);
@@ -209,10 +216,11 @@ public class GeneticAlgorithm
             //Set current population to newly generated one and start evaluation again
             currentPopulation = newPopulation;
 
-            GameData.instance.group_A_data.genotypes.Clear();
+            GameData.instance.agents.Clear();
         }
 
-        Evaluation(currentPopulation);
+        Evaluation(currentPopulation); //todo
+        //Evaluation();
     }
 
     public void EvaluationFinished()
@@ -261,7 +269,7 @@ public class GeneticAlgorithm
             genotype.SetRandomParameters(DefInitParamMin, DefInitParamMax);
     }
 
-    public static void AsyncEvaluation(IEnumerable<Genotype> currentPopulation, IEnumerable<Genotype> group_b = null)
+    public static void AsyncEvaluation(IEnumerable<Genotype> currentPopulation)
     {
         //At this point the async evaluation should be started and after it is finished EvaluationFinished should be called
     }

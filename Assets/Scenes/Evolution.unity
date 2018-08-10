@@ -142,8 +142,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SaveStatistics: 1
   SaveFirstNGenotype: 3
+  SaveFirstNAgents: 3
   timeScale: 10
   _generationNumber: {fileID: 1245460663}
+  useRNN: 1
+  NNTopology: 150000001b000000100000000800000004000000
 --- !u!4 &374527187
 Transform:
   m_ObjectHideFlags: 0

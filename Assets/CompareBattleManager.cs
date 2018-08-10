@@ -67,9 +67,7 @@ public class CompareBattleManager : MonoBehaviour {
         group_B_victory_count_text.text = group_B_victory_count.ToString();
         gameCount = 1;
         GameCountText.text = gameCount.ToString();
-        group_A = CreatGamePopulation(GameData.instance.group_A_data.genotypes, GameManager.Instance.playerAmount / 2);
-        group_B = CreatGamePopulation(GameData.instance.group_B_data.genotypes, GameManager.Instance.playerAmount / 2);
-        GameManager.Instance.RestartTheGame(group_A, group_B);
+        GameManager.Instance.RestartTheGame();
     }
 
     public void EndCompareGame()
@@ -102,8 +100,6 @@ public class CompareBattleManager : MonoBehaviour {
             SaveDataToFile();
             GameData.instance.BackToMainMenu();
         }
-
-        GameManager.Instance.RestartTheGame(group_A, group_B);
     }
 
     private void SaveDataToFile()

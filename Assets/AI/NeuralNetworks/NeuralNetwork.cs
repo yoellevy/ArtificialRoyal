@@ -10,6 +10,7 @@ using UnityEngine;
 /// <summary>
 /// Class representing a fully connceted feedforward neural network.
 /// </summary>
+[Serializable]
 public class NeuralNetwork
 {
     #region Members
@@ -41,7 +42,7 @@ public class NeuralNetwork
         private set;
     }
 
-    private bool useRNN;
+    public bool useRNN;
 
     #endregion
 
