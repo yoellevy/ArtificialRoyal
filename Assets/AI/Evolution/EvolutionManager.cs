@@ -50,11 +50,6 @@ public class EvolutionManager : MonoBehaviour
 
     private bool _toSaveGenotypes = false;
 
-    [SerializeField]
-    public bool useRNN = false;
-    // Topology of the agent's FNN, to be set in Unity Editor
-    [SerializeField]
-    public uint[] NNTopology;
     #endregion
 
     #region Constructors
@@ -96,12 +91,12 @@ public class EvolutionManager : MonoBehaviour
     /// </summary>
     public void StartEvolution()
     {
-        int weightCount = NeuralNetwork.CalculateOverallWeightCount(useRNN, NNTopology);
+        int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameData.instance.useRNN, GameData.instance.NNTopology);
 
         //Setup genetic algorithm
         geneticAlgorithm = new GeneticAlgorithm((uint) weightCount, (uint) (GameManager.Instance.playerAmount- GameManager.Instance.randomPlayerAmount));
 
-        geneticAlgorithm.Evaluation = GameManager.Instance.RestartTheGame;
+        geneticAlgorithm.Evaluation = CreateAgentsAndRestart;
 
         geneticAlgorithm.Selection = GeneticAlgorithm.SelectBestNAndRandomMSelectionOperator;
         geneticAlgorithm.Recombination = RandomRecombination;
@@ -127,6 +122,12 @@ public class EvolutionManager : MonoBehaviour
 
 
         geneticAlgorithm.Start();
+    }
+
+    private void CreateAgentsAndRestart(IEnumerable<Genotype> currentPopulation)
+    {
+        GameData.instance.CreateAgents(out GameData.instance.agents, currentPopulation);
+        GameManager.Instance.RestartTheGame();
     }
 
     // Writes the starting line to the statistics file, stating all genetic algorithm parameters.

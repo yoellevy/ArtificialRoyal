@@ -203,8 +203,8 @@ public class GeneticAlgorithm
         }
         else
         {
-            EvolutionManager.Instance.useRNN = GameData.instance.agents[0].FNN.useRNN;
-            EvolutionManager.Instance.NNTopology = GameData.instance.agents[0].FNN.Topology;
+            GameData.instance.useRNN = GameData.instance.agents[0].FNN.useRNN;
+            GameData.instance.NNTopology = GameData.instance.agents[0].FNN.Topology;
 
             List<Genotype> intermediatePopulation = new List<Genotype>();
             foreach (Agent agent in GameData.instance.agents)
@@ -320,7 +320,7 @@ public class GeneticAlgorithm
     {
         int n = selectNBest, m = selectMRandom;
 
-        if (n + m < currentPopulation.Count) throw new Exception("can't save " + (n+m).ToString() + " genotypes from " + currentPopulation.Count.ToString());
+        if (n + m > currentPopulation.Count) throw new Exception("can't save " + (n+m).ToString() + " genotypes from " + currentPopulation.Count.ToString());
 
         List<Genotype> intermediatePopulation = new List<Genotype>();
 

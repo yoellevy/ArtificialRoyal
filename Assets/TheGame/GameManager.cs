@@ -183,13 +183,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-    public void RestartTheGame(IEnumerable<Genotype> currentPopulation)
-    {
-        GameData.instance.CreateAgents(out GameData.instance.agents, currentPopulation, EvolutionManager.Instance.useRNN, EvolutionManager.Instance.NNTopology);
-        RestartTheGame();
-    }
-
     private void ChangeAgentsAmountToPlayerAmount()
     {
         if (CompareBattleManager.Instance != null)

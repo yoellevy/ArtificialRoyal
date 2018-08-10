@@ -12,7 +12,7 @@ public class NeuralLayer
 {
     #region Members
 
-    public enum ActivationFunctionType {Sigmoid, TanH, SoftSign}
+    public enum ActivationFunctionType {Sigmoid = 0, TanH = 1, SoftSign = 2}
 
 
     private bool rnnLayer;

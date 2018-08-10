@@ -12,6 +12,15 @@ public class MainMenu : MonoBehaviour {
     [SerializeField]
     private Text ErrorText;
 
+    [SerializeField]
+    private Dropdown ActivitionFunctionDropDown;
+
+    [SerializeField]
+    private Dropdown NNTypeDropDown;
+
+    [SerializeField]
+    private Dropdown TopologyDropDown;
+
 
     public void TrainFromScratch()
     {
@@ -111,6 +120,29 @@ public class MainMenu : MonoBehaviour {
             }
 
             throw e;
+        }
+    }
+
+    public void SetActivitionFunction()
+    {
+        GameData.instance.activationFunctionType = (NeuralLayer.ActivationFunctionType)ActivitionFunctionDropDown.value;
+    }
+
+    public void SetNNType()
+    {
+        GameData.instance.useRNN = NNTypeDropDown.value == 0;
+    }
+
+    public void SetTopology()
+    {
+        switch (TopologyDropDown.value)
+        {
+            case 0:
+                GameData.instance.NNTopology = new uint[5] {21, 27, 16, 8, 4};
+                break;
+            case 1:
+                GameData.instance.NNTopology = new uint[5] { 21, 16, 12, 8, 4 };
+                break;
         }
     }
 }

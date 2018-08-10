@@ -26,6 +26,15 @@ public class GameData : MonoBehaviour {
     [HideInInspector]
     public List<Agent> agents_group_B = new List<Agent>();
 
+    #region EvolutionData
+    [SerializeField]
+    public bool useRNN = true;
+    [SerializeField]
+    public uint[] NNTopology = new uint[5] {21, 27, 16, 8, 4};
+    [SerializeField]
+    public NeuralLayer.ActivationFunctionType activationFunctionType = NeuralLayer.ActivationFunctionType.Sigmoid;
+    #endregion
+
 
 
     private void Awake()
@@ -71,14 +80,15 @@ public class GameData : MonoBehaviour {
         SceneManager.LoadScene("MainMenu");
     }
 
-    public void CreateAgents(out List<Agent> agents, IEnumerable<Genotype> population, bool rnn, uint[] Topology)
+    public void CreateAgents(out List<Agent> agents, IEnumerable<Genotype> population)
     {
         //Create new agents from currentPopulation
         agents = new List<Agent>();
+        NeuralLayer.ActivationFunction af = NeuralLayer.GetActivitionFunction(activationFunctionType);
 
         foreach (Genotype genotype in population)
         {
-            agents.Add(new Agent(genotype, MathHelper.SoftSignFunction, rnn, Topology));
+            agents.Add(new Agent(genotype, af, useRNN, NNTopology));
         }
     }
 }
