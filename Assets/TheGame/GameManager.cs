@@ -29,8 +29,6 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private int gameTime = 2 * 60;
     private float startTime;
-    [SerializeField]
-    private Text timeText;
     private float timeRemain;
     [SerializeField]
     private Text messageText;
@@ -372,11 +370,6 @@ public class GameManager : MonoBehaviour
         return players.Max((script => script.KillCount));
     }
 
-
-    private void OnGUI()
-    {
-        timeText.text = ((int) (timeRemain)).ToString();
-    }
 
     private void SetCurrentBoardSize(Vector2 size)
     {
