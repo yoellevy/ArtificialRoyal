@@ -16,9 +16,6 @@ public class CompareBattleManager : MonoBehaviour {
     }
 
     [SerializeField]
-    float timeScale = 10;
-
-    [SerializeField]
     int gameNumberToPlay = 10; //todo - change if necesery
     int gameCount = 0;
 
@@ -51,12 +48,6 @@ public class CompareBattleManager : MonoBehaviour {
 
         //Load Game
         SceneManager.LoadScene("Game", LoadSceneMode.Additive);
-    }
-
-
-    private void Update()
-    {
-        Time.timeScale = timeScale;
     }
 
     private void Start()

@@ -50,9 +50,6 @@ public class EvolutionManager : MonoBehaviour
     }
 
     [SerializeField]
-    float timeScale = 1;
-
-    [SerializeField]
     private Text _generationNumber;
 
     private bool _toSaveGenotypes = false;
@@ -90,11 +87,6 @@ public class EvolutionManager : MonoBehaviour
     #endregion
 
     #region Methods
-
-    private void Update()
-    {
-        Time.timeScale = timeScale;
-    }
 
     /// <summary>
     /// Event for when all agents have died or the game ended.

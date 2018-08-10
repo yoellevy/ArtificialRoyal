@@ -67,7 +67,6 @@ public class GameData : MonoBehaviour {
 
     public void BackToMainMenu()
     {
-        Time.timeScale = 1;
         toAddHumanPlayer = false;
         SceneManager.LoadScene("MainMenu");
     }
