@@ -58,6 +58,7 @@ public class GameManager : MonoBehaviour
         set;
     }
 
+    private bool inEndGame = false;
     #endregion
 
     public struct EvaluationData
@@ -258,6 +259,8 @@ public class GameManager : MonoBehaviour
         SetCurrentBoardSize(initialBoardSize);
 
         Observation.Instant.InitMaps();
+
+        inEndGame = false;
     }
 
     // Callback for when an agent died.
@@ -277,16 +280,17 @@ public class GameManager : MonoBehaviour
         else if (CompareBattleManager.Instance != null)
         {
             CompareBattleManager.Instance.EndCompareGame();
+            RestartTheGame();
         }
         else
         {
             //todo - add regular game ending.
             messageText.text = "Game Over";
-            timeText.text = "0";
             yield return new WaitForSeconds(5);
-            
+            messageText.text = "";
+            RestartTheGame();
         }
-        RestartTheGame();
+        
     }
 
 
@@ -340,8 +344,9 @@ public class GameManager : MonoBehaviour
     private void LateUpdate()
     {
         timeRemain = (gameTime - (Time.timeSinceLevelLoad - startTime));
-        if (PlayersAliveCount <= 1)
+        if (PlayersAliveCount <= 1 && !inEndGame)
         {
+            inEndGame = true;
             StartCoroutine(EndGame());
         }
     }
