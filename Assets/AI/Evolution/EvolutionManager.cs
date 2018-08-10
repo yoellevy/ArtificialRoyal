@@ -31,10 +31,6 @@ public class EvolutionManager : MonoBehaviour
     private bool SaveStatistics = false;
     private string statisticsFileName;
 
-    // How many of the first to finish the course should be saved to file, to be set in Unity Editor
-    [SerializeField]
-    private uint SaveFirstNGenotype = 0;
-    private uint genotypesSaved = 0;
     [SerializeField]
     private uint SaveFirstNAgents = 3;
 
@@ -104,11 +100,10 @@ public class EvolutionManager : MonoBehaviour
 
         //Setup genetic algorithm
         geneticAlgorithm = new GeneticAlgorithm((uint) weightCount, (uint) (GameManager.Instance.playerAmount- GameManager.Instance.randomPlayerAmount));
-        genotypesSaved = 0;
 
         geneticAlgorithm.Evaluation = GameManager.Instance.RestartTheGame;
 
-        geneticAlgorithm.Selection = GeneticAlgorithm.DefaultSelectionOperator;
+        geneticAlgorithm.Selection = GeneticAlgorithm.SelectBestNAndRandomMSelectionOperator;
         geneticAlgorithm.Recombination = RandomRecombination;
         geneticAlgorithm.Mutation = MutateAllButBestTwo;
         
@@ -163,29 +158,6 @@ public class EvolutionManager : MonoBehaviour
 
         SaveBestAgents(SaveFirstNAgents);
     }
-
-    // Checks the current population and saves genotypes to a file if their evaluation is greater than or equal to 1
-//    private void CheckForTrackFinished(IEnumerable<Genotype> currentPopulation)
-//    {
-//        if (genotypesSaved >= SaveFirstNGenotype) return;
-//
-//        string saveFolder = statisticsFileName + "/";
-//
-//        foreach (Genotype genotype in currentPopulation)
-//        {
-//            if (genotype.Evaluation >= 1)
-//            {
-//                if (!Directory.Exists(saveFolder))
-//                    Directory.CreateDirectory(saveFolder);
-//
-//                genotype.SaveToFile(saveFolder + "Genotype - Finished as " + (++genotypesSaved) + ".txt");
-//
-//                if (genotypesSaved >= SaveFirstNGenotype) return;
-//            }
-//            else
-//                return; //List should be sorted, so we can exit here
-//        }
-//    }
 
 
 

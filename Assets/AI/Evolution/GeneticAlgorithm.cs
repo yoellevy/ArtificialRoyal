@@ -22,6 +22,11 @@ public class GeneticAlgorithm
     /// </summary>
     public const float DefInitParamMax = 1.0f;
 
+    
+    public static int selectNBest = 10;
+
+    public static int selectMRandom = 3;
+
     /// <summary>
     /// Default probability of a parameter being swapped during crossover.
     /// </summary>
@@ -307,6 +312,27 @@ public class GeneticAlgorithm
         intermediatePopulation.Add(currentPopulation[0]);
         intermediatePopulation.Add(currentPopulation[1]);
         intermediatePopulation.Add(currentPopulation[2]);
+
+        return intermediatePopulation;
+    }
+
+    public static List<Genotype> SelectBestNAndRandomMSelectionOperator(List<Genotype> currentPopulation)
+    {
+        int n = selectNBest, m = selectMRandom;
+
+        if (n + m < currentPopulation.Count) throw new Exception("can't save " + (n+m).ToString() + " genotypes from " + currentPopulation.Count.ToString());
+
+        List<Genotype> intermediatePopulation = new List<Genotype>();
+
+        for (int i = 0; i < n; i++)
+        {
+            intermediatePopulation.Add(currentPopulation[i]);
+        }
+
+        for (int i = 0; i < m; i++)
+        {
+            intermediatePopulation.Add(currentPopulation[UnityEngine.Random.Range(n, currentPopulation.Count)]);
+        }
 
         return intermediatePopulation;
     }
