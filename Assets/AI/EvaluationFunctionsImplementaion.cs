@@ -33,7 +33,7 @@ namespace AI
         private static float HandleLinearComposition(PlayerScript agent)
         {
             var weights = agent.Weights;
-            return 0.5f * HandleRank(agent) + 0.5f * HandleKill(agent);
+            return GameData.instance.EvalRank * HandleRank(agent) + GameData.instance.EvalKills * HandleKill(agent);
             //return weights[0] * HandleRank(agent) + weights[1] * HandleKill(agent) + weights[2] * HandleSurvive(agent);
         }
 

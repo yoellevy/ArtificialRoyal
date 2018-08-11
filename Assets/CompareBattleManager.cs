@@ -15,8 +15,6 @@ public class CompareBattleManager : MonoBehaviour {
         private set;
     }
 
-    [SerializeField]
-    int gameNumberToPlay = 10; //todo - change if necesery
     int gameCount = 0;
 
     [SerializeField]
@@ -86,7 +84,7 @@ public class CompareBattleManager : MonoBehaviour {
         GameCountText.text = gameCount.ToString();
 
         //if game count > games to play ==> save data to file end return to main menu
-        if (gameCount > gameNumberToPlay)
+        if (gameCount > GameData.instance.CompareBattleGamesToPlay)
         {
             SaveDataToFile();
             GameData.instance.BackToMainMenu();

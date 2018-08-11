@@ -24,9 +24,19 @@ public class MainMenu : MonoBehaviour {
     [SerializeField]
     private InputField SelectMRandomInputField;
     [SerializeField]
+    private InputField AmountToSaveFromSelectionInputField;
+    [SerializeField]
     private Slider SwapProbSlider;
     [SerializeField]
     private Text SwapProbText;
+
+    [SerializeField]
+    private InputField MutationSaveAmountInputField;
+    [SerializeField]
+    private Slider MutationPercSlider;
+    [SerializeField]
+    private Text MutationPercText;
+
     [SerializeField]
     private Slider MutationProbSlider;
     [SerializeField]
@@ -34,9 +44,18 @@ public class MainMenu : MonoBehaviour {
     [SerializeField]
     private InputField MutationAmountInputField;
 
+    [SerializeField]
+    private InputField EvalRankInputField;
+    [SerializeField]
+    private InputField EvalKillsInputField;
+
+    [SerializeField]
+    private InputField CompareBattleGameToPlayInputField;
+
     private void Start()
     {
-        SetUIData();
+        SetTrainUIData();
+        SetCompareBattleUIData();
     }
 
     public void TrainFromScratch()
@@ -103,6 +122,8 @@ public class MainMenu : MonoBehaviour {
             string group_B_location = GameData.COMPARE_BATTLE_GROUPS_FOLDER_NAME + "\\" + GameData.GROUP_B_FOLDER_NAME;
             GameData.instance.LoadAgents(group_A_location, out GameData.instance.agents);
             GameData.instance.LoadAgents(group_B_location, out GameData.instance.agents_group_B);
+
+            GameData.instance.CompareBattleGamesToPlay = int.Parse(CompareBattleGameToPlayInputField.text);
         }
         catch (Exception e)
         {
@@ -163,27 +184,44 @@ public class MainMenu : MonoBehaviour {
         }
     }
 
-    private void SetUIData()
+    private void SetCompareBattleUIData()
+    {
+        CompareBattleGameToPlayInputField.text = GameData.instance.CompareBattleGamesToPlay.ToString();
+    }
+
+    private void SetTrainUIData()
     {
         SelectNBestInputField.text = GameData.instance.SelectNBest.ToString();
         SelectMRandomInputField.text = GameData.instance.SelectMRandom.ToString();
 
+        AmountToSaveFromSelectionInputField.text = GameData.instance.BreadAmountToSaveFromSelection.ToString();
         float value = GameData.instance.SwapProb;
         SwapProbSlider.value = value;
         SwapProbText.text = value.ToString();
+
+        MutationSaveAmountInputField.text = GameData.instance.MutationSaveAmount.ToString();
+        value = GameData.instance.MutationPerc;
+        MutationPercSlider.value = value;
+        MutationPercText.text = value.ToString();
 
         value = GameData.instance.MutationProb;
         MutationProbSlider.value = value;
         MutationProbText.text = value.ToString();
 
         MutationAmountInputField.text = GameData.instance.MutationAmount.ToString();
+
+        EvalRankInputField.text = GameData.instance.EvalRank.ToString();
+        EvalKillsInputField.text = GameData.instance.EvalKills.ToString();
     }
 
     public void SetGeneticToGameData()
     {
         GameData.instance.SelectNBest = int.Parse(SelectNBestInputField.text);
         GameData.instance.SelectMRandom = int.Parse(SelectMRandomInputField.text);
+        GameData.instance.BreadAmountToSaveFromSelection = int.Parse(AmountToSaveFromSelectionInputField.text);
         GameData.instance.SwapProb = SwapProbSlider.value;
+        GameData.instance.MutationSaveAmount = int.Parse(MutationSaveAmountInputField.text);
+        GameData.instance.MutationPerc = MutationPercSlider.value;
         GameData.instance.MutationProb = MutationProbSlider.value;
         GameData.instance.MutationAmount = int.Parse(MutationAmountInputField.text);
     }
@@ -208,11 +246,24 @@ public class MainMenu : MonoBehaviour {
         SwapProbText.text = value.ToString();
     }
 
+    public void MutationPercOnValueChanged()
+    {
+        float value = (float)Math.Round(MutationPercSlider.value, 2);
+        MutationPercSlider.value = value;
+        MutationPercText.text = value.ToString();
+    }
+
     public void MutationProbOnValueChanged()
     {
         float value = (float)Math.Round(MutationProbSlider.value, 2);
         MutationProbSlider.value = value;
         MutationProbText.text = value.ToString();
+    }
+
+    public void SetEvaluationToGameData()
+    {
+        GameData.instance.EvalRank = int.Parse(EvalRankInputField.text);
+        GameData.instance.EvalKills = int.Parse(EvalKillsInputField.text);;
     }
 
     public void StartTrain()
@@ -225,7 +276,15 @@ public class MainMenu : MonoBehaviour {
         //set Genetics:
         SetGeneticToGameData();
 
+        //set Evaluation:
+        SetEvaluationToGameData();
+
         //load Scene:
         SceneManager.LoadScene("Evolution");
+    }
+
+    public void StartCompareBattle()
+    {
+
     }
 }

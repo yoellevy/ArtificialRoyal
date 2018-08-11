@@ -100,7 +100,7 @@ public class EvolutionManager : MonoBehaviour
 
         geneticAlgorithm.Selection = GeneticAlgorithm.SelectBestNAndRandomMSelectionOperator;
         geneticAlgorithm.Recombination = RandomRecombination;
-        geneticAlgorithm.Mutation = MutateAllButBestTwo;
+        geneticAlgorithm.Mutation = MutateAllButBestN;
         
 
         EndOfGame += GameManager.Instance.EvalOfEndGame;
@@ -233,10 +233,11 @@ public class EvolutionManager : MonoBehaviour
             throw new System.ArgumentException("The intermediate population has to be at least of size 2 for this operator.");
 
         List<Genotype> newPopulation = new List<Genotype>();
-        //Always add best two (unmodified)
-        newPopulation.Add(intermediatePopulation[0]);
-        newPopulation.Add(intermediatePopulation[1]);
-
+        //Always add atlist best two (unmodified)
+        for (int i = 0; i < GameData.instance.BreadAmountToSaveFromSelection; i++)
+        {
+            newPopulation.Add(intermediatePopulation[i]);
+        }
 
         while (newPopulation.Count < newPopulationSize)
         {
@@ -249,7 +250,7 @@ public class EvolutionManager : MonoBehaviour
 
             Genotype offspring1, offspring2;
             GeneticAlgorithm.CompleteCrossover(intermediatePopulation[randomIndex1], intermediatePopulation[randomIndex2], 
-                GeneticAlgorithm.DefCrossSwapProb, out offspring1, out offspring2);
+                GameData.instance.SwapProb, out offspring1, out offspring2);
 
             newPopulation.Add(offspring1);
             if (newPopulation.Count < newPopulationSize)
@@ -257,6 +258,15 @@ public class EvolutionManager : MonoBehaviour
         }
 
         return newPopulation;
+    }
+
+    private void MutateAllButBestN(List<Genotype> newPopulation)
+    {
+        for (int i = GameData.instance.MutationSaveAmount; i < newPopulation.Count; i++)
+        {
+            if (randomizer.NextDouble() < GameData.instance.MutationPerc)
+                GeneticAlgorithm.MutateGenotype(newPopulation[i], GameData.instance.MutationProb, GameData.instance.MutationAmount);
+        }
     }
 
     // Mutates all members of the new population with the default probability, while leaving the first 2 genotypes in the list untouched.

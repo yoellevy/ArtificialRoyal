@@ -33,12 +33,21 @@ public class GameData : MonoBehaviour {
     public uint[] NNTopology = new uint[5] {21, 27, 16, 8, 4};
     [SerializeField]
     public NeuralLayer.ActivationFunctionType activationFunctionType = NeuralLayer.ActivationFunctionType.Sigmoid;
-    public int SelectNBest = 10;
-    public int SelectMRandom = 3;
+
+    [Range(2, int.MaxValue)] public int SelectNBest = 10;
+    [Range(0, int.MaxValue)] public int SelectMRandom = 3;
+    [Range(2, int.MaxValue)] public int BreadAmountToSaveFromSelection = 2;
     [Range(0, 1)] public float SwapProb = 0.6f;
+    [Range(0, int.MaxValue)] public int MutationSaveAmount = 2;
+    [Range(0, 1)] public float MutationPerc = 1f;
     [Range(0, 1)] public float MutationProb = 0.3f;
     public int MutationAmount = 2;
+
+    public int EvalRank = 1;
+    public int EvalKills = 1;
     #endregion
+
+    public int CompareBattleGamesToPlay = 50;
 
 
 
