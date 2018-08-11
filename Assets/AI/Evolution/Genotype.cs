@@ -68,24 +68,28 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
     public Genotype(List<float> parameters)
     {
         this.parameters = parameters;
+        Evaluation = 0;
         Fitness = 0;
     }
 
     public Genotype(float[] parameters)
     {
         this.parameters = new List<float>(parameters);
+        Evaluation = 0;
         Fitness = 0;
     }
 
     public Genotype(int parametersCapacity)
     {
         this.parameters = new List<float>(parametersCapacity);
+        Evaluation = 0;
         Fitness = 0;
     }
 
     public Genotype()
     {
         this.parameters = new List<float>();
+        Evaluation = 0;
         Fitness = 0;
     }
     #endregion

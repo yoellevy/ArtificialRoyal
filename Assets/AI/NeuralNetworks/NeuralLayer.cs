@@ -12,7 +12,7 @@ public class NeuralLayer
 {
     #region Members
 
-    public enum ActivationFunctionType {Sigmoid = 0, TanH = 1, SoftSign = 2}
+    public enum ActivationFunctionType { SoftSign = 0, TanH = 1, Sigmoid = 2}
 
 
     private bool rnnLayer;
@@ -242,27 +242,27 @@ public class NeuralLayer
     {
         switch (type)
         {
-            case ActivationFunctionType.Sigmoid:
-                return MathHelper.SigmoidFunction;
             case ActivationFunctionType.SoftSign:
                 return MathHelper.SoftSignFunction;
             case ActivationFunctionType.TanH:
                 return MathHelper.TanHFunction;
-            default:
+            case ActivationFunctionType.Sigmoid:
                 return MathHelper.SigmoidFunction;
+            default:
+                return MathHelper.SoftSignFunction;
         }
     }
 
     public static ActivationFunctionType GetActivationFunctionType(ActivationFunction af)
-    {
-        if (af == MathHelper.SigmoidFunction)
-            return ActivationFunctionType.Sigmoid;
+    {  
         if (af == MathHelper.SoftSignFunction)
             return ActivationFunctionType.SoftSign;
         if (af == MathHelper.TanHFunction)
             return ActivationFunctionType.TanH;
+        if (af == MathHelper.SigmoidFunction)
+            return ActivationFunctionType.Sigmoid;
 
-        return ActivationFunctionType.Sigmoid;
+        return ActivationFunctionType.SoftSign;
     }
     #endregion
 }

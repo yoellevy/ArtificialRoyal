@@ -32,7 +32,7 @@ public class GameData : MonoBehaviour {
     [SerializeField]
     public uint[] NNTopology = new uint[5] {21, 27, 16, 8, 4};
     [SerializeField]
-    public NeuralLayer.ActivationFunctionType activationFunctionType = NeuralLayer.ActivationFunctionType.Sigmoid;
+    public NeuralLayer.ActivationFunctionType activationFunctionType = NeuralLayer.ActivationFunctionType.SoftSign;
 
     [Range(2, int.MaxValue)] public int SelectNBest = 10;
     [Range(0, int.MaxValue)] public int SelectMRandom = 3;
@@ -45,6 +45,8 @@ public class GameData : MonoBehaviour {
 
     public int EvalRank = 1;
     public int EvalKills = 1;
+
+    public int NumberOfGamesPerGeneration = 2;
     #endregion
 
     public int CompareBattleGamesToPlay = 50;

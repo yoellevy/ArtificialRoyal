@@ -73,6 +73,9 @@ public class Agent : IComparable<Agent>
     {
         IsAlive = false;
         this.Genotype = genotype;
+        this.Genotype.Evaluation = 0;
+        this.Genotype.Fitness = 0;
+
         FNN = new NeuralNetwork(useRNN, topology);
         foreach (NeuralLayer layer in FNN.Layers)
             layer.NeuronActivationFunction = defaultActivation;

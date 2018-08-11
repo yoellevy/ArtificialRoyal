@@ -50,8 +50,8 @@ public class GeneticAlgorithm
     /// <summary>
     /// Method template for methods used to evaluate (or start the evluation process of) the current population.
     /// </summary>
-    /// <param name="currentPopulation">The current population.</param>
-    public delegate void EvaluationOperator(IEnumerable<Genotype> currentPopulation);
+    /// <param name="currentPopulation">The current population.</param> //todo - delete this line
+    public delegate void EvaluationOperator();
     /// <summary>
     /// Method template for methods used to calculate the fitness value of each genotype of the current population.
     /// </summary>
@@ -218,41 +218,48 @@ public class GeneticAlgorithm
 
             GameData.instance.agents.Clear();
         }
+        GameData.instance.CreateAgents(out GameData.instance.agents, currentPopulation);
 
-        Evaluation(currentPopulation); //todo
-        //Evaluation();
+        //Evaluation(currentPopulation); //todo
+        Evaluation();
     }
 
     public void EvaluationFinished()
     {
-        //Calculate fitness from evaluation
-        FitnessCalculationMethod(currentPopulation);
+        if (++EvolutionManager.Instance.NumberOfGamesInThisGeneration >= GameData.instance.NumberOfGamesPerGeneration)
+        {
+            EvolutionManager.Instance.NumberOfGamesInThisGeneration = 0;
+            //Calculate fitness from evaluation
+            FitnessCalculationMethod(currentPopulation);
 
-        /*//Sort population if flag was set
-        if (SortPopulation)
-            currentPopulation.Sort();*/
+            /*//Sort population if flag was set
+            if (SortPopulation)
+                currentPopulation.Sort();*/
 
-        currentPopulation.Sort((a, b) => b.Evaluation.CompareTo(a.Evaluation)); //todo! Omer is here!
+            currentPopulation.Sort((a, b) => b.Evaluation.CompareTo(a.Evaluation)); //todo! Omer is here!
 
-        //Fire fitness calculation finished event
-        if (FitnessCalculationFinished != null)
-            FitnessCalculationFinished(currentPopulation);
+            //Fire fitness calculation finished event
+            if (FitnessCalculationFinished != null)
+                FitnessCalculationFinished(currentPopulation);
 
-        //Apply Selection
-        List<Genotype> intermediatePopulation = Selection(currentPopulation);
+            //Apply Selection
+            List<Genotype> intermediatePopulation = Selection(currentPopulation);
 
-        //Apply Recombination
-        List<Genotype> newPopulation = Recombination(intermediatePopulation, PopulationSize);
+            //Apply Recombination
+            List<Genotype> newPopulation = Recombination(intermediatePopulation, PopulationSize);
 
-        //Apply Mutation
-        Mutation(newPopulation);
+            //Apply Mutation
+            Mutation(newPopulation);
 
-        
-        //Set current population to newly generated one and start evaluation again
-        currentPopulation = newPopulation;
-        GenerationCount++;
 
-        Evaluation(currentPopulation);
+            //Set current population to newly generated one and start evaluation again
+            currentPopulation = newPopulation;
+            GenerationCount++;
+
+            GameData.instance.CreateAgents(out GameData.instance.agents, currentPopulation);
+        }
+
+        Evaluation();
     }
 
 
@@ -269,7 +276,7 @@ public class GeneticAlgorithm
             genotype.SetRandomParameters(DefInitParamMin, DefInitParamMax);
     }
 
-    public static void AsyncEvaluation(IEnumerable<Genotype> currentPopulation)
+    public static void AsyncEvaluation() //IEnumerable<Genotype> currentPopulatio
     {
         //At this point the async evaluation should be started and after it is finished EvaluationFinished should be called
     }

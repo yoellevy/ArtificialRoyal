@@ -50,6 +50,9 @@ public class EvolutionManager : MonoBehaviour
 
     private bool _toSaveGenotypes = false;
 
+    [HideInInspector]
+    public int NumberOfGamesInThisGeneration = 0;
+
     #endregion
 
     #region Constructors
@@ -91,12 +94,14 @@ public class EvolutionManager : MonoBehaviour
     /// </summary>
     public void StartEvolution()
     {
+        NumberOfGamesInThisGeneration = 0;
+
         int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameData.instance.useRNN, GameData.instance.NNTopology);
 
         //Setup genetic algorithm
         geneticAlgorithm = new GeneticAlgorithm((uint) weightCount, (uint) (GameManager.Instance.playerAmount- GameManager.Instance.randomPlayerAmount));
 
-        geneticAlgorithm.Evaluation = CreateAgentsAndRestart;
+        geneticAlgorithm.Evaluation = GameManager.Instance.RestartTheGame;
 
         geneticAlgorithm.Selection = GeneticAlgorithm.SelectBestNAndRandomMSelectionOperator;
         geneticAlgorithm.Recombination = RandomRecombination;
@@ -126,7 +131,6 @@ public class EvolutionManager : MonoBehaviour
 
     private void CreateAgentsAndRestart(IEnumerable<Genotype> currentPopulation)
     {
-        GameData.instance.CreateAgents(out GameData.instance.agents, currentPopulation);
         GameManager.Instance.RestartTheGame();
     }
 

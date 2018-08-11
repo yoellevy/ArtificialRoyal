@@ -137,7 +137,7 @@ public class PlayerScript : MonoBehaviour
 
     public void EvalSelf()
     {
-        PlayerAgent.Genotype.Evaluation = EvaluationFunctionsImplementaion.EvalPlayer(this);
+        PlayerAgent.Genotype.Evaluation += EvaluationFunctionsImplementaion.EvalPlayer(this);
         //Debug.Log(string.Format("Evaluation for player {0}: \t{1}", id, PlayerAgent.Genotype.Evaluation));
     }
 
@@ -202,8 +202,10 @@ public class PlayerScript : MonoBehaviour
     {
         delayTime = timeShotToDelay;
         isAlive = true;
-        if (PlayerAgent != null)
+        /**if (PlayerAgent != null)
+        {
             PlayerAgent.Reset();
+        }*/
         this.gameObject.SetActive(true);
     }
 

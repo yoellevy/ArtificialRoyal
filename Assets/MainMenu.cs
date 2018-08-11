@@ -50,6 +50,12 @@ public class MainMenu : MonoBehaviour {
     private InputField EvalKillsInputField;
 
     [SerializeField]
+    private InputField GamesPerGenerationInputField;
+
+    [SerializeField]
+    private Toggle LoadAgentsToggle;
+
+    [SerializeField]
     private InputField CompareBattleGameToPlayInputField;
 
     private void Start()
@@ -212,6 +218,8 @@ public class MainMenu : MonoBehaviour {
 
         EvalRankInputField.text = GameData.instance.EvalRank.ToString();
         EvalKillsInputField.text = GameData.instance.EvalKills.ToString();
+
+        GamesPerGenerationInputField.text = GameData.instance.NumberOfGamesPerGeneration.ToString();
     }
 
     public void SetGeneticToGameData()
@@ -278,6 +286,13 @@ public class MainMenu : MonoBehaviour {
 
         //set Evaluation:
         SetEvaluationToGameData();
+
+        if (LoadAgentsToggle.isOn)
+        {
+            LoadGameData();
+        }
+
+        GameData.instance.NumberOfGamesPerGeneration = int.Parse(GamesPerGenerationInputField.text);
 
         //load Scene:
         SceneManager.LoadScene("Evolution");
