@@ -14,13 +14,30 @@ public class MainMenu : MonoBehaviour {
 
     [SerializeField]
     private Dropdown ActivitionFunctionDropDown;
-
     [SerializeField]
     private Dropdown NNTypeDropDown;
-
     [SerializeField]
     private Dropdown TopologyDropDown;
 
+    [SerializeField]
+    private InputField SelectNBestInputField;
+    [SerializeField]
+    private InputField SelectMRandomInputField;
+    [SerializeField]
+    private Slider SwapProbSlider;
+    [SerializeField]
+    private Text SwapProbText;
+    [SerializeField]
+    private Slider MutationProbSlider;
+    [SerializeField]
+    private Text MutationProbText;
+    [SerializeField]
+    private InputField MutationAmountInputField;
+
+    private void Start()
+    {
+        SetUIData();
+    }
 
     public void TrainFromScratch()
     {
@@ -144,5 +161,71 @@ public class MainMenu : MonoBehaviour {
                 GameData.instance.NNTopology = new uint[5] { 21, 16, 12, 8, 4 };
                 break;
         }
+    }
+
+    private void SetUIData()
+    {
+        SelectNBestInputField.text = GameData.instance.SelectNBest.ToString();
+        SelectMRandomInputField.text = GameData.instance.SelectMRandom.ToString();
+
+        float value = GameData.instance.SwapProb;
+        SwapProbSlider.value = value;
+        SwapProbText.text = value.ToString();
+
+        value = GameData.instance.MutationProb;
+        MutationProbSlider.value = value;
+        MutationProbText.text = value.ToString();
+
+        MutationAmountInputField.text = GameData.instance.MutationAmount.ToString();
+    }
+
+    public void SetGeneticToGameData()
+    {
+        GameData.instance.SelectNBest = int.Parse(SelectNBestInputField.text);
+        GameData.instance.SelectMRandom = int.Parse(SelectMRandomInputField.text);
+        GameData.instance.SwapProb = SwapProbSlider.value;
+        GameData.instance.MutationProb = MutationProbSlider.value;
+        GameData.instance.MutationAmount = int.Parse(MutationAmountInputField.text);
+    }
+
+    public void IntegerInputFielOnValueChanged(InputField inputField)
+    {
+        try
+        {
+            int.Parse(inputField.text);
+        }
+        catch (FormatException e)
+        {
+            inputField.text = "";
+        }
+    }
+
+
+    public void SwapProbOnValueChanged()
+    {
+        float value = (float)Math.Round(SwapProbSlider.value, 2);
+        SwapProbSlider.value = value;
+        SwapProbText.text = value.ToString();
+    }
+
+    public void MutationProbOnValueChanged()
+    {
+        float value = (float)Math.Round(MutationProbSlider.value, 2);
+        MutationProbSlider.value = value;
+        MutationProbText.text = value.ToString();
+    }
+
+    public void StartTrain()
+    {
+        //set NN:
+        SetActivitionFunction();
+        SetNNType();
+        SetTopology();
+
+        //set Genetics:
+        SetGeneticToGameData();
+
+        //load Scene:
+        SceneManager.LoadScene("Evolution");
     }
 }
