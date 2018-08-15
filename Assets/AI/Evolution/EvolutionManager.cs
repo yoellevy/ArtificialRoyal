@@ -141,13 +141,44 @@ public class EvolutionManager : MonoBehaviour
 
         if (!Directory.Exists(saveFolder))
             Directory.CreateDirectory(saveFolder);
-
+        /*
         File.WriteAllText(saveFolder + statisticsFileName + ".txt", "Evaluation of a Population with size " + GameManager.Instance.playerAmount +
                 ", using the following GA operators: " + Environment.NewLine +
                 "Selection: " + geneticAlgorithm.Selection.Method.Name + Environment.NewLine +
                 "Recombination: " + geneticAlgorithm.Recombination.Method.Name + Environment.NewLine +
                 "Mutation: " + geneticAlgorithm.Mutation.Method.Name + Environment.NewLine +
                 "FitnessCalculation: " + geneticAlgorithm.FitnessCalculationMethod.Method.Name + Environment.NewLine + Environment.NewLine);
+                */
+
+        File.WriteAllText(saveFolder + statisticsFileName + ".txt", "Selection:" + Environment.NewLine +
+            "Select N Best: " + GameData.instance.SelectNBest.ToString() + Environment.NewLine +
+            "Select M Random: " + GameData.instance.SelectMRandom.ToString() + Environment.NewLine +
+            Environment.NewLine + "Breed / Recombination:" + Environment.NewLine +
+            "Amount To Save From Selection: " + GameData.instance.BreadAmountToSaveFromSelection.ToString() + Environment.NewLine +
+            "Swap Probability: " + GameData.instance.SwapProb.ToString() + Environment.NewLine +
+            Environment.NewLine + "Mutation:" + Environment.NewLine +
+            "Mutation Save Amount: " + GameData.instance.MutationSaveAmount.ToString() + Environment.NewLine +
+            "Mutation Percent: " + GameData.instance.MutationPerc.ToString() + Environment.NewLine +
+            "Mutation probability: " + GameData.instance.MutationProb.ToString() + Environment.NewLine +
+            "Mutation Amount: " + GameData.instance.MutationAmount.ToString() + Environment.NewLine +
+            Environment.NewLine + "Evaluation:" + Environment.NewLine +
+            "Rank: " + GameData.instance.EvalRank.ToString() + Environment.NewLine +
+            "Kills: " + GameData.instance.EvalKills.ToString() + Environment.NewLine +
+            Environment.NewLine + (GameData.instance.isNewAgents? "New" : "Loaded") +" Agents:" + Environment.NewLine +
+            "Activision Function: " + GameData.instance.activationFunctionType.ToString() + Environment.NewLine +
+            "NN Type: " + (GameData.instance.useRNN? "indRNN" : "FNN") + Environment.NewLine +
+            "NN Topology: " + TopologyToString(GameData.instance.NNTopology) + Environment.NewLine +
+            Environment.NewLine + "Games per Generation: " + GameData.instance.NumberOfGamesPerGeneration.ToString() + Environment.NewLine + Environment.NewLine);
+    }
+
+    private static string TopologyToString(uint[] Topology)
+    {
+        string[] sArr = new string[Topology.Length];
+
+        for (int i = 0; i < Topology.Length; i++)
+            sArr[i] = Topology[i].ToString();
+
+        return String.Join(",", sArr);
     }
 
     // Appends the current generation count and the evaluation of the best genotype to the statistics file.

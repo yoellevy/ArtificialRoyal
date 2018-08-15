@@ -2184,6 +2184,16 @@ Prefab:
       propertyPath: useRNN
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114547288440806656, guid: 0064ebb90c2e3b748a75b5d0f8f36a03,
+        type: 2}
+      propertyPath: SelectNBest
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114547288440806656, guid: 0064ebb90c2e3b748a75b5d0f8f36a03,
+        type: 2}
+      propertyPath: SelectMRandom
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0064ebb90c2e3b748a75b5d0f8f36a03, type: 2}
   m_IsPrefabParent: 0
@@ -3265,8 +3275,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 504.9004, y: -416.1}
-  m_SizeDelta: {x: 210, y: 30.7}
+  m_AnchoredPosition: {x: 505, y: -375}
+  m_SizeDelta: {x: 210, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &449828292
 MonoBehaviour:
@@ -9942,7 +9952,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 634.9, y: -415.75}
+  m_AnchoredPosition: {x: 635, y: -375}
   m_SizeDelta: {x: 50, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1599273985

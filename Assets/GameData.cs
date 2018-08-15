@@ -34,11 +34,11 @@ public class GameData : MonoBehaviour {
     [SerializeField]
     public NeuralLayer.ActivationFunctionType activationFunctionType = NeuralLayer.ActivationFunctionType.SoftSign;
 
-    [Range(2, int.MaxValue)] public int SelectNBest = 10;
-    [Range(0, int.MaxValue)] public int SelectMRandom = 3;
-    [Range(2, int.MaxValue)] public int BreadAmountToSaveFromSelection = 2;
+    [Range(2, 100)] public int SelectNBest = 5;
+    [Range(0, 100)] public int SelectMRandom = 1;
+    [Range(2, 100)] public int BreadAmountToSaveFromSelection = 2;
     [Range(0, 1)] public float SwapProb = 0.6f;
-    [Range(0, int.MaxValue)] public int MutationSaveAmount = 2;
+    [Range(0, 100)] public int MutationSaveAmount = 2;
     [Range(0, 1)] public float MutationPerc = 1f;
     [Range(0, 1)] public float MutationProb = 0.3f;
     public int MutationAmount = 2;
@@ -47,6 +47,9 @@ public class GameData : MonoBehaviour {
     public int EvalKills = 1;
 
     public int NumberOfGamesPerGeneration = 2;
+
+    [HideInInspector]
+    public bool isNewAgents = false;
     #endregion
 
     public int CompareBattleGamesToPlay = 50;
@@ -87,11 +90,18 @@ public class GameData : MonoBehaviour {
         {
             agents.Add(Agent.LoadFromFile(file));
         }
+
+        activationFunctionType = NeuralLayer.GetActivationFunctionType(agents[0].FNN.Layers[0].NeuronActivationFunction);
+        useRNN = agents[0].FNN.useRNN;
+        NNTopology = agents[0].FNN.Topology;
+        isNewAgents = false;
     }
 
 
     public void BackToMainMenu()
     {
+        agents = null;
+        agents_group_B = null;
         toAddHumanPlayer = false;
         SceneManager.LoadScene("MainMenu");
     }
@@ -106,5 +116,6 @@ public class GameData : MonoBehaviour {
         {
             agents.Add(new Agent(genotype, af, useRNN, NNTopology));
         }
+        isNewAgents = true;
     }
 }

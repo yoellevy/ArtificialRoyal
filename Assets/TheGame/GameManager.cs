@@ -120,7 +120,8 @@ public class GameManager : MonoBehaviour
         players.Clear();
 
         CreateAIPlayers(amount, CompareBattleManager.GroupName.A);
-        CreateAIPlayers(group_B_amount, CompareBattleManager.GroupName.B);
+        if (CompareBattleManager.Instance != null)
+            CreateAIPlayers(group_B_amount, CompareBattleManager.GroupName.B);
         if (GameData.instance.toAddHumanPlayer)
         {
             CreateHumanPlayer();
@@ -199,6 +200,7 @@ public class GameManager : MonoBehaviour
         {
             //regular game
             ChangeAgentsAmountToPlayerAmountHelper(GameData.instance.agents, playerAmount);
+            GameData.instance.agents_group_B.Clear();
         }
         //other cases should be OK.
 
@@ -238,7 +240,7 @@ public class GameManager : MonoBehaviour
         }
 
         AssignAgents(GameData.instance.agents);
-        if (GameData.instance.agents_group_B != null)
+        if (CompareBattleManager.Instance != null && GameData.instance.agents_group_B != null)
             AssignAgents(GameData.instance.agents_group_B, GameData.instance.agents.Count);
 
         RestartPlayers();
