@@ -1,7 +1,4 @@
-﻿/// Author: Samuel Arzt
-/// Date: March 2017
-
-#region Includes
+﻿#region Includes
 using System;
 #endregion
 
@@ -79,12 +76,11 @@ public class NeuralLayer
 
         if (rnnLayer)
         {
-            //todo
             Weights = new double[nodeCount + 1 + 1, outputCount]; // + 1 for bias node and +1 for each Independent recurrent
             recurrents = new double[outputCount];
             for (int i = 0; i < recurrents.Length; i++)
             {
-                recurrents[i] = 0; // randomizer.NextDouble(); //todo
+                recurrents[i] = 0;
             }
         }
         else
@@ -131,8 +127,7 @@ public class NeuralLayer
             throw new ArgumentException("Given xValues do not match layer input count.");
 
         if (rnnLayer)
-        {//todo - for RNN we need to handle 'sums' here.
-
+        {
             //Calculate sum for each neuron from weighted inputs and bias
             double[] sums = new double[OutputCount];
             //Add bias (always on) neuron to inputs

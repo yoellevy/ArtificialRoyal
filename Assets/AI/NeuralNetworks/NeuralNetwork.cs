@@ -1,10 +1,5 @@
-﻿/// Author: Samuel Arzt
-/// Date: March 2017
-
-#region Includes
+﻿#region Includes
 using System;
-using UnityEngine;
-
 #endregion
 
 /// <summary>
@@ -63,9 +58,7 @@ public class NeuralNetwork
         Layers = new NeuralLayer[topology.Length - 1];
         for (int i = 0; i < Layers.Length; i++)
         {
-            //todo - define how much rnn layers and which
-            bool rnn = useRNN;// && (i == topology.Length - 1 || i == topology.Length - 2);// (useRNN && i != 0 && i != Layers.Length - 1 && i == 2);// (useRNN && i != 0 && i != Layers.Length - 1);
-            Layers[i] = new NeuralLayer(topology[i], topology[i + 1], rnn);
+            Layers[i] = new NeuralLayer(topology[i], topology[i + 1], useRNN);
         }
     }
     #endregion

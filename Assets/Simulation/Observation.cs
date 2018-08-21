@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,7 +31,6 @@ public class Observation : MonoBehaviour
     Dictionary<int, double[]> PlayerToPlayerObservation;
     Dictionary<int, double[]> PlayerToBulletObservation;
     Dictionary<int, double[]> PlayerToWallObservation;
-    //todo - for player to wall distance maybe we can use "ColliderDistance2D"
 
     DistanceAndAngle[,] PlayerToPlayerDistance;
     DistanceAndAngle[,] PlayerToBulletDistance;
@@ -153,8 +151,7 @@ public class Observation : MonoBehaviour
             int p1id = players[i].id;
             foreach (var item in bullets)
             {
-                //todo - each player needs to ignore his bullets. Or at least we must to set bullet direction somwehere
-                if (item.GetComponent<BulletData>().playerScript.id != players[i].id) //todo - should I comper the id or the script without the id?
+                if (item.GetComponent<BulletData>().playerScript.id != players[i].id)
                 {
                     double currDistance = Vector2.Distance(item.transform.position, players[i].transform.position);
                     if (currDistance < maxObservationDistance)
@@ -162,7 +159,7 @@ public class Observation : MonoBehaviour
                         AngleQuant currAngle = CalculateAngle(players[i].transform.position, item.transform.position);
 
                         double p2bDist = (maxObservationDistance - currDistance) / maxObservationDistance;
-                        PlayerToBulletObservation[p1id][(int)currAngle - 1] = Math.Max(p2bDist, PlayerToBulletObservation[p1id][(int)currAngle - 1]); //todo - (from Omer to Yoel) - where is the minimum of bunch of bullets? I'm not sure that I'm understand this code.
+                        PlayerToBulletObservation[p1id][(int)currAngle - 1] = Math.Max(p2bDist, PlayerToBulletObservation[p1id][(int)currAngle - 1]);
                     }
                 }
             }
@@ -251,9 +248,6 @@ public class Observation : MonoBehaviour
     /// <returns>obseration </returns>
     public double[] GetObservationOfPlayerId(int id)
     {
-        
-        //for now only player observation 
-        //TODO: extend to all observation
         double[] outputObservation = new double[outputSize];
         int idx = 0;
         if (observePlayers)

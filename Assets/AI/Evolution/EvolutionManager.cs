@@ -1,15 +1,10 @@
-﻿/// Author: Samuel Arzt
-/// Date: March 2017
-
-
-#region Includes
+﻿#region Includes
 using UnityEngine;
 using System.Collections.Generic;
 using System;
 using System.IO;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Text;
 #endregion
 
 /// <summary>
@@ -60,14 +55,10 @@ public class EvolutionManager : MonoBehaviour
     {
         if (Instance != null)
         {
-            // TODO check why...
             Debug.LogError("More than one EvolutionManager in the Scene.");
             return;
         }
         Instance = this;
-
-        ////Load gui scene
-        //SceneManager.LoadScene("GUI", LoadSceneMode.Additive);
 
         //Load Game
         SceneManager.LoadScene("Game", LoadSceneMode.Additive);
@@ -99,14 +90,14 @@ public class EvolutionManager : MonoBehaviour
         int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameData.instance.useRNN, GameData.instance.NNTopology);
 
         //Setup genetic algorithm
-        geneticAlgorithm = new GeneticAlgorithm((uint) weightCount, (uint) (GameManager.Instance.playerAmount- GameManager.Instance.randomPlayerAmount));
+        geneticAlgorithm = new GeneticAlgorithm((uint)weightCount, (uint)(GameManager.Instance.playerAmount - GameManager.Instance.randomPlayerAmount))
+        {
+            Evaluation = GameManager.Instance.RestartTheGame,
+            Selection = GeneticAlgorithm.SelectBestNAndRandomMSelectionOperator,
+            Recombination = RandomRecombination,
+            Mutation = MutateAllButBestN
+        };
 
-        geneticAlgorithm.Evaluation = GameManager.Instance.RestartTheGame;
-
-        geneticAlgorithm.Selection = GeneticAlgorithm.SelectBestNAndRandomMSelectionOperator;
-        geneticAlgorithm.Recombination = RandomRecombination;
-        geneticAlgorithm.Mutation = MutateAllButBestN;
-        
 
         EndOfGame += GameManager.Instance.EvalOfEndGame;
         EndOfGame += geneticAlgorithm.EvaluationFinished;
@@ -114,17 +105,10 @@ public class EvolutionManager : MonoBehaviour
         //Statistics
         if (SaveStatistics)
         {
-            //TODO: adding log?
             statisticsFileName = "Evaluation - " + DateTime.Now.ToString("yyyy_MM_dd_HH-mm-ss");
             WriteStatisticsFileStart();
-            //WriteNNData();
             geneticAlgorithm.FitnessCalculationFinished += WriteStatisticsToFile;
-            //geneticAlgorithm.FitnessCalculationFinished += CheckForTrackFinished;
-            //geneticAlgorithm.FitnessCalculationFinished += SaveBestGenotypes;
         }
-        
-
-
 
         geneticAlgorithm.Start();
     }
@@ -141,14 +125,6 @@ public class EvolutionManager : MonoBehaviour
 
         if (!Directory.Exists(saveFolder))
             Directory.CreateDirectory(saveFolder);
-        /*
-        File.WriteAllText(saveFolder + statisticsFileName + ".txt", "Evaluation of a Population with size " + GameManager.Instance.playerAmount +
-                ", using the following GA operators: " + Environment.NewLine +
-                "Selection: " + geneticAlgorithm.Selection.Method.Name + Environment.NewLine +
-                "Recombination: " + geneticAlgorithm.Recombination.Method.Name + Environment.NewLine +
-                "Mutation: " + geneticAlgorithm.Mutation.Method.Name + Environment.NewLine +
-                "FitnessCalculation: " + geneticAlgorithm.FitnessCalculationMethod.Method.Name + Environment.NewLine + Environment.NewLine);
-                */
 
         File.WriteAllText(saveFolder + statisticsFileName + ".txt", "Selection:" + Environment.NewLine +
             "Select N Best: " + GameData.instance.SelectNBest.ToString() + Environment.NewLine +

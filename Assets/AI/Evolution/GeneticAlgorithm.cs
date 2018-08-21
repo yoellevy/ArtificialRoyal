@@ -1,7 +1,4 @@
-﻿/// Author: Samuel Arzt
-/// Date: March 2017
-
-#region Includes
+﻿#region Includes
 using System;
 using System.Collections.Generic;
 #endregion
@@ -50,7 +47,6 @@ public class GeneticAlgorithm
     /// <summary>
     /// Method template for methods used to evaluate (or start the evluation process of) the current population.
     /// </summary>
-    /// <param name="currentPopulation">The current population.</param> //todo - delete this line
     public delegate void EvaluationOperator();
     /// <summary>
     /// Method template for methods used to calculate the fitness value of each genotype of the current population.
@@ -220,7 +216,7 @@ public class GeneticAlgorithm
         }
         GameData.instance.CreateAgents(out GameData.instance.agents, currentPopulation);
 
-        //Evaluation(currentPopulation); //todo
+        //Evaluation(currentPopulation);
         Evaluation();
     }
 
@@ -236,7 +232,7 @@ public class GeneticAlgorithm
             if (SortPopulation)
                 currentPopulation.Sort();*/
 
-            currentPopulation.Sort((a, b) => b.Evaluation.CompareTo(a.Evaluation)); //todo! Omer is here!
+            currentPopulation.Sort((a, b) => b.Evaluation.CompareTo(a.Evaluation));
 
             //Fire fitness calculation finished event
             if (FitnessCalculationFinished != null)

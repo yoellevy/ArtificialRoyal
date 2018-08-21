@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using AI;
 using UnityEngine;
 
@@ -55,7 +53,7 @@ public class PlayerScript : MonoBehaviour
     // Use this for initialization
     private void Awake()
     {
-        EvaluationFunction = EvaluationFunctions.LinearComposition; //todo (Ori/Reshef, please say something - from Omer)
+        EvaluationFunction = EvaluationFunctions.LinearComposition;
         id = NextID;
     }
 
@@ -129,7 +127,6 @@ public class PlayerScript : MonoBehaviour
 
     public void NormalizePlayerData(float gameTime, int playersAliveAmount, int playersThatDiedAmount, float maxKills)
     {
-        // todo - please that some one other than me (Omer) will check this.
         SurvivelTime = SurvivelTime / gameTime;
         Rank = 1 - (Rank - playersAliveAmount) / playersThatDiedAmount;
         KillCount = maxKills > 0.5 ? KillCount / maxKills : KillCount;
@@ -186,7 +183,6 @@ public class PlayerScript : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Bullet"))
         {
-            // TODO this is causes bugs.
             PlayerScript otherPlayer = collision.GetComponent<BulletData>().playerScript;
             if (otherPlayer != this)
             {

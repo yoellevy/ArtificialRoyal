@@ -1,7 +1,4 @@
-﻿/// Author: Samuel Arzt
-/// Date: March 2017
-
-#region Includes
+﻿#region Includes
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -131,19 +128,6 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
     public void Add(float value)
     {
         parameters.Add(value);
-        //yes, this is stupid way.
-
-        /*int size = 1;
-        if (parameters != null)
-            size = parameters.Count + 1;
-        float[] parametersTemp = new float[size];
-        parametersTemp[size - 1] = value;
-        for(int i = 0; i < size - 1; i++)
-        {
-            parametersTemp[i] = parameters[i];
-        }
-        parameters = parametersTemp;*/
-        //throw new NotSupportedException("Add is not supported for paged results.  Try adding new items to the repository instead.");
     }
     #endregion
     
@@ -163,18 +147,6 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
         for (int i = 0; i < parameters.Count; i++)
             parameters[i] = (float)((randomizer.NextDouble() * range) + minValue); //Create a random float between minValue and maxValue
     }
-
-    /// <summary>
-    /// Returns a copy of the parameter vector.
-    /// </summary>
-    /*public float[] GetParameterCopy()
-    {
-        float[] copy = new float[ParameterCount];
-        for (int i = 0; i < ParameterCount; i++)
-            copy[i] = parameters[i];
-
-        return copy;
-    }*/
 
     public List<float> GetParameterCopy()
     {
@@ -200,49 +172,5 @@ public class Genotype : IComparable<Genotype>, IEnumerable<float>
 
         File.WriteAllText(filePath, builder.ToString());
     }
-
-    #region Static Methods
-    /*
-    /// <summary>
-    /// Generates a random genotype with parameters in given range.
-    /// </summary>
-    /// <param name="parameterCount">The amount of parameters the genotype consists of.</param>
-    /// <param name="minValue">The minimum inclusive value a parameter may be initialised with.</param>
-    /// <param name="maxValue">The maximum exclusive value a parameter may be initialised with.</param>
-    /// <returns>A genotype with random parameter values</returns>
-    public static Genotype GenerateRandom(uint parameterCount, float minValue, float maxValue)
-    {
-        //Check arguments
-        if (parameterCount == 0) return new Genotype(new float[0]);
-
-        Genotype randomGenotype = new Genotype(new float[parameterCount]);
-        randomGenotype.SetRandomParameters(minValue, maxValue);
-
-        return randomGenotype;
-    }*/
-
-    /*
-    /// <summary>
-    /// Loads a genotype from a file with given file path.
-    /// </summary>
-    /// <param name="filePath">The path of the file to load the genotype from.</param>
-    /// <returns>The genotype loaded from the file at given file path.</returns>
-    public static Genotype LoadFromFile(string filePath)
-    {
-        string data = File.ReadAllText(filePath);
-
-        List<float> parameters = new List<float>();
-        string[] paramStrings = data.Split(';');
-
-        foreach (string parameter in paramStrings)
-        {
-            float parsed;
-            if (!float.TryParse(parameter, out parsed)) throw new ArgumentException("The file at given file path does not contain a valid genotype serialisation.");
-            parameters.Add(parsed);
-        }
-
-        return new Genotype(parameters.ToArray());
-    }*/
-    #endregion
     #endregion
 }

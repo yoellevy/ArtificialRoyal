@@ -1,12 +1,6 @@
-﻿/// Author: Samuel Arzt
-/// Date: March 2017
-
-#region Includes
+﻿#region Includes
 using System;
 using System.Collections.Generic;
-using System.Text;
-using AI;
-
 #endregion
 
 /// <summary>

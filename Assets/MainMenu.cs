@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -186,6 +184,9 @@ public class MainMenu : MonoBehaviour {
                 break;
             case 1:
                 GameData.instance.NNTopology = new uint[5] { 21, 16, 12, 8, 4 };
+                break;
+            case 2:
+                GameData.instance.NNTopology = new uint[8] { 21, 10, 10, 10, 8, 8, 8, 4 };
                 break;
         }
     }

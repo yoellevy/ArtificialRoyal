@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [Serializable]
@@ -293,45 +292,17 @@ public class GameManager : MonoBehaviour
     {
         if (Instance != null)
         {
-            // TODO check why :( DO NOT remove from scene.
             Debug.LogError("More than one GameManager in the Scene.");
             return;
         }
         Instance = this;
     }
 
-    /*private void CreatGamePopulation()
-    {
-        GameData.instance.gamePopulation = new List<Genotype>(playerAmount);
-        if (GameData.instance.group_A_data.genotypes.Count == 0)
-        {
-            int weightCount = NeuralNetwork.CalculateOverallWeightCount(GameData.instance.useRNN, GameData.instance.FNNTopology);
-            for (int i = 0; i < playerAmount; i++)
-            {
-                Genotype genotype = new Genotype(new float[weightCount]);
-                genotype.SetRandomParameters(GeneticAlgorithm.DefInitParamMin, GeneticAlgorithm.DefInitParamMax); //todo!! load real genotype and not generate randoms.
-                GameData.instance.gamePopulation.Add(genotype);
-            }
-        }
-        else
-        {
-            GameData.instance.useRNN = GameData.instance.group_A_data.useRNN;
-            GameData.instance.FNNTopology = GameData.instance.group_A_data.Topology;
-            int i = 0;
-            while (GameData.instance.gamePopulation.Count < playerAmount)
-            {
-                GameData.instance.gamePopulation.Add(GameData.instance.group_A_data.genotypes[i]);
-                i = (i + 1) % GameData.instance.group_A_data.genotypes.Count;
-            }
-        }
-    }*/
 
     private void Start()
     {
         if (EvolutionManager.Instance == null && CompareBattleManager.Instance == null)
         {
-            //CreatGamePopulation();
-            //GameData.instance.CreateAgents(out GameData.instance.agents, GameData.instance.group_A_data.genotypes, GameData.instance.useRNN, GameData.instance.FNNTopology);
             RestartTheGame();
         }
     }

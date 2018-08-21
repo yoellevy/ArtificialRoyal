@@ -1,7 +1,4 @@
-﻿/// Author: Samuel Arzt
-/// Date: March
-
-#region Includes
+﻿#region Includes
 using System;
 using UnityEngine;
 #endregion
