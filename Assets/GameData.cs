@@ -52,6 +52,8 @@ public class GameData : MonoBehaviour {
 
     public int CompareBattleGamesToPlay = 50;
 
+    public bool CameraOnHumanPlayer = false;
+
 
 
     private void Awake()
@@ -98,9 +100,15 @@ public class GameData : MonoBehaviour {
 
     public void BackToMainMenu()
     {
-        agents = null;
+        /*agents = null;
         agents_group_B = null;
         toAddHumanPlayer = false;
+        CameraOnHumanPlayer = false;*/
+        //don't ask me why, but now it works
+        instance.agents.Clear();
+        instance.agents_group_B.Clear();
+        instance.toAddHumanPlayer = false;
+        instance.CameraOnHumanPlayer = false;
         SceneManager.LoadScene("MainMenu");
     }
 

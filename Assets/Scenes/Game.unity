@@ -181,6 +181,7 @@ GameObject:
   - component: {fileID: 80347625}
   - component: {fileID: 80347624}
   - component: {fileID: 80347623}
+  - component: {fileID: 80347622}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -188,6 +189,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &80347622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 80347621}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1459327c48d6c3f48a14eb525a8192c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetToFollow: {fileID: 0}
+  smoothSpeed: 0.125
+  offset: {x: 0, y: 0, z: -10}
 --- !u!124 &80347623
 Behaviour:
   m_ObjectHideFlags: 0
@@ -476,7 +491,6 @@ MonoBehaviour:
   humenController: {fileID: 11400000, guid: a9ccdb440c7cb2c45a42317702a72250, type: 2}
   randomController: {fileID: 11400000, guid: c8c531fe68f9bfd46ac50b84d6e617ea, type: 2}
   gameTime: 120
-  timeText: {fileID: 0}
   messageText: {fileID: 454217706}
   AliveText: {fileID: 1685140414}
   ground: {fileID: 539247949}

@@ -116,6 +116,23 @@ public class MainMenu : MonoBehaviour {
 
     }
 
+    public void PlayGameWithAndLikeAI()
+    {
+        ErrorText.text = "";
+
+        try
+        {
+            LoadGameData();
+            GameData.instance.toAddHumanPlayer = true;
+            GameData.instance.CameraOnHumanPlayer = true;
+            SceneManager.LoadScene("Game");
+        }
+        catch (FileLoadException e)
+        {
+            ErrorText.text = e.ToString() + "\n" + ErrorText.text;
+        }
+    }
+
     public void PlayCompareBattle()
     {
         ErrorText.text = "";
@@ -297,10 +314,5 @@ public class MainMenu : MonoBehaviour {
 
         //load Scene:
         SceneManager.LoadScene("Evolution");
-    }
-
-    public void StartCompareBattle()
-    {
-
     }
 }

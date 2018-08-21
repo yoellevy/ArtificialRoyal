@@ -48,6 +48,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector]
     public List<PlayerScript> players = new List<PlayerScript>();
 
+    public PlayerScript humanPlayerScript = null;
+
     /// <summary>
     /// The amount of agents that are currently alive.
     /// </summary>
@@ -159,6 +161,7 @@ public class GameManager : MonoBehaviour
     {
         PlayerScript playerScript = CreatePlayer(humenController);
         playerScript.GetComponent<SpriteRenderer>().color = Color.magenta;
+        humanPlayerScript = playerScript;
     }
 
     private PlayerScript CreatePlayer(PlayerControllerScriptable controller)
@@ -228,10 +231,25 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    private void HandleCamera()
+    {
+        if (GameData.instance.CameraOnHumanPlayer)
+        {
+            Camera.main.GetComponent<CameraFollow>().targetToFollow = humanPlayerScript.transform;
+            Camera.main.orthographicSize = (float)Observation.Instant.maxObservationDistance;
+        }
+        else
+        {
+            Camera.main.GetComponent<CameraFollow>().targetToFollow = null;
+            Camera.main.orthographicSize = Mathf.Max(initialBoardSize.x, initialBoardSize.y) / 2;
+        }
+    }
     
 
     public void RestartTheGame()
     {
+        humanPlayerScript = null;
         if (players.Count == 0)
         {
             ChangeAgentsAmountToPlayerAmount();
@@ -253,6 +271,8 @@ public class GameManager : MonoBehaviour
         SetCurrentBoardSize(initialBoardSize);
 
         Observation.Instant.InitMaps();
+
+        HandleCamera();
 
         inEndGame = false;
     }

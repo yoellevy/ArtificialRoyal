@@ -7976,7 +7976,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Play The Game View As AI PLayer
+  m_Text: Play The Game View As AI Player
 --- !u!222 &1302496683
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12617,7 +12617,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 985044078}
-        m_MethodName: PlayGameWithAI
+        m_MethodName: PlayGameWithAndLikeAI
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
